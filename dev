@@ -58,12 +58,12 @@ set_up_environment () {
 }
 
 upgrade_requirements() {
-  if [[ $# -ge 2 ]]; then
-    if [[ $# -ge 3 ]]; then
+  if [[ $# -ge 1 ]]; then
+    if [[ $# -ge 2 ]]; then
       echo "can't update more than one package at a time"
     fi
-    ${python} -m piptools compile --upgrade-package "$2" --output-file requirements.txt pip-tools/requirements.in
-    ${python} -m piptools compile --upgrade-package "$2" --output-file dev-requirements.txt pip-tools/dev-requirements.in
+    ${python} -m piptools compile --upgrade-package "$1" --output-file requirements.txt pip-tools/requirements.in
+    ${python} -m piptools compile --upgrade-package "$1" --output-file dev-requirements.txt pip-tools/dev-requirements.in
 
   else
     ${python} -m piptools compile --upgrade --output-file requirements.txt pip-tools/requirements.in
@@ -71,31 +71,39 @@ upgrade_requirements() {
   fi
 }
 
+watch_tests() {
+  pushd ${dir}
+    trap popd EXIT
+    ${python} -m piptools sync requirements.txt dev-requirements.txt
+    ${python} -m pytest_watch --spool=1000 -n -c -w -- -Werror -vv "$@"
+
+}
+
 main() {
   local command=$1
+  shift
   case $command in 
     -h)
       usage
       ;;
-    update-requirements)
-      update_requirements
+    update-requirements|update-requirement)
+      update_requirements "$@"
       ;;
-    upgrade-requirement)
+    upgrade-requirements|upgrade_requirement)
       upgrade_requirements "$@"
       ;;
-    upgrade-requirements)
-      upgrade_requirements "$@"
-      ;;
-    set-up-environment)
+    set-up-environment|setup-environment)
       set_up_environment
       ;;
-    test)
+    test|tests)
       pushd ${dir}
         ${python} -m piptools sync requirements.txt dev-requirements.txt
         ${python} -m pytest
       popd
       ;;
-
+    watch-test|watch-tests)
+      watch_tests
+      ;;
     *)
       usage
       exit 1
