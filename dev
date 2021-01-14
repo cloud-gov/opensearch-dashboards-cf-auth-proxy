@@ -1,0 +1,106 @@
+#!/usr/bin/env bash
+
+
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+python=${dir}/venv/bin/python
+usage() {
+  local me=$(basename $0)
+  cat <<-EOF
+
+  USAGE: ${me} COMMAND
+
+  Run development workflows.
+
+  Examples:
+
+    # Run the tests once
+    ${me}
+
+    # same as above
+    ${me} tests
+
+    # add new required packages from requirements.in to requirements.txt
+    ${me} update-requirements
+
+    # upgrade versions for requirements
+    ${me} upgrade-requirements
+
+    # upgrade version for specific requirement
+    ${me} upgrade-requirements <requirement>
+EOF
+}
+
+pushd () {
+    # make pushd silent
+    command pushd "$@" > /dev/null
+}
+
+popd () {
+    # make popd silent
+    command popd "$@" > /dev/null
+}
+
+update_requirements() {
+  export CUSTOM_COMPILE_COMMAND="./dev update-requirements"
+  $python -m piptools compile \
+    --quiet \
+    --output-file=requirements.txt \
+    pip-tools/requirements.in
+   $python -m piptools compile \
+    --quiet \
+    --output-file=dev-requirements.txt \
+    pip-tools/dev-requirements.in
+}
+
+set_up_environment () {
+  python -m venv ${dir}/venv
+  ${python} -m pip install -r dev-requirements.txt
+}
+
+upgrade_requirements() {
+  if [[ $# -ge 2 ]]; then
+    if [[ $# -ge 3 ]]; then
+      echo "can't update more than one package at a time"
+    fi
+    ${python} -m piptools compile --upgrade-package "$2" --output-file requirements.txt pip-tools/requirements.in
+    ${python} -m piptools compile --upgrade-package "$2" --output-file dev-requirements.txt pip-tools/dev-requirements.in
+
+  else
+    ${python} -m piptools compile --upgrade --output-file requirements.txt pip-tools/requirements.in
+    ${python} -m piptools compile --upgrade --output-file dev-requirements.txt pip-tools/dev-requirements.in
+  fi
+}
+
+main() {
+  local command=$1
+  case $command in 
+    -h)
+      usage
+      ;;
+    update-requirements)
+      update_requirements
+      ;;
+    upgrade-requirement)
+      upgrade_requirements "$@"
+      ;;
+    upgrade-requirements)
+      upgrade_requirements "$@"
+      ;;
+    set-up-environment)
+      set_up_environment
+      ;;
+    test)
+      pushd ${dir}
+        ${python} -m piptools sync requirements.txt dev-requirements.txt
+        ${python} -m pytest
+      popd
+      ;;
+
+    *)
+      usage
+      exit 1
+      ;;
+  esac
+}
+
+main "$@"
