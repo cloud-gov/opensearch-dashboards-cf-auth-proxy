@@ -57,3 +57,12 @@ resources:
     branch: ((git-branch))
 
 
+############################
+#  RESOURCE TYPES
+
+resource_types:
+
+- name: s3-iam
+  type: docker-image
+  source:
+    repository: 18fgsa/s3-resource
