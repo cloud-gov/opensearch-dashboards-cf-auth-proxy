@@ -1,26 +1,26 @@
 jobs:
 
-#- name: reconfigure
-#  serial: true
-#  plan:
-#  - get: src
-#    params: {depth: 1}
-#    trigger: true
-#  - get: secrets
-#    # Remember to manually trigger a new build if you upload a new version
-#    # of the credentials file.
-#    trigger: false
-#  - set_pipeline: ((name))
-#    file: src/ci/pipeline.yml
-#    var_files:
-#    - secrets/((name)).yml
+- name: reconfigure
+  serial: true
+  plan:
+  - get: src
+    params: {depth: 1}
+    trigger: true
+  - get: secrets
+    # Remember to manually trigger a new build if you upload a new version
+    # of the credentials file.
+    trigger: false
+  - set_pipeline: ((name))
+    file: src/ci/pipeline.yml
+    var_files:
+    - secrets/((name)).yml
 
 - name: test
   plan:
     - get: src
       params: {depth: 1}
       trigger: true
-      #passed: [reconfigure]
+      passed: [reconfigure]
 
     - task: test
       config:
@@ -40,13 +40,13 @@ jobs:
 
 resources:
 
-#- name: secrets
-#  type: s3-iam
-#  icon: cloud-lock
-#  source:
-#    region_name: ((concourse-varz-bucket-region))
-#    bucket: ((concourse-varz-bucket))
-#    versioned_file: ((name)).yml
+- name: secrets
+  type: s3-iam
+  icon: cloud-lock
+  source:
+    region_name: ((concourse-varz-bucket-region))
+    bucket: ((concourse-varz-bucket))
+    versioned_file: ((name)).yml
 
 - name: src
   type: git
