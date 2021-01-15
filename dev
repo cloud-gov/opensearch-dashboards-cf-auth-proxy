@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+shopt -s inherit_errexit
 
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 python=${dir}/venv/bin/python
@@ -53,7 +55,7 @@ update_requirements() {
 }
 
 set_up_environment () {
-  python -m venv ${dir}/venv
+  python -m venv venv
   ${python} -m pip install -r dev-requirements.txt
 }
 
@@ -72,14 +74,14 @@ upgrade_requirements() {
 }
 
 watch_tests() {
-  pushd ${dir}
-    trap popd EXIT
-    ${python} -m piptools sync requirements.txt dev-requirements.txt
-    ${python} -m pytest_watch --spool=1000 -n -c -w -- -Werror -vv "$@"
+  ${python} -m piptools sync requirements.txt dev-requirements.txt
+  ${python} -m pytest_watch --spool=1000 -n -c -w -- -Werror -vv "$@"
 
 }
 
 main() {
+  pushd ${dir}
+  trap popd exit
   local command=$1
   shift
   case $command in 
@@ -96,10 +98,8 @@ main() {
       set_up_environment
       ;;
     test|tests)
-      pushd ${dir}
-        ${python} -m piptools sync requirements.txt dev-requirements.txt
-        ${python} -m pytest
-      popd
+      ${python} -m piptools sync requirements.txt dev-requirements.txt
+      ${python} -m pytest
       ;;
     watch-test|watch-tests)
       watch_tests
