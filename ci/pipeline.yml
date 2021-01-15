@@ -33,7 +33,7 @@ jobs:
             repository: python
             tag: "3.8"
         run:
-          path: ci/test.sh
+          path: src/ci/test.sh
 
 ############################
 #  RESOURCES
