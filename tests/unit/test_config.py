@@ -7,9 +7,15 @@ def test_config_loads(monkeypatch):
     config = config_from_env()
     assert config.DEBUG
     assert config.TESTING
+    assert config.KIBANA_URL == "mock://kibana"
 
 
-def test_prod_config_does_not_set_debug(monkeypatch):
+def test_prod_config(monkeypatch):
+    monkeypatch.setenv("PORT", "8888")
+    monkeypatch.setenv("KIBANA_URL", "https://foo.bar.baz")
     config = config_from_env()
+    assert config.PORT == 8888
+    assert config.KIBANA_URL == "https://foo.bar.baz"
     assert not config.DEBUG
     assert not config.TESTING
+
