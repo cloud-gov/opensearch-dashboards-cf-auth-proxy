@@ -6,6 +6,14 @@
 #
 attrs==20.3.0
     # via pytest
+certifi==2020.12.5
+    # via
+    #   -r pip-tools/../requirements.txt
+    #   requests
+chardet==4.0.0
+    # via
+    #   -r pip-tools/../requirements.txt
+    #   requests
 click==7.1.2
     # via
     #   -r pip-tools/../requirements.txt
@@ -19,6 +27,10 @@ environs==9.3.0
     # via -r pip-tools/../requirements.txt
 flask==1.1.2
     # via -r pip-tools/../requirements.txt
+idna==2.10
+    # via
+    #   -r pip-tools/../requirements.txt
+    #   requests
 importlib-metadata==3.4.0
     # via
     #   pluggy
@@ -61,10 +73,22 @@ python-dotenv==0.15.0
     # via
     #   -r pip-tools/../requirements.txt
     #   environs
+requests-mock==1.8.0
+    # via -r pip-tools/dev-requirements.in
+requests==2.25.1
+    # via
+    #   -r pip-tools/../requirements.txt
+    #   requests-mock
+six==1.15.0
+    # via requests-mock
 toml==0.10.2
     # via pytest
 typing-extensions==3.7.4.3
     # via importlib-metadata
+urllib3==1.26.2
+    # via
+    #   -r pip-tools/../requirements.txt
+    #   requests
 watchdog==1.0.2
     # via pytest-watch
 werkzeug==1.0.1
