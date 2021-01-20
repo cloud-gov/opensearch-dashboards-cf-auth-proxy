@@ -74,6 +74,7 @@ upgrade_requirements() {
 }
 
 watch_tests() {
+  export FLASK_ENV=local
   ${python} -m piptools sync requirements.txt dev-requirements.txt
   ${python} -m pytest_watch --spool=1000 -n -c -w -- -Werror -vv "$@"
 

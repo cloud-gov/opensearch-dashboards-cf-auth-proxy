@@ -3,9 +3,9 @@ from environs import Env
 
 def config_from_env():
     env = Env()
-    if env.bool("LOCAL", False):
-        return LocalConfig()
-    return AppConfig()
+    envronment_config = {"production": AppConfig, "local": LocalConfig}
+    return envronment_config[env("FLASK_ENV")]()
+    
 
 
 class Config:
@@ -19,7 +19,7 @@ class LocalConfig(Config):
         super().__init__()
         self.TESTING = True
         self.DEBUG = True
-        self.KIBANA_URL = "mock://kibana"
+        self.KIBANA_URL = "mock://kibana/"
 
 
 class AppConfig(Config):
@@ -28,3 +28,5 @@ class AppConfig(Config):
         self.TESTING = False
         self.DEBUG = self.env_parser.bool("DEBUG", False)
         self.KIBANA_URL = self.env_parser.str("KIBANA_URL")
+        if self.KIBANA_URL[-1] != '/':
+            self.KIBANA_URL = f"{self.KIBANA_URL}/"
