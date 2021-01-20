@@ -20,4 +20,3 @@ def test_prod_config(monkeypatch, kibana_url):
     assert config.KIBANA_URL == "https://foo.bar.baz/"
     assert not config.DEBUG
     assert not config.TESTING
-

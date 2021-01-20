@@ -1,5 +1,6 @@
 import requests_mock
 
+
 def test_app_pongs(client):
     resp = client.get("/ping")
     assert resp.data == b"PONG"
