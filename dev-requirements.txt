@@ -6,6 +6,10 @@
 #
 attrs==20.3.0
     # via pytest
+cachelib==0.1.1
+    # via
+    #   -r pip-tools/../requirements.txt
+    #   flask-session
 certifi==2020.12.5
     # via
     #   -r pip-tools/../requirements.txt
@@ -25,8 +29,12 @@ docopt==0.6.2
     # via pytest-watch
 environs==9.3.0
     # via -r pip-tools/../requirements.txt
-flask==1.1.2
+flask-session==0.3.2
     # via -r pip-tools/../requirements.txt
+flask==1.1.2
+    # via
+    #   -r pip-tools/../requirements.txt
+    #   flask-session
 idna==2.10
     # via
     #   -r pip-tools/../requirements.txt
@@ -73,6 +81,8 @@ python-dotenv==0.15.0
     # via
     #   -r pip-tools/../requirements.txt
     #   environs
+redis==3.5.3
+    # via -r pip-tools/../requirements.txt
 requests-mock==1.8.0
     # via -r pip-tools/dev-requirements.in
 requests==2.25.1

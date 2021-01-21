@@ -1,3 +1,5 @@
 environs
 flask
+flask-session
+redis
 requests

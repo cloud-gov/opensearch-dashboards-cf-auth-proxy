@@ -4,6 +4,8 @@
 #
 #    ./dev update-requirements
 #
+cachelib==0.1.1
+    # via flask-session
 certifi==2020.12.5
     # via requests
 chardet==4.0.0
@@ -12,8 +14,12 @@ click==7.1.2
     # via flask
 environs==9.3.0
     # via -r pip-tools/requirements.in
-flask==1.1.2
+flask-session==0.3.2
     # via -r pip-tools/requirements.in
+flask==1.1.2
+    # via
+    #   -r pip-tools/requirements.in
+    #   flask-session
 idna==2.10
     # via requests
 itsdangerous==1.1.0
@@ -26,6 +32,8 @@ marshmallow==3.10.0
     # via environs
 python-dotenv==0.15.0
     # via environs
+redis==3.5.3
+    # via -r pip-tools/requirements.in
 requests==2.25.1
     # via -r pip-tools/requirements.in
 urllib3==1.26.2
