@@ -17,3 +17,16 @@ they're an admin or not, and setting x-proxy-ext-spaces based on their space acc
 The ODfE plugin uses x-proxy-user and x-proxy-roles to determine what role
 the user has, and then uses the x-proxy-ext-spaces header to determine what
 spaces the user should have access to.
+
+
+# Running
+
+The following environment variables are required:
+
+- `FLASK_ENV` - this should be set to `production` in any case that is not local development
+- `KIBANA_URL` - this is the url of the proxied kibana instance
+
+The following are optional:
+
+- `DEBUG` - whether to enable Flask's debug mode. Defaults to false
+- `PORT` -  the port flask should listen on. Defaults to 8080
