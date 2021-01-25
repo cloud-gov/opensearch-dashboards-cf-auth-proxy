@@ -21,10 +21,6 @@ def test_redirected_to_auth(client):
     assert query_params["response_type"][0] == "code"
 
 
-def test_callback(client):
-    response = client.get("/foo")
-
-
 def test_app_proxies_arbitrary_paths(authenticated_client):
     with requests_mock.Mocker() as m:
         m.get("mock://kibana/foo/bar/baz/quux/")
@@ -35,6 +31,8 @@ def test_app_proxies_arbitrary_paths(authenticated_client):
 def test_app_filters_headers(authenticated_client):
     with requests_mock.Mocker() as m:
         m.get("mock://kibana/foo/bar/baz/quux/")
-        authenticated_client.get("/foo/bar/baz/quux/", headers={"X-pRoXy-UsEr": "administrator"})
+        authenticated_client.get(
+            "/foo/bar/baz/quux/", headers={"X-pRoXy-UsEr": "administrator"}
+        )
         for header in m.request_history[0]._request.headers:
             assert header.lower() != "x-proxy-user"
