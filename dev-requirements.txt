@@ -69,6 +69,8 @@ pluggy==0.13.1
     # via pytest
 py==1.10.0
     # via pytest
+pyjwt==2.0.1
+    # via -r pip-tools/../requirements.txt
 pyparsing==2.4.7
     # via packaging
 pytest-watch==4.2.0

@@ -24,6 +24,7 @@ class LocalConfig(Config):
         self.UAA_TOKEN_URL = "mock://uaa/token"
         self.UAA_REFRESH_URL = "mock://uaa/refresh"
         self.UAA_CLIENT_ID = "EXAMPLE"
+        self.UAA_CLIENT_SECRET = "example"
         self.SECRET_KEY = "CHANGEME"
 
 
@@ -42,4 +43,5 @@ class AppConfig(Config):
         self.UAA_TOKEN_URL = self.env_parser.str("UAA_TOKEN_URL")
         self.UAA_REFRESH_URL = self.env_parser.str("UAA_REFRESH_URL")
         self.UAA_CLIENT_ID = self.env_parser.str("UAA_CLIENT_ID")
+        self.UAA_CLIENT_SECRET = self.env_parser.str("UAA_CLIENT_SECRET")
         self.SECRET_KEY = self.env_parser.str("SECRET_KEY")
