@@ -31,12 +31,12 @@ def pytest_collection_modifyitems(items, config):
         items[:] = selected_items
 
 
-
 @pytest.fixture(scope="function")
 def client():
     app = create_app()
     with app.test_client() as client:
         yield client
+
 
 @pytest.fixture(scope="function")
 def authenticated_client(client):
