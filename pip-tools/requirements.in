@@ -1,5 +1,6 @@
 environs
 flask
 flask-session
+pyjwt
 redis
 requests
