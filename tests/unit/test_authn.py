@@ -3,6 +3,9 @@ Tests for the callback endpoint (where users are sent by UAA after logging in)
 """
 import json
 from urllib import parse
+import random
+import string
+import datetime
 
 import jwt
 import pytest
@@ -26,10 +29,8 @@ def make_id_token(claims=None):
     return token
 
 
-def make_access_token(claims=None):
-    claims = claims or {"user_id": "test_user"}
-    token = jwt.encode(claims, "", "HS256")
-    return token
+def make_random_token():
+    return "".join(random.choice(string.ascii_letters) for i in range(10))
 
 
 def test_callback_happy_path(client):
@@ -41,7 +42,8 @@ def test_callback_happy_path(client):
     csrf = query_params["state"][0]
     with requests_mock.Mocker() as m:
         body = {
-            "access_token": make_access_token(),
+            "access_token": make_random_token(),
+            "refresh_token": make_random_token(),
             "token_type": "bearer",
             "id_token": make_id_token(),
             "expires_in": 2000,
@@ -60,6 +62,10 @@ def test_callback_happy_path(client):
         assert s.get("state") is None
         # make sure we're logged in
         assert s.get("user_id") is not None
+        assert s.get("access_token") is not None
+        assert s.get("refresh_token") is not None
+        assert s.get("access_token_expiration") is not None
+        assert s.get("id_token") is not None
 
 
 def test_callback_bad_csrf(client):
@@ -70,7 +76,7 @@ def test_callback_bad_csrf(client):
     query_params = parse.parse_qs(location.query)
     with requests_mock.Mocker() as m:
         body = {
-            "access_token": make_access_token(),
+            "access_token": make_random_token(),
             "token_type": "bearer",
             "id_token": make_id_token(),
             "expires_in": 2000,
@@ -100,7 +106,7 @@ def test_callback_no_csrf(client):
     query_params = parse.parse_qs(location.query)
     with requests_mock.Mocker() as m:
         body = {
-            "access_token": make_access_token(),
+            "access_token": make_random_token(),
             "token_type": "bearer",
             "id_token": make_id_token(),
             "expires_in": 2000,
@@ -120,3 +126,47 @@ def test_callback_no_csrf(client):
         # make sure we're logged in
         assert s.get("user_id") is None
     assert resp.status_code == 403
+
+
+def test_uaa_token_refreshed(client):
+    # check that a user with a token expiring soon has their token refreshed
+    refresh_token = make_random_token()
+    token_expiration = datetime.datetime.now(
+        datetime.timezone.utc
+    ) + datetime.timedelta(seconds=1)
+
+    def validate_request(request):
+        data = request.text
+        data = parse.parse_qs(data)
+        assert data["grant_type"][0] == "refresh_token"
+        assert data["refresh_token"][0] == refresh_token
+        return True
+
+    with client.session_transaction() as s:
+        # set up user session
+        s["user_id"] = "1234"
+        s["access_token"] = make_random_token()
+        s["refresh_token"] = refresh_token
+        s["access_token_expiration"] = token_expiration.timestamp()
+
+    new_access_token = make_random_token()
+    new_refresh_token = make_random_token()
+
+    with requests_mock.Mocker() as m:
+        body = {
+            "access_token": new_access_token,
+            "refresh_token": new_refresh_token,
+            "token_type": "bearer",
+            "expires_in": 2000,
+        }
+        m.post(
+            "mock://uaa/refresh",
+            additional_matcher=validate_request,
+            text=json.dumps(body),
+        )
+        client.get("/ping")
+        assert m.called
+
+    with client.session_transaction() as s:
+        assert s["access_token"] == new_access_token
+        assert s["refresh_token"] == new_refresh_token

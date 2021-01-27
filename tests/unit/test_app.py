@@ -1,6 +1,9 @@
 from urllib import parse
 import pytest
 import requests_mock
+import time
+import flask
+import pickle
 
 
 def test_app_pongs(client):
@@ -36,3 +39,33 @@ def test_app_filters_headers(authenticated_client):
         )
         for header in m.request_history[0]._request.headers:
             assert header.lower() != "x-proxy-user"
+
+
+def test_session_refreshes(client):
+    """
+    So this test ended up not really being needed, but I'm leaving it in because it's
+    testing an interface that I don't really trust that much.
+
+    This test validates that the user's session gets updated every time the user
+    hits a page. The default SessionInterface, SecureCookieSessionInterface no-ops on
+    save_session when the session is not modified. flask-session's SessionInterfaces
+    (FileSystemCacheSessionInterface and RedisSessionInteface) both save the session
+    on every request, with the updated session timeout, so we don't need to refresh
+    the session. Since this is different from all the session documentation on Flask,
+    it seems very possible the library will change in the future to match the default
+    behavior more closely, so this test will tell us we need to do something when that 
+    happens.
+    """
+    client.get("/ping")
+    session_interface = flask.current_app.session_interface
+    cache = session_interface.cache
+    session_id = client.cookie_jar._cookies["localhost.local"]["/"]["session"].value
+    session_backing = session_interface.key_prefix + session_id
+    filename = cache._get_filename(session_backing)
+    with open(filename, "rb") as f:
+        timestamp = pickle.load(f)
+    time.sleep(1)
+    client.get("/ping")
+    with open(filename, "rb") as f:
+        timestamp_after = pickle.load(f)
+    assert timestamp < timestamp_after

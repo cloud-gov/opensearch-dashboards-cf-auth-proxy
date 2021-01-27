@@ -14,6 +14,7 @@ def test_config_loads(monkeypatch):
     assert config.UAA_CLIENT_ID == "EXAMPLE"
     assert config.UAA_CLIENT_SECRET == "example"
     assert config.SECRET_KEY == "CHANGEME"
+    assert config.PERMANENT_SESSION_LIFETIME == 120
 
 
 @pytest.mark.parametrize(
@@ -29,6 +30,7 @@ def test_prod_config(monkeypatch, kibana_url):
     monkeypatch.setenv("UAA_CLIENT_ID", "feedabee")
     monkeypatch.setenv("UAA_CLIENT_SECRET", "CHANGEME")
     monkeypatch.setenv("SECRET_KEY", "changeme")
+    monkeypatch.setenv("SESSION_LIFETIME", "3600")
     config = config_from_env()
     assert config.PORT == 8888
     assert config.KIBANA_URL == "https://kibana.example.com/"
@@ -40,3 +42,4 @@ def test_prod_config(monkeypatch, kibana_url):
     assert config.UAA_CLIENT_ID == "feedabee"
     assert config.UAA_CLIENT_SECRET == "CHANGEME"
     assert config.SECRET_KEY == "changeme"
+    assert config.PERMANENT_SESSION_LIFETIME == 3600

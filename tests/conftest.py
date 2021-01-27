@@ -41,5 +41,5 @@ def client():
 @pytest.fixture(scope="function")
 def authenticated_client(client):
     with client.session_transaction() as s:
-        s["user"] = "me"
+        s["user_id"] = "me"
     yield client
