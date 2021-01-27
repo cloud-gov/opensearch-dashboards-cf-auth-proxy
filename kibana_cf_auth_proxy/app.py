@@ -36,6 +36,11 @@ def create_app():
                 try:
                     r.raise_for_status()
                 except:
+                    # nuke the session.
+                    # this prevents looping failure, and also fails closed
+                    # in case the problem is that the user is not authorized
+                    for key in session:
+                        session.pop(key)
                     # TODO: improve this with logging and a branded, friendly error page
                     return "Unexpected error", 500
                 data = r.json()
