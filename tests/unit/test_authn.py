@@ -33,7 +33,7 @@ def make_random_token():
     return "".join(random.choice(string.ascii_letters) for i in range(10))
 
 
-def test_callback_happy_path(client):
+def test_callback_happy_path(client, simple_org_response, simple_space_response):
     # go to a page to get redirected to log in
     response = client.get("/foo")
     location_str = f"{response.headers['location']}"
@@ -55,6 +55,14 @@ def test_callback_happy_path(client):
             additional_matcher=check_token_body,
             text=json.dumps(body),
         )
+        m.get(
+            "mock://cf/v3/roles?user_guids=test_user&types=space_developer,space_manager",
+            text=simple_space_response,
+        )
+        m.get(
+            "mock://cf/v3/roles?user_guids=test_user&types=org_manager",
+            text=simple_org_response,
+        )
         client.get(f"/cb?code=1234&state={csrf}")
         assert m.called
     with client.session_transaction() as s:
@@ -66,6 +74,8 @@ def test_callback_happy_path(client):
         assert s.get("refresh_token") is not None
         assert s.get("access_token_expiration") is not None
         assert s.get("id_token") is not None
+        assert s.get("spaces") == ["space-guid-1"]
+        assert s.get("orgs") == ["org-guid-1"]
 
 
 def test_callback_bad_csrf(client):

@@ -10,6 +10,7 @@ import requests
 
 from kibana_cf_auth_proxy.extensions import config
 from kibana_cf_auth_proxy.proxy import proxy_request
+from kibana_cf_auth_proxy import cf
 
 
 def create_app():
@@ -98,6 +99,12 @@ def create_app():
         expiration = now_utc + datetime.timedelta(seconds=response["expires_in"])
         session["access_token_expiration"] = expiration.timestamp()
         session["id_token"] = response["id_token"]
+        session["spaces"] = cf.get_spaces_for_user(
+            session["user_id"], session["access_token"]
+        )
+        session["orgs"] = cf.get_orgs_for_user(
+            session["user_id"], session["access_token"]
+        )
         return "logged in"
 
     @app.route("/", defaults={"path": ""})
