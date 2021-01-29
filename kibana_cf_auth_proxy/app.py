@@ -25,12 +25,12 @@ def create_app():
             now_utc = datetime.datetime.now(datetime.timezone.utc)
             if now_utc.timestamp() - access_token_expiration <= 30:
                 r = requests.post(
-                    config.UAA_REFRESH_URL,
+                    config.UAA_TOKEN_URL,
                     data={
-                        "client_id": config.UAA_CLIENT_SECRET,
+                        "client_id": config.UAA_CLIENT_ID,
                         "client_secret": config.UAA_CLIENT_SECRET,
                         "grant_type": "refresh_token",
-                        "scope": "openid email",
+                        "token_format": "opaque",
                         "refresh_token": session["refresh_token"],
                     },
                 )
@@ -90,7 +90,7 @@ def create_app():
 
         # TODO: validate jwt token
         token = jwt.decode(
-            response.get("id_token"), algorithms=["HS256"], options=dict(validate=False)
+            response.get("id_token"), algorithms=["RS256", "ES256"],options=dict(verify_signature=False)
         )
 
         session["user_id"] = token["user_id"]
@@ -116,7 +116,7 @@ def create_app():
                 "state": session["state"],
                 "client_id": config.UAA_CLIENT_ID,
                 "response_type": "code",
-                "scope": "openid email",
+                "scope": "openid cloud_controller.read scim.read",
                 "redirect_uri": url_for("callback", _external=True),
             }
             params = urllib.parse.urlencode(params, quote_via=urllib.parse.quote)

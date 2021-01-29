@@ -47,7 +47,7 @@ def test_callback_happy_path(client, simple_org_response, simple_space_response)
             "token_type": "bearer",
             "id_token": make_id_token(),
             "expires_in": 2000,
-            "scope": "openid email",
+            "scope": "openid cloud_controller.read scim.read",
             "jti": "idk",
         }
         m.post(
@@ -120,7 +120,7 @@ def test_callback_no_csrf(client):
             "token_type": "bearer",
             "id_token": make_id_token(),
             "expires_in": 2000,
-            "scope": "openid email",
+            "scope": "openid cloud_controller.read scim.read",
             "jti": "idk",
         }
         m.post(
@@ -170,7 +170,7 @@ def test_uaa_token_refreshed(client):
             "expires_in": 2000,
         }
         m.post(
-            "mock://uaa/refresh",
+            "mock://uaa/token",
             additional_matcher=validate_request,
             text=json.dumps(body),
         )

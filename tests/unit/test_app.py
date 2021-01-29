@@ -21,7 +21,7 @@ def test_redirected_to_auth(client):
     assert query_params["state"] is not None
     assert location.scheme == "mock"
     assert query_params["redirect_uri"][0][0:4] == "http"
-    assert query_params["scope"][0] == "openid email"
+    assert query_params["scope"][0] == "openid cloud_controller.read scim.read"
     assert query_params["response_type"][0] == "code"
 
 
