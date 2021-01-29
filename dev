@@ -29,6 +29,9 @@ usage() {
 
     # upgrade version for specific requirement
     ${me} upgrade-requirements <requirement>
+
+    # run flask locally, (Bring Your Own [UAA, CF, Kibana])
+    ${me} serve
 EOF
 }
 
@@ -77,7 +80,7 @@ upgrade_requirements() {
 }
 
 watch_tests() {
-  export FLASK_ENV=local
+  export FLASK_ENV=unit
   ${python} -m piptools sync requirements.txt dev-requirements.txt
   ${python} -m pytest_watch --spool=1000 -n -c -w -- -Werror -vv "$@"
 
@@ -102,8 +105,15 @@ main() {
       set_up_environment
       ;;
     test|tests)
+      export FLASK_ENV=unit
       ${python} -m piptools sync requirements.txt dev-requirements.txt
       ${python} -m pytest
+      ;;
+    serve)
+      set -o allexport; source ${dir}/.env; set +o allexport
+      export FLASK_APP="kibana_cf_auth_proxy.app:create_app()"
+      
+      ${python} -m flask run -p ${PORT}
       ;;
     watch-test|watch-tests)
       watch_tests
