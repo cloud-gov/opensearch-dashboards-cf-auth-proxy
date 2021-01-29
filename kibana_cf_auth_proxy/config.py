@@ -11,6 +11,12 @@ class Config:
     def __init__(self):
         self.env_parser = Env()
         self.PORT = self.env_parser.int("PORT", 8080)
+        self.PERMITTED_SPACE_ROLES = self.env_parser.list(
+            "PERMITTED_SPACE_ROLES", ["space_developer", "space_manager"]
+        )
+        self.PERMITTED_ORG_ROLES = self.env_parser.list(
+            "PERMITTED_ORG_ROLES", ["org_manager"]
+        )
 
 
 class UnitConfig(Config):
@@ -20,6 +26,7 @@ class UnitConfig(Config):
         self.DEBUG = True
         self.KIBANA_URL = "mock://kibana/"
         self.SESSION_TYPE = "filesystem"
+        self.CF_URL = "mock://cf/"
         self.UAA_AUTH_URL = "mock://uaa/authorize"
         self.UAA_TOKEN_URL = "mock://uaa/token"
         self.UAA_CLIENT_ID = "EXAMPLE"
@@ -61,6 +68,7 @@ class AppConfig(Config):
         self.SESSION_TYPE = "null"
         self.SESSION_COOKIE_SECURE = True
 
+        self.CF_URL = self.env_parser("CF_URL")
         self.UAA_AUTH_URL = self.env_parser.str("UAA_AUTH_URL")
         self.UAA_TOKEN_URL = self.env_parser.str("UAA_TOKEN_URL")
         self.UAA_CLIENT_ID = self.env_parser.str("UAA_CLIENT_ID")
