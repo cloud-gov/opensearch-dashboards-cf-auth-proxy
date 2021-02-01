@@ -49,6 +49,7 @@ class LocalConfig(Config):
 
         self.SESSION_REFRESH_EACH_REQUEST = True
 
+        self.CF_URL = self.env_parser("CF_URL")
         self.UAA_AUTH_URL = self.env_parser.str("UAA_AUTH_URL")
         self.UAA_TOKEN_URL = self.env_parser.str("UAA_TOKEN_URL")
         self.UAA_CLIENT_ID = self.env_parser.str("UAA_CLIENT_ID")
