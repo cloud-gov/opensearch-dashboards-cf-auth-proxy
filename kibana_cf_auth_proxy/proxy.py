@@ -24,6 +24,11 @@ def proxy_request(url, headers, data, cookies, method):
         for (name, value) in resp.raw.headers.items()
         if name.lower() not in excluded_headers
     ]
+    kwargs = {}
+    if resp.raw.headers.get("content-encoding") == "br":
+        headers.append(("content-encoding", "br"),)
+    if "content-type" in resp.headers:
+        kwargs["content_type"] = resp.headers["content-type"]
 
-    response = Response(resp.content, resp.status_code, headers)
+    response = Response(resp.content, resp.status_code, headers, **kwargs)
     return response
