@@ -1,0 +1,17 @@
+FROM amazon/opendistro-for-elasticsearch-kibana:1.12.0 AS kibana
+
+
+FROM scratch
+
+COPY --from=kibana / /
+
+WORKDIR /usr/share/kibana
+
+ENV PATH=/usr/share/kibana/bin:$PATH
+USER 1000
+
+EXPOSE 5601
+
+COPY kibana.yml /usr/share/kibana/config/kibana.yml
+
+CMD ["/usr/local/bin/kibana-docker"]

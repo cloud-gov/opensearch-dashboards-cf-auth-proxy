@@ -35,6 +35,21 @@ jobs:
         run:
           path: src/ci/test.sh
 
+- name: build-test-images
+  - put: dev-docker-elasticsearch-image
+    params:
+      build: src/docker/images/elasticsearch
+      dockerfile: src/docker/images/elasticsearch/dockerfile
+      tag_as_latest: true
+      cache: true
+
+  - put: dev-docker-kibana-image
+    params:
+      build: src/docker/images/kibana
+      dockerfile: src/docker/images/kibana/dockerfile
+      tag_as_latest: true
+      cache: true
+
 ############################
 #  RESOURCES
 
@@ -56,6 +71,23 @@ resources:
     uri: https://github.com/cloud-gov/((name))
     branch: ((git-branch))
 
+- name: dev-elasticsearch-image
+  type: docker-image
+  icon: docker
+  source:
+    email: ((docker-email))
+    username: ((docker-username))
+    password: ((docker-password))
+    repository: ((docker-image-elasticsearch-dev))
+
+- name: dev-kibana-image
+  type: docker-image
+  icon: docker
+  source:
+    email: ((docker-email))
+    username: ((docker-username))
+    password: ((docker-password))
+    repository: ((docker-image-kibana-dev))
 
 ############################
 #  RESOURCE TYPES
