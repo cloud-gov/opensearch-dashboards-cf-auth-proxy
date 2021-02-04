@@ -1,0 +1,20 @@
+---
+cf_user:
+  reserved: false
+  hidden: false
+  cluster_permissions:
+  - "read"
+  - "cluster:monitor/nodes/stats"
+  - "cluster:monitor/task/get"
+  index_permissions:
+  - index_patterns:
+    - "logs-app-*"
+    dls: "{\"bool\": {\"should\": [{\"terms\": { \"@cf.space_id\": [\"$attr.proxy.space_ids\"] }}, {\"terms\": {\"@cf.org_id\": [\"$attr.proxy.org_ids\"]}}]}}"
+    fls:
+    allowed_actions:
+    - "read"
+  tenant_permissions: []
+  static: false
+_meta:
+  type: "roles"
+  config_version: 2

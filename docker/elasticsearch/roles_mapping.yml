@@ -1,0 +1,16 @@
+_meta:
+  type: "rolesmapping"
+  config_version: 2
+cf_user:
+  reserved: true
+  hidden: false
+  backend_roles:
+  - "user"
+  hosts: []
+  users: []
+  and_backend_roles: []
+  description: "Maps admin to all_access"
+kibana_server:
+  reserved: true
+  users:
+  - "kibanaserver"

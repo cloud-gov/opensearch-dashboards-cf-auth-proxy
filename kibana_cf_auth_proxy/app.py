@@ -108,7 +108,7 @@ def create_app():
         return "logged in"
 
     @app.route("/", defaults={"path": ""})
-    @app.route("/<path:path>")
+    @app.route("/<path:path>", methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"])
     def handle_request(path):
         def redirect_to_auth():
             session["state"] = urlsafe_b64encode(os.urandom(24)).decode("utf-8")
@@ -123,8 +123,11 @@ def create_app():
             url = f"{config.UAA_AUTH_URL}?{params}"
             return redirect(url)
 
-        if session.get("user_id") is None:
+        allowed_paths = ["ui/favicons/manifest.json"]
+
+        if session.get("user_id") is None and path not in allowed_paths:
             return redirect_to_auth()
+
         forbidden_headers = {"host", "x-proxy-user", "x-proxy-ext-spaces"}
         url = request.url.replace(request.host_url, config.KIBANA_URL)
         headers = {
@@ -132,6 +135,15 @@ def create_app():
             for k, v in request.headers.items()
             if k.lower() not in forbidden_headers
         }
+
+        # we need to check the user_id again because we could be unauthenticated, hitting an
+        # allowed path
+        if session.get("user_id"):
+            headers["x-proxy-user"] = session["user_id"]
+            headers["x-proxy-roles"] = "user"
+        
+        # next line is for local testing only. If it shows up in a PR, decline it!
+        headers["x-forwarded-for"] = "127.0.0.1"
 
         return proxy_request(
             url, headers, request.get_data(), request.cookies, request.method

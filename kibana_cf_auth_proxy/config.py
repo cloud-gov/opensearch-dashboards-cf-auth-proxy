@@ -17,6 +17,7 @@ class Config:
         self.PERMITTED_ORG_ROLES = self.env_parser.list(
             "PERMITTED_ORG_ROLES", ["org_manager"]
         )
+        self.SESSION_COOKIE_NAME = "cfsession"
 
 
 class UnitConfig(Config):
