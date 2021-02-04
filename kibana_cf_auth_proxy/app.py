@@ -142,7 +142,7 @@ def create_app():
             headers["x-proxy-user"] = session["user_id"]
             headers["x-proxy-roles"] = "user"
         
-        # next line is for local testing only. If it shows up in a PR, decline it!
+        # TODO: add x-forwarded-for functionality
         headers["x-forwarded-for"] = "127.0.0.1"
 
         return proxy_request(
