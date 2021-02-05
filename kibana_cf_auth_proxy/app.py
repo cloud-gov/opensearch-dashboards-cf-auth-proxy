@@ -128,7 +128,7 @@ def create_app():
         if session.get("user_id") is None and path not in allowed_paths:
             return redirect_to_auth()
 
-        forbidden_headers = {"host", "x-proxy-user", "x-proxy-ext-spaces"}
+        forbidden_headers = {"host", "x-proxy-user", "x-proxy-ext-space-ids"}
         url = request.url.replace(request.host_url, config.KIBANA_URL)
         headers = {
             k: v

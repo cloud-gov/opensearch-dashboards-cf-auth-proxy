@@ -33,13 +33,23 @@ def test_app_proxies_arbitrary_paths(authenticated_client):
 
 
 def test_app_filters_headers(authenticated_client):
+    """
+    if we send one of the permission-related headers with our own value
+    it should be dropped or changed
+    """
     with requests_mock.Mocker() as m:
         m.get("mock://kibana/foo/bar/baz/quux/")
         authenticated_client.get(
-            "/foo/bar/baz/quux/", headers={"X-pRoXy-UsEr": "administrator"}
+            "/foo/bar/baz/quux/", headers={"X-pRoXy-UsEr": "administrator", "x-proxy-roles": "batman", "x-proxy-ext-space-ids": "1,2,3"}
         )
         for header in m.request_history[0]._request.headers:
-            assert header.lower() != "x-proxy-user"
+            if header.lower() == "x-proxy-user":
+                assert m.request_history[0]._request.headers[header] != "administrator"
+            if header.lower() == "x-proxy-roles":
+                assert m.request_history[0]._request.headers[header] != "batman"
+            if header.lower() == "x-proxy-ext-space-ids":
+                assert m.request_history[0]._request.headers[header] != "1,2,3"
+
 
 
 def test_session_refreshes(client):
@@ -60,7 +70,7 @@ def test_session_refreshes(client):
     client.get("/ping")
     session_interface = flask.current_app.session_interface
     cache = session_interface.cache
-    session_id = client.cookie_jar._cookies["localhost.local"]["/"]["session"].value
+    session_id = client.cookie_jar._cookies["localhost.local"]["/"]["cfsession"].value
     session_backing = session_interface.key_prefix + session_id
     filename = cache._get_filename(session_backing)
     with open(filename, "rb") as f:
