@@ -128,6 +128,11 @@ main() {
 
       ${python} -m flask run -p ${PORT}
       ;;
+    destroy-cluster)
+      pushd docker
+        docker-compose down
+      popd
+      ;;
     watch-test|watch-tests)
       watch_tests
       ;;
