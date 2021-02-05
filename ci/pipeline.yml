@@ -36,19 +36,25 @@ jobs:
           path: src/ci/test.sh
 
 - name: build-test-images
-  - put: dev-elasticsearch-image
-    params:
-      build: src/docker/images/elasticsearch
-      dockerfile: src/docker/images/elasticsearch/dockerfile
-      tag_as_latest: true
-      cache: true
+  plan:
+    - get: src
+      params: {depth: 1}
+      trigger: true
+      passed: [reconfigure]
 
-  - put: dev-kibana-image
-    params:
-      build: src/docker/images/kibana
-      dockerfile: src/docker/images/kibana/dockerfile
-      tag_as_latest: true
-      cache: true
+    - put: dev-elasticsearch-image
+      params:
+        build: docker/elasticsearch
+        dockerfile: docker/elasticsearch/dockerfile
+        tag_as_latest: true
+        cache: true
+
+    - put: dev-kibana-image
+      params:
+        build: docker/kibana
+        dockerfile: docker/kibana/dockerfile
+        tag_as_latest: true
+        cache: true
 
 ############################
 #  RESOURCES
