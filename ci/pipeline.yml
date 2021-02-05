@@ -44,15 +44,15 @@ jobs:
 
     - put: dev-elasticsearch-image
       params:
-        build: docker/elasticsearch
-        dockerfile: docker/elasticsearch/dockerfile
+        build: src/docker/elasticsearch
+        dockerfile: src/docker/elasticsearch/dockerfile
         tag_as_latest: true
         cache: true
 
     - put: dev-kibana-image
       params:
-        build: docker/kibana
-        dockerfile: docker/kibana/dockerfile
+        build: src/docker/kibana
+        dockerfile: src/docker/kibana/dockerfile
         tag_as_latest: true
         cache: true
 
