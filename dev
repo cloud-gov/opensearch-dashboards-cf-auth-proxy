@@ -127,6 +127,11 @@ main() {
         docker-compose down
       popd
       ;;
+    cf-push)
+      cf push -f cf/manifest.yml --vars-file cf/secrets.yml
+      cf add-network-policy kibana elasticsearch --protocol tcp --port 9200
+      cf add-network-policy auth-proxy kibana --protocol tcp --port 5601
+      ;;
     watch-test|watch-tests)
       watch_tests
       ;;

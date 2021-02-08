@@ -1,6 +1,7 @@
 environs
 flask
 flask-session
+gunicorn
 pyjwt
 redis
 requests

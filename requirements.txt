@@ -20,6 +20,8 @@ flask==1.1.2
     # via
     #   -r pip-tools/requirements.in
     #   flask-session
+gunicorn==20.0.4
+    # via -r pip-tools/requirements.in
 idna==2.10
     # via requests
 itsdangerous==1.1.0
@@ -42,3 +44,6 @@ urllib3==1.26.2
     # via requests
 werkzeug==1.0.1
     # via flask
+
+# The following packages are considered to be unsafe in a requirements file:
+# setuptools
