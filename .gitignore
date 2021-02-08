@@ -6,3 +6,5 @@ venv
 flask_session
 
 .env
+
+cf/secrets.yml
