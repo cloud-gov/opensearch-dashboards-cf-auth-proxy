@@ -61,7 +61,7 @@ jobs:
     - get: src
       params: {depth: 1}
       trigger: true
-      passed: build-test-images
+      passed: [build-test-images]
     
     - put: cf-dev
       params:
@@ -78,17 +78,17 @@ jobs:
           session_lifetime: 3600
           public_route: ((dev-public-url))
 
-      - task: update-networking
-        file: src/ci/upgrade-schema.yml
-        params:
-          CF_API_URL: ((dev-cf-api-url))
-          CF_USERNAME: ((dev-cf-username))
-          CF_PASSWORD: ((dev-cf-password))
-          CF_ORGANIZATION: ((dev-cf-organization))
-          CF_SPACE: ((dev-cf-space)
+    - task: update-networking
+      file: src/ci/upgrade-schema.yml
+      params:
+        CF_API_URL: ((dev-cf-api-url))
+        CF_USERNAME: ((dev-cf-username))
+        CF_PASSWORD: ((dev-cf-password))
+        CF_ORGANIZATION: ((dev-cf-organization))
+        CF_SPACE: ((dev-cf-space)
 
 
-############################
+##########################
 #  RESOURCES
 
 resources:
