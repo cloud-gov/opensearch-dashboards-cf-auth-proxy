@@ -56,6 +56,38 @@ jobs:
         tag_as_latest: true
         cache: true
 
+- name: cf
+  plan:
+    - get: src
+      params: {depth: 1}
+      trigger: true
+      passed: build-test-images
+    
+    - put: cf-dev
+      params:
+        path: src
+        manifest: src/cf/manifest.tml
+        show_app_log: true
+        vars:
+          cf_url: ((dev-cf-url))
+          uaa_auth_url: ((dev-uaa-auth-url))
+          uaa_token_url: ((dev-uaa-token-url))
+          uaa_client_id: ((dev-uaa-client-id))
+          uaa_client_secret: ((dev-uaa-client-secret))
+          secret_key: ((dev-secret-key))
+          session_lifetime: 3600
+          public_route: ((dev-public-url))
+
+      - task: update-networking
+        file: src/ci/upgrade-schema.yml
+        params:
+          CF_API_URL: ((dev-cf-api-url))
+          CF_USERNAME: ((dev-cf-username))
+          CF_PASSWORD: ((dev-cf-password))
+          CF_ORGANIZATION: ((dev-cf-organization))
+          CF_SPACE: ((dev-cf-space)
+
+
 ############################
 #  RESOURCES
 
@@ -94,6 +126,16 @@ resources:
     username: ((docker-username))
     password: ((docker-password))
     repository: ((docker-image-kibana-dev))
+
+- name: cf-dev
+  type: cf
+  icon: cloud-upload
+  source:
+    api: ((dev-cf-api-url))
+    username: ((dev-cf-username))
+    password: ((dev-cf-password))
+    organization: ((dev-cf-organization))
+    space: ((dev-cf-space))
 
 ############################
 #  RESOURCE TYPES
