@@ -86,6 +86,16 @@ watch_tests() {
 
 }
 
+cf_push() {
+      cf push -f cf/manifest.yml --vars-file cf/secrets.yml
+}
+
+cf_network() {
+      cf add-network-policy kibana elasticsearch --protocol tcp --port 9200
+      cf add-network-policy auth-proxy kibana --protocol tcp --port 5601
+
+}
+
 main() {
   pushd ${dir}
   trap popd exit
@@ -128,9 +138,11 @@ main() {
       popd
       ;;
     cf-push)
-      cf push -f cf/manifest.yml --vars-file cf/secrets.yml
-      cf add-network-policy kibana elasticsearch --protocol tcp --port 9200
-      cf add-network-policy auth-proxy kibana --protocol tcp --port 5601
+      cf_push
+      cf_network
+      ;;
+    cf-network)
+      cf_network
       ;;
     watch-test|watch-tests)
       watch_tests
