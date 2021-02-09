@@ -66,7 +66,7 @@ jobs:
     - put: cf-dev
       params:
         path: src
-        manifest: src/cf/manifest.tml
+        manifest: src/cf/manifest.yml
         show_app_log: true
         vars:
           cf_url: ((dev-cf-url))
