@@ -66,8 +66,17 @@ jobs:
     - put: cf-dev
       params:
         path: src
-        manifest: src/cf/manifest.yml
-        show_app_log: true
+        manifest: src/cf/elasticsearch-manifest.yml
+    
+    - put: cf-dev
+      params:
+        path: src
+        manifest: src/cf/kibana-manifest.yml
+    
+    - put: cf-dev
+      params:
+        path: src
+        manifest: src/cf/proxy-manifest.yml
         vars:
           cf_url: ((dev-cf-url))
           uaa_auth_url: ((dev-uaa-auth-url))
@@ -75,7 +84,7 @@ jobs:
           uaa_client_id: ((dev-uaa-client-id))
           uaa_client_secret: ((dev-uaa-client-secret))
           secret_key: ((dev-secret-key))
-          session_lifetime: 3600
+          session_lifetime: "3600"
           public_route: ((dev-public-url))
 
     - task: update-networking

@@ -1,0 +1,22 @@
+---
+###########################################################
+# NOTE: this cluster is totally insecure and non-durable. #
+# It should only be used for testing the proxy and should #
+# NEVER have any sensitive or important data.             #
+###########################################################
+
+version: 1
+applications:
+- name: elasticsearch
+  memory: 3G
+  instances: 1
+  disk_quota: 2G
+  routes:
+    - route: odfe-test.apps.internal
+  docker:
+    image: cloudgovoperations/test-elasticsearch-odfe:latest
+  env:
+    "discovery.type": single-node
+    "node.name": odfe-node1
+    "ES_JAVA_OPTS": "-Xms2048m -Xmx2048m" # minimum and maximum Java heap size, recommend setting both to 50% of system RAM
+    "opendistro_security.audit.type": debug
