@@ -92,7 +92,8 @@ jobs:
         CF_USERNAME: ((dev-cf-username))
         CF_PASSWORD: ((dev-cf-password))
         CF_ORGANIZATION: ((dev-cf-organization))
-        CF_SPACE: ((dev-cf-space)
+        CF_SPACE: ((dev-cf-space))
+
 
 
 ##########################
