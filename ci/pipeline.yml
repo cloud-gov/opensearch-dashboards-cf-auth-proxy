@@ -65,12 +65,10 @@ jobs:
     
     - put: cf-dev
       params:
-        path: src
         manifest: src/cf/elasticsearch-manifest.yml
     
     - put: cf-dev
       params:
-        path: src
         manifest: src/cf/kibana-manifest.yml
     
     - put: cf-dev
@@ -88,7 +86,7 @@ jobs:
           public_route: ((dev-public-url))
 
     - task: update-networking
-      file: src/ci/upgrade-schema.yml
+      file: src/ci/update-networking.yml
       params:
         CF_API_URL: ((dev-cf-api-url))
         CF_USERNAME: ((dev-cf-username))
