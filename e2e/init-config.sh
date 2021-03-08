@@ -84,7 +84,7 @@ time=$(${date_bin} --iso-8601=seconds)
 # user 1 should be able to see this log
 # user 2 should not be able to see it
 # user 3 should be able to see this log
-echo "creating test document 1/3"
+echo "creating test document 1/5"
 # we use refresh=true on all these to force elasticsearch to refresh
 # It doesn't seem to make the docs available otherwise
 # We could probably just do this on the last doc we index, but doing
@@ -104,7 +104,7 @@ curl --fail --silent --show-error -u ${ES_USER}:${ES_PASSWORD} -k \
 # user 1 should not be able to see it
 # user 2 should be able to see this log
 # user 3 should be able to see this log
-echo "creating test document 2/3"
+echo "creating test document 2/5"
 curl --fail --silent --show-error -u ${ES_USER}:${ES_PASSWORD} -k \
     -X POST \
     -H "content-type: application/json" \
@@ -118,7 +118,7 @@ curl --fail --silent --show-error -u ${ES_USER}:${ES_PASSWORD} -k \
         }' | jq
 
 # none of the users should be able to see this log
-echo "creating test document 3/3"
+echo "creating test document 3/5"
 curl --fail --silent --show-error -u ${ES_USER}:${ES_PASSWORD} -k \
     -X POST \
     -H "content-type: application/json" \
@@ -128,6 +128,37 @@ curl --fail --silent --show-error -u ${ES_USER}:${ES_PASSWORD} -k \
         "message": "no_space_id"
         }' | jq
 
+# user 1 should be able to see this log
+# user 2 should not be able to see it
+# user 3 should be able to see this log
+echo "creating test document 4/5"
+curl --fail --silent --show-error -u ${ES_USER}:${ES_PASSWORD} -k \
+    -X POST \
+    -H "content-type: application/json" \
+    https://localhost:9200/logs-app-now/_doc?refresh=true \
+    -d '{
+        "@timestamp": "'${time}'",
+        "@cf": {
+            "org_id":"'${CF_ORG_ID_1}'"
+        },
+        "message": "org_id_1"
+        }' | jq
+
+# user 1 should not be able to see it
+# user 2 should be able to see this log
+# user 3 should be able to see this log
+echo "creating test document 5/5"
+curl --fail --silent --show-error -u ${ES_USER}:${ES_PASSWORD} -k \
+    -X POST \
+    -H "content-type: application/json" \
+    https://localhost:9200/logs-app-now/_doc?refresh=true \
+    -d '{
+        "@timestamp": "'${time}'",
+        "@cf": {
+            "org_id":"'${CF_ORG_ID_2}'"
+        },
+        "message": "org_id_2"
+        }' | jq
 
 # for the kibana stuff, we need cookies just to deal with the multitenancy
 echo "Setting up kibana http session"
