@@ -21,6 +21,9 @@ usage() {
     # same as above
     ${me} tests
 
+    # install dev dependencies in a local virtualenv
+    ${me} set-up-environment
+
     # add new required packages from requirements.in to requirements.txt
     ${me} update-requirements
 
@@ -32,6 +35,16 @@ usage() {
 
     # run flask locally, (Bring Your Own [UAA, CF, Kibana])
     ${me} serve
+
+    # run a local ODfE + Kibana cluster in docker-compose
+    ${me} cluster
+
+    # destroy cluster created above
+    ${me} destroy-cluster
+
+    # push ODfE/Kibana/Proxy cluster to CF (make sure you update cf/secrets.yml first)
+    ${me} cf
+
 EOF
 }
 
@@ -63,6 +76,7 @@ set_up_environment () {
   ${python} -m pip install -r dev-requirements.txt
   # do this again for syncs that might involve deletions
   ${python} -m piptools sync requirements.txt dev-requirements.txt
+  ${python} -m playwright install firefox
 }
 
 upgrade_requirements() {
@@ -87,13 +101,14 @@ watch_tests() {
 }
 
 cf_push() {
-      cf push -f cf/manifest.yml --vars-file cf/secrets.yml
+      cf push -f cf/elasticsearch-manifest.yml --vars-file cf/secrets.yml
+      cf push -f cf/kibana-manifest.yml --vars-file cf/secrets.yml
+      cf push -f cf/proxy-manifest.yml --vars-file cf/secrets.yml
 }
 
 cf_network() {
       cf add-network-policy kibana elasticsearch --protocol tcp --port 9200
       cf add-network-policy auth-proxy kibana --protocol tcp --port 5601
-
 }
 
 main() {
@@ -147,6 +162,8 @@ main() {
     watch-test|watch-tests)
       watch_tests
       ;;
+    e2e)
+      ${python} e2e/playwright_tests.py
     *)
       usage
       exit 1
