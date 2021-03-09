@@ -162,8 +162,6 @@ main() {
     watch-test|watch-tests)
       watch_tests
       ;;
-    e2e)
-      ${python} e2e/playwright_tests.py
     *)
       usage
       exit 1
