@@ -76,7 +76,6 @@ set_up_environment () {
   ${python} -m pip install -r dev-requirements.txt
   # do this again for syncs that might involve deletions
   ${python} -m piptools sync requirements.txt dev-requirements.txt
-  ${python} -m playwright install firefox
 }
 
 upgrade_requirements() {
