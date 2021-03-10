@@ -35,6 +35,8 @@ flask==1.1.2
     # via
     #   -r pip-tools/../requirements.txt
     #   flask-session
+greenlet==1.0.0
+    # via playwright
 gunicorn==20.0.4
     # via -r pip-tools/../requirements.txt
 idna==2.10
@@ -67,10 +69,14 @@ packaging==20.8
     # via pytest
 pip-tools==5.5.0
     # via -r pip-tools/dev-requirements.in
+playwright==1.9.1
+    # via -r pip-tools/dev-requirements.in
 pluggy==0.13.1
     # via pytest
 py==1.10.0
     # via pytest
+pyee==8.1.0
+    # via playwright
 pyjwt==2.0.1
     # via -r pip-tools/../requirements.txt
 pyparsing==2.4.7
@@ -98,7 +104,9 @@ six==1.15.0
 toml==0.10.2
     # via pytest
 typing-extensions==3.7.4.3
-    # via importlib-metadata
+    # via
+    #   importlib-metadata
+    #   playwright
 urllib3==1.26.2
     # via
     #   -r pip-tools/../requirements.txt
