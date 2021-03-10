@@ -45,6 +45,10 @@ usage() {
     # push ODfE/Kibana/Proxy cluster to CF (make sure you update cf/secrets.yml first)
     ${me} cf
 
+    # run e2e tests
+    ${me} e2e
+
+
 EOF
 }
 
@@ -76,6 +80,7 @@ set_up_environment () {
   ${python} -m pip install -r dev-requirements.txt
   # do this again for syncs that might involve deletions
   ${python} -m piptools sync requirements.txt dev-requirements.txt
+  ${python} -m playwright install firefox
 }
 
 upgrade_requirements() {
@@ -161,6 +166,8 @@ main() {
     watch-test|watch-tests)
       watch_tests
       ;;
+    e2e)
+      ${python} e2e/playwright_tests.py
     *)
       usage
       exit 1
