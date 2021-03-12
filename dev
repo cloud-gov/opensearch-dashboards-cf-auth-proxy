@@ -100,7 +100,7 @@ upgrade_requirements() {
 watch_tests() {
   export FLASK_ENV=unit
   ${python} -m piptools sync requirements.txt dev-requirements.txt
-  ${python} -m pytest_watch --spool=1000 -n -c -w -- -Werror -vv "$@"
+  ${python} -m pytest_watch --spool=1000 -n -c -w -- -Werror -vv tests "$@"
 
 }
 
@@ -136,7 +136,7 @@ main() {
     test|tests)
       export FLASK_ENV=unit
       ${python} -m piptools sync requirements.txt dev-requirements.txt
-      ${python} -m pytest
+      ${python} -m pytest tests
       ;;
     serve)
       set -o allexport; source ${dir}/.env; set +o allexport
@@ -167,7 +167,8 @@ main() {
       watch_tests
       ;;
     e2e)
-      ${python} e2e/playwright_tests.py
+      ${python} -m pytest e2e --browser firefox
+      ;;
     *)
       usage
       exit 1

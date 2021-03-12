@@ -1,6 +1,8 @@
 -r ../requirements.txt
 pip-tools
 playwright
+pyotp
 pytest
+pytest-playwright
 pytest-watch
 requests-mock
