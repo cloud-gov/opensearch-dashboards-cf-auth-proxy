@@ -40,7 +40,7 @@ jobs:
     - get: src
       params: {depth: 1}
       trigger: true
-      passed: [reconfigure]
+      passed: [test]
 
     - put: dev-elasticsearch-image
       params:
@@ -94,6 +94,35 @@ jobs:
         CF_ORGANIZATION: ((dev-cf-organization))
         CF_SPACE: ((dev-cf-space))
 
+- name: e2e
+  plan:
+    - get: src
+      params: {depth: 1}
+      trigger: true
+      passed: [cf]
+
+    - task: initialize-config
+      file: src/ci/init-config.yml
+      params:
+        ES_USER: ((es-admin-username))
+        ES_PASSWORD: ((es-admin-password))
+        CF_SPACE_ID_1: ((dev-test-user-space-id-1))
+        CF_ORG_ID_1: ((dev-test-user-org-id-1))
+        CF_SPACE_ID_2: ((dev-test-user-space-id-2))
+        CF_ORG_ID_2: ((dev-test-user-org-id-2))
+        
+    - task: e2e-tests
+      config:
+        inputs: 
+          - name: src
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: python
+            tag: "3.8"
+        run:
+          path: src/ci/e2e.sh
 
 
 ##########################
