@@ -119,8 +119,8 @@ jobs:
         image_resource:
           type: docker-image
           source:
-            repository: python
-            tag: "3.8"
+            repository: mcr.microsoft.com/playwright
+            tag: bionic
         run:
           path: src/ci/e2e.sh
         params:
