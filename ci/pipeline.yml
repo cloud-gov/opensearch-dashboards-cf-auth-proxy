@@ -104,12 +104,17 @@ jobs:
     - task: initialize-config
       file: src/ci/init-config.yml
       params:
+        CF_API_URL: ((dev-cf-api-url))
+        CF_USERNAME: ((dev-cf-username))
+        CF_PASSWORD: ((dev-cf-password))
+        CF_ORGANIZATION: ((dev-cf-organization))
+        CF_SPACE: ((dev-cf-space))
         ES_USER: ((es-admin-username))
         ES_PASSWORD: ((es-admin-password))
-        CF_SPACE_ID_1: ((dev-test-user-space-id-1))
-        CF_ORG_ID_1: ((dev-test-user-org-id-1))
-        CF_SPACE_ID_2: ((dev-test-user-space-id-2))
-        CF_ORG_ID_2: ((dev-test-user-org-id-2))
+        CF_SPACE_ID_1: ((dev-test-user-1-space-id))
+        CF_ORG_ID_1: ((dev-test-user-1-org-id))
+        CF_SPACE_ID_2: ((dev-test-user-2-space-id))
+        CF_ORG_ID_2: ((dev-test-user-2-org-id))
         
     - task: e2e-tests
       config:
