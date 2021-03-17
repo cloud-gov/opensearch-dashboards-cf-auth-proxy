@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -euxo pipefail
 shopt -s inherit_errexit
 
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
@@ -74,6 +74,15 @@ update_requirements() {
     pip-tools/dev-requirements.in
 }
 
+set_up_ci_environment () {
+  python3.7 -m venv venv
+  # do this first to make sure we have piptools
+  ${python} -m pip install -r dev-requirements.txt
+  # do this again for syncs that might involve deletions
+  ${python} -m piptools sync requirements.txt dev-requirements.txt
+  ${python} -m playwright install firefox
+}
+
 set_up_environment () {
   python -m venv venv
   # do this first to make sure we have piptools
@@ -129,6 +138,9 @@ main() {
       ;;
     upgrade-requirements|upgrade_requirement)
       upgrade_requirements "$@"
+      ;;
+    set-up-ci-environment|setup-environment)
+      set_up_ci_environment
       ;;
     set-up-environment|setup-environment)
       set_up_environment
