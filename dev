@@ -76,6 +76,9 @@ update_requirements() {
 
 set_up_ci_environment () {
   python3.7 -m venv venv
+  # we need to update pip because the version from apt is too old, and breaks
+  # when we try to install from requirements files later
+  ${python} -m pip install --upgrade pip
   # do this first to make sure we have piptools
   ${python} -m pip install -r dev-requirements.txt
   # do this again for syncs that might involve deletions
