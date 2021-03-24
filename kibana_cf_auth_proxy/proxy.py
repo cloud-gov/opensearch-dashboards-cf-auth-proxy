@@ -26,7 +26,7 @@ def proxy_request(url, headers, data, cookies, method):
     ]
     kwargs = {}
     if resp.raw.headers.get("content-encoding") == "br":
-        headers.append(("content-encoding", "br"),)
+        headers.append(("content-encoding", "br"))
     if "content-type" in resp.headers:
         kwargs["content_type"] = resp.headers["content-type"]
 

@@ -9,7 +9,7 @@ cf_user:
   index_permissions:
   - index_patterns:
     - "logs-app-*"
-    dls: "{\"bool\": {\"should\": [{\"terms\": { \"@cf.space_id\": [\"$attr.proxy.space_ids\"] }}, {\"terms\": {\"@cf.org_id\": [\"$attr.proxy.org_ids\"]}}]}}"
+    dls: "{\"bool\": {\"should\": [{\"terms\": { \"@cf.space_id\": [${attr.proxy.spaceids}] }}, {\"terms\": {\"@cf.org_id\": [${attr.proxy.orgids}]}}]}}"
     fls:
     allowed_actions:
     - "read"

@@ -11,6 +11,7 @@ import requests
 from kibana_cf_auth_proxy.extensions import config
 from kibana_cf_auth_proxy.proxy import proxy_request
 from kibana_cf_auth_proxy import cf
+from kibana_cf_auth_proxy.headers import list_to_ext_header
 
 
 def create_app():
@@ -90,7 +91,9 @@ def create_app():
 
         # TODO: validate jwt token
         token = jwt.decode(
-            response.get("id_token"), algorithms=["RS256", "ES256"],options=dict(verify_signature=False)
+            response.get("id_token"),
+            algorithms=["RS256", "ES256"],
+            options=dict(verify_signature=False),
         )
 
         session["user_id"] = token["user_id"]
@@ -108,7 +111,9 @@ def create_app():
         return "logged in"
 
     @app.route("/", defaults={"path": ""})
-    @app.route("/<path:path>", methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"])
+    @app.route(
+        "/<path:path>", methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"]
+    )
     def handle_request(path):
         def redirect_to_auth():
             session["state"] = urlsafe_b64encode(os.urandom(24)).decode("utf-8")
@@ -128,20 +133,29 @@ def create_app():
         if session.get("user_id") is None and path not in allowed_paths:
             return redirect_to_auth()
 
-        forbidden_headers = {"host", "x-proxy-user", "x-proxy-ext-space-ids"}
+        # these are overwritten later, so this check normally does nothing
+        # but belt + suspenders seems good here
+        forbidden_headers = {
+            "host",
+            "x-proxy-user",
+            "x-proxy-ext-spaceids",
+            "x-proxt-ext-orgids",
+        }
         url = request.url.replace(request.host_url, config.KIBANA_URL)
         headers = {
             k: v
             for k, v in request.headers.items()
             if k.lower() not in forbidden_headers
         }
+        headers["x-proxy-ext-spaceids"] = list_to_ext_header(session.get("spaces", []))
+        headers["x-proxy-ext-orgids"] = list_to_ext_header(session.get("orgs", []))
 
         # we need to check the user_id again because we could be unauthenticated, hitting an
         # allowed path
         if session.get("user_id"):
             headers["x-proxy-user"] = session["user_id"]
             headers["x-proxy-roles"] = "user"
-        
+
         # TODO: add x-forwarded-for functionality
         headers["x-forwarded-for"] = "127.0.0.1"
 
