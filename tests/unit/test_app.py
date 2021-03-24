@@ -40,16 +40,23 @@ def test_app_filters_headers(authenticated_client):
     with requests_mock.Mocker() as m:
         m.get("mock://kibana/foo/bar/baz/quux/")
         authenticated_client.get(
-            "/foo/bar/baz/quux/", headers={"X-pRoXy-UsEr": "administrator", "x-proxy-roles": "batman", "x-proxy-ext-space-ids": "1,2,3"}
+            "/foo/bar/baz/quux/",
+            headers={
+                "X-pRoXy-UsEr": "administrator",
+                "x-proxy-roles": "batman",
+                "x-proxy-ext-spaceids": "1,2,3",
+                "x-proxy-ext-orgids": "4,5,6",
+            },
         )
         for header in m.request_history[0]._request.headers:
             if header.lower() == "x-proxy-user":
                 assert m.request_history[0]._request.headers[header] != "administrator"
             if header.lower() == "x-proxy-roles":
                 assert m.request_history[0]._request.headers[header] != "batman"
-            if header.lower() == "x-proxy-ext-space-ids":
+            if header.lower() == "x-proxy-ext-spaceids":
                 assert m.request_history[0]._request.headers[header] != "1,2,3"
-
+            if header.lower() == "x-proxy-ext-orgids":
+                assert m.request_history[0]._request.headers[header] != "4,5,6"
 
 
 def test_session_refreshes(client):
@@ -80,3 +87,27 @@ def test_session_refreshes(client):
     with open(filename, "rb") as f:
         timestamp_after = pickle.load(f)
     assert timestamp < timestamp_after
+
+
+def test_orgs_set_correctly(client):
+    with requests_mock.Mocker() as m:
+        m.get(
+            "mock://kibana/home",
+            request_headers={"x-proxy-ext-orgids": r'"org-id-1", "org-id-2"'},
+        )
+        with client.session_transaction() as s:
+            s["user_id"] = "me"  # set user id so we don't get authed
+            s["orgs"] = ["org-id-1", "org-id-2"]
+        client.get("/home")
+
+
+def test_spaces_set_correctly(client):
+    with requests_mock.Mocker() as m:
+        m.get(
+            "mock://kibana/home",
+            request_headers={"x-proxy-ext-spaceids": r'"space-id-1", "space-id-2"'},
+        )
+        with client.session_transaction() as s:
+            s["user_id"] = "me"
+            s["spaces"] = ["space-id-1", "space-id-2"]
+        client.get("/home")

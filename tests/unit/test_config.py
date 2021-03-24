@@ -46,6 +46,7 @@ def test_local_config(monkeypatch, kibana_url):
     assert config.SECRET_KEY == "changeme"
     assert config.PERMANENT_SESSION_LIFETIME == 3600
 
+
 @pytest.mark.parametrize(
     "kibana_url", ["https://kibana.example.com", "https://kibana.example.com/"]
 )

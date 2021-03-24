@@ -3,7 +3,11 @@ from environs import Env
 
 def config_from_env():
     env = Env()
-    environment_config = {"production": AppConfig, "unit": UnitConfig, "local": LocalConfig}
+    environment_config = {
+        "production": AppConfig,
+        "unit": UnitConfig,
+        "local": LocalConfig,
+    }
     return environment_config[env("FLASK_ENV")]()
 
 

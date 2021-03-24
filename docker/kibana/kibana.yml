@@ -16,7 +16,7 @@ newsfeed.enabled: false
 telemetry.optIn: false
 telemetry.enabled: false
 security.showInsecureClusterWarning: false
-elasticsearch.requestHeadersWhitelist: ["securitytenant","Authorization","x-forwarded-for","x-proxy-user","x-proxy-roles"]
+elasticsearch.requestHeadersWhitelist: ["securitytenant","Authorization","x-forwarded-for","x-proxy-user","x-proxy-roles","x-proxy-ext-spaceids","x-proxy-ext-orgids"]
 
 opendistro_security.auth.type: "proxy"
 opendistro_security.proxycache.user_header: "x-proxy-user"

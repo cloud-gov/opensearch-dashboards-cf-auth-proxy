@@ -56,7 +56,7 @@ services:
     environment:
       ELASTICSEARCH_URL: https://odfe-node1:9200
       ELASTICSEARCH_HOSTS: https://odfe-node1:9200
-      elasticsearch.requestHeadersWhitelist: "securitytenant,Authorization,x-forwarded-for,x-proxy-user,x-proxy-roles"
+      elasticsearch.requestHeadersWhitelist: "securitytenant,Authorization,x-forwarded-for,x-proxy-user,x-proxy-roles,x-proxy-ext-spaceids,x-proxy-ext-orgids"
       opendistro.security.auth_type: "proxy"
       opendistro.security.proxycache.user_header: "x-proxy-user"
       opendistro.security.proxycache.roles_header: "x-proxy-roles"

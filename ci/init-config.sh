@@ -30,13 +30,31 @@ curl --fail --silent --show-error -u ${ES_USER}:${ES_PASSWORD} -k \
     -X PUT \
     -H "content-type: application/json" \
     https://localhost:9200/_component_template/ct_apps \
-    -d ' {
-           "template": {
-             "settings" : {
-                 "number_of_shards" : 1
-             }
-           }
-         }' | jq
+    -d '{
+    "template": {
+        "settings": {
+            "number_of_shards": 1
+        },
+        "mappings": {
+            "properties": {
+                "@cf": {
+                    "type": "object",
+                    "dynamic": true,
+                    "properties": {
+                        "space_id": {
+                            "type": "keyword",
+                            "index": true
+                        },
+                        "org_id": {
+                            "type": "keyword",
+                            "index": true
+                        }
+                    }
+                }
+            }
+        }
+    }
+}' | jq
 
 echo "Creating index template"
 curl --fail --silent --show-error -u ${ES_USER}:${ES_PASSWORD} -k \
@@ -52,7 +70,29 @@ curl --fail --silent --show-error -u ${ES_USER}:${ES_PASSWORD} -k \
 echo "Creating index"
 curl --silent --show-error -u ${ES_USER}:${ES_PASSWORD} -k \
     -X PUT \
-    https://localhost:9200/logs-app-now | jq
+    https://localhost:9200/logs-app-now \
+    -d '{
+    "mappings": {
+        "properties": {
+            "@cf": {
+                "type": "object",
+                "dynamic": true,
+                "properties": {
+                    "@cf": {
+                        "space_id": {
+                            "type": "keyword",
+                            "index": true
+                        },
+                        "org_id": {
+                            "type": "keyword",
+                            "index": true
+                        }
+                    }
+                }
+            }
+        }
+    }
+}' | jq
 
 
 # next we add some logs
@@ -142,9 +182,7 @@ curl --fail --silent --show-error -u ${ES_USER}:${ES_PASSWORD} -k \
     https://localhost:9200/logs-app-now/_doc?refresh=true \
     -d '{
         "@timestamp": "'${time}'",
-        "@cf": {
-            "org_id":"'${CF_ORG_ID_1}'"
-        },
+        "@cf":{ "org_id":"'${CF_ORG_ID_1}'"},
         "message": "org_id_1"
         }' | jq
 
@@ -158,9 +196,7 @@ curl --fail --silent --show-error -u ${ES_USER}:${ES_PASSWORD} -k \
     https://localhost:9200/logs-app-now/_doc?refresh=true \
     -d '{
         "@timestamp": "'${time}'",
-        "@cf": {
-            "org_id":"'${CF_ORG_ID_2}'"
-        },
+        "@cf": {"org_id":"'${CF_ORG_ID_2}'"},
         "message": "org_id_2"
         }' | jq
 
