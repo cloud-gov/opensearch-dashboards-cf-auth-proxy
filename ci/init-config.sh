@@ -70,6 +70,7 @@ curl --fail --silent --show-error -u ${ES_USER}:${ES_PASSWORD} -k \
 echo "Creating index"
 curl --silent --show-error -u ${ES_USER}:${ES_PASSWORD} -k \
     -X PUT \
+    -H "content-type: application/json" \
     https://localhost:9200/logs-app-now \
     -d '{
     "mappings": {

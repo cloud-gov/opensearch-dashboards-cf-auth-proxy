@@ -16,10 +16,11 @@ class Config:
         self.env_parser = Env()
         self.PORT = self.env_parser.int("PORT", 8080)
         self.PERMITTED_SPACE_ROLES = self.env_parser.list(
-            "PERMITTED_SPACE_ROLES", ["space_developer", "space_manager"]
+            "PERMITTED_SPACE_ROLES",
+            ["space_developer", "space_manager", "space_auditor"],
         )
         self.PERMITTED_ORG_ROLES = self.env_parser.list(
-            "PERMITTED_ORG_ROLES", ["org_manager"]
+            "PERMITTED_ORG_ROLES", ["organization_manager", "organization_auditor"]
         )
         self.SESSION_COOKIE_NAME = "cfsession"
 
