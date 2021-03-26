@@ -108,7 +108,6 @@ def create_app():
         session["orgs"] = cf.get_orgs_for_user(
             session["user_id"], session["access_token"]
         )
-        print(f"{session}")
 
         return redirect(session.pop("original-request", "/app/home"))
 
