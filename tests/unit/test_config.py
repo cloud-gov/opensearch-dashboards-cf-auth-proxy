@@ -15,8 +15,15 @@ def test_config_loads(monkeypatch):
     assert config.UAA_CLIENT_SECRET == "example"
     assert config.SECRET_KEY == "CHANGEME"
     assert config.PERMANENT_SESSION_LIFETIME == 120
-    assert config.PERMITTED_SPACE_ROLES == ["space_developer", "space_manager"]
-    assert config.PERMITTED_ORG_ROLES == ["org_manager"]
+    assert config.PERMITTED_SPACE_ROLES == [
+        "space_developer",
+        "space_manager",
+        "space_auditor",
+    ]
+    assert config.PERMITTED_ORG_ROLES == [
+        "organization_manager",
+        "organization_auditor",
+    ]
 
 
 @pytest.mark.parametrize(
@@ -73,5 +80,12 @@ def test_prod_config(monkeypatch, kibana_url):
     assert config.CF_URL == "https://api.example.com/"
     assert config.SECRET_KEY == "changeme"
     assert config.PERMANENT_SESSION_LIFETIME == 3600
-    assert config.PERMITTED_SPACE_ROLES == ["space_developer", "space_manager"]
-    assert config.PERMITTED_ORG_ROLES == ["org_manager"]
+    assert config.PERMITTED_SPACE_ROLES == [
+        "space_developer",
+        "space_manager",
+        "space_auditor",
+    ]
+    assert config.PERMITTED_ORG_ROLES == [
+        "organization_manager",
+        "organization_auditor",
+    ]

@@ -56,11 +56,11 @@ def test_callback_happy_path(client, simple_org_response, simple_space_response)
             text=json.dumps(body),
         )
         m.get(
-            "mock://cf/v3/roles?user_guids=test_user&types=space_developer,space_manager",
+            "mock://cf/v3/roles?user_guids=test_user&types=space_developer,space_manager,space_auditor",
             text=simple_space_response,
         )
         m.get(
-            "mock://cf/v3/roles?user_guids=test_user&types=org_manager",
+            "mock://cf/v3/roles?user_guids=test_user&types=organization_manager,organization_auditor",
             text=simple_org_response,
         )
         client.get(f"/cb?code=1234&state={csrf}")
