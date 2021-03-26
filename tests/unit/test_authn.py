@@ -63,7 +63,7 @@ def test_callback_happy_path(client, simple_org_response, simple_space_response)
             "mock://cf/v3/roles?user_guids=test_user&types=organization_manager,organization_auditor",
             text=simple_org_response,
         )
-        client.get(f"/cb?code=1234&state={csrf}")
+        resp = client.get(f"/cb?code=1234&state={csrf}")
         assert m.called
     with client.session_transaction() as s:
         # nuke the CSRF token
@@ -76,6 +76,8 @@ def test_callback_happy_path(client, simple_org_response, simple_space_response)
         assert s.get("id_token") is not None
         assert s.get("spaces") == ["space-guid-1"]
         assert s.get("orgs") == ["org-guid-1"]
+    assert resp.status_code == 302
+    assert resp.headers.get("location").endswith("/foo")
 
 
 def test_callback_bad_csrf(client):
