@@ -1,9 +1,11 @@
 from . import KIBANA_URL
 
 
-def log_in(user, page):
+def log_in(user, page, start_at=None):
+    if start_at is None:
+        start_at = KIBANA_URL
     # go to kibana
-    page.goto(KIBANA_URL)
+    page.goto(start_at)
     # accept the monitoring notice
     page.click(".island-button.js-notice-submit")
     # select the cloud.gov IdP
@@ -18,6 +20,7 @@ def log_in(user, page):
     if "/authorize?" in page.url:
         # first time using this app with this user
         page.click("text='Authorize'")
+    page.wait_for_load_state("networkidle")
 
 
 def switch_tenants(page, tenant="Global"):

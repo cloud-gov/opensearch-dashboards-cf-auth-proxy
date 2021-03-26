@@ -1,3 +1,5 @@
+import pytest
+
 from . import KIBANA_URL
 from .utils import log_in, switch_tenants
 

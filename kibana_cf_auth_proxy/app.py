@@ -108,7 +108,9 @@ def create_app():
         session["orgs"] = cf.get_orgs_for_user(
             session["user_id"], session["access_token"]
         )
-        return "logged in"
+        print(f"{session}")
+
+        return redirect(session.pop("original-request", "/app/home"))
 
     @app.route("/", defaults={"path": ""})
     @app.route(
@@ -117,6 +119,10 @@ def create_app():
     def handle_request(path):
         def redirect_to_auth():
             session["state"] = urlsafe_b64encode(os.urandom(24)).decode("utf-8")
+            if len(path):
+                session["original-request"] = path
+            else:
+                session["original-request"] = "/"
             params = {
                 "state": session["state"],
                 "client_id": config.UAA_CLIENT_ID,
