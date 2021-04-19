@@ -2,6 +2,7 @@ from . import KIBANA_URL
 
 
 def log_in(user, page, start_at=None):
+    page.set_default_timeout(120000)
     if start_at is None:
         start_at = KIBANA_URL
     # go to kibana
@@ -20,7 +21,12 @@ def log_in(user, page, start_at=None):
     if "/authorize?" in page.url:
         # first time using this app with this user
         page.click("text='Authorize'")
-    page.wait_for_load_state("networkidle")
+        page.wait_for_load_state("networkidle")
+
+    # handle first-login stuff when it's here
+    page.wait_for_timeout(1000)
+    if "Start by adding your data" in page.content():
+        page.click('text="Explore on my own"')
 
 
 def switch_tenants(page, tenant="Global"):
