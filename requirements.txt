@@ -40,7 +40,7 @@ redis==3.5.3
     # via -r pip-tools/requirements.in
 requests==2.25.1
     # via -r pip-tools/requirements.in
-urllib3==1.26.4
+urllib3==1.26.5
     # via requests
 werkzeug==1.0.1
     # via flask
