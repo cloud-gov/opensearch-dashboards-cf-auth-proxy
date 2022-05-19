@@ -71,7 +71,7 @@ def test_session_refreshes(client):
     on every request, with the updated session timeout, so we don't need to refresh
     the session. Since this is different from all the session documentation on Flask,
     it seems very possible the library will change in the future to match the default
-    behavior more closely, so this test will tell us we need to do something when that 
+    behavior more closely, so this test will tell us we need to do something when that
     happens.
     """
     client.get("/ping")
