@@ -17,11 +17,11 @@ def test_login_redirects_home_without_slash(page, user_1):
 
 
 def test_login_redirects_home(page, user_1):
-    # this tests the basic case - going to logs.example.com/ 
+    # this tests the basic case - going to logs.example.com/
     log_in(user_1, page)
     assert page.url.startswith(f"{KIBANA_URL}app/home")
 
 
 def test_login_remembers_target(page, user_1):
-    log_in(user_1, page, f'{KIBANA_URL}app/dev_tools')
+    log_in(user_1, page, f"{KIBANA_URL}app/dev_tools")
     assert page.url.startswith(f"{KIBANA_URL}app/dev_tools")

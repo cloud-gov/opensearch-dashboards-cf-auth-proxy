@@ -4,7 +4,7 @@ set -euo pipefail
 shopt -s inherit_errexit
 
 apt-get update
-apt-get install -y python3.7-dev python3.7-venv
+apt-get install -y python3.10-dev python3-venv
 
 src/dev set-up-ci-environment
 src/dev e2e
