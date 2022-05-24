@@ -119,7 +119,7 @@ def create_app():
         def redirect_to_auth():
             session["state"] = urlsafe_b64encode(os.urandom(24)).decode("utf-8")
             if len(path):
-                session["original-request"] = f'/{path}'
+                session["original-request"] = f"/{path}"
             else:
                 session["original-request"] = "/"
             params = {

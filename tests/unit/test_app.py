@@ -59,7 +59,7 @@ def test_app_filters_headers(authenticated_client):
                 assert m.request_history[0]._request.headers[header] != "4,5,6"
 
 
-@pytest.mark.skip # this relies on internals that have changed
+@pytest.mark.skip  # this relies on internals that have changed
 def test_session_refreshes(client):
     """
     So this test ended up not really being needed, but I'm leaving it in because it's
