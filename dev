@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 
 set -euxo pipefail
-shopt -s inherit_errexit
+shopt -s inherit_errexit 2>/dev/null || true
 
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 python=${dir}/venv/bin/python
 usage() {
-  local me=$(basename $0)
+  me=$(basename "$0")
+  local me
+  
   cat <<-EOF
 
   USAGE: ${me} COMMAND
@@ -132,7 +134,7 @@ main() {
   trap popd exit
   local command=$1
   shift
-  case $command in 
+  case $command in
     -h)
       usage
       ;;
@@ -142,7 +144,7 @@ main() {
     upgrade-requirements|upgrade_requirement)
       upgrade_requirements "$@"
       ;;
-    set-up-ci-environment|setup-environment)
+    set-up-ci-environment)
       set_up_ci_environment
       ;;
     set-up-environment|setup-environment)
