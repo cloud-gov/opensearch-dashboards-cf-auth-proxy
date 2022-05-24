@@ -185,6 +185,9 @@ main() {
     e2e)
       ${python} -m pytest e2e --browser firefox
       ;;
+    format)
+      ${python} -m black .
+      ;;
     *)
       usage
       exit 1
