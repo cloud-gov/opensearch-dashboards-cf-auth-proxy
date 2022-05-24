@@ -55,13 +55,13 @@ EOF
 }
 
 pushd () {
-    # make pushd silent
-    command pushd "$@" > /dev/null
+  # make pushd silent
+  command pushd "$@" > /dev/null
 }
 
 popd () {
-    # make popd silent
-    command popd "$@" > /dev/null
+  # make popd silent
+  command popd > /dev/null
 }
 
 update_requirements() {
@@ -115,7 +115,6 @@ watch_tests() {
   export FLASK_ENV=unit
   ${python} -m piptools sync requirements.txt dev-requirements.txt
   ${python} -m pytest_watch --spool=1000 -n -c -w -- -Werror -vv tests "$@"
-
 }
 
 cf_push() {
@@ -130,7 +129,7 @@ cf_network() {
 }
 
 main() {
-  pushd ${dir}
+  pushd "${dir}"
   trap popd exit
   local command=$1
   shift
@@ -156,10 +155,10 @@ main() {
       ${python} -m pytest tests
       ;;
     serve)
-      set -o allexport; source ${dir}/.env; set +o allexport
+      set -o allexport; source "${dir}/.env"; set +o allexport
       export FLASK_APP="kibana_cf_auth_proxy.app:create_app()"
       
-      ${python} -m flask run -p ${PORT}
+      ${python} -m flask run -p "${PORT}"
       ;;
     cluster)
       
@@ -181,7 +180,7 @@ main() {
       cf_network
       ;;
     watch-test|watch-tests)
-      watch_tests
+      watch_tests "$@"
       ;;
     e2e)
       ${python} -m pytest e2e --browser firefox
