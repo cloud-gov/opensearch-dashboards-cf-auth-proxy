@@ -24,7 +24,7 @@ jobs:
 
     - task: test
       config:
-        inputs: 
+        inputs:
           - name: src
         platform: linux
         image_resource:
@@ -118,14 +118,14 @@ jobs:
         
     - task: e2e-tests
       config:
-        inputs: 
+        inputs:
           - name: src
         platform: linux
         image_resource:
           type: docker-image
           source:
             repository: mcr.microsoft.com/playwright
-            tag: bionic
+            tag: focal
         run:
           path: src/ci/e2e.sh
         params:
