@@ -105,7 +105,7 @@ def test_callback_bad_csrf(client):
     with client.session_transaction() as s:
         # nuke the CSRF token
         assert s.get("state") is None
-        # make sure we're logged in
+        # make sure we're not logged in
         assert s.get("user_id") is None
     assert resp.status_code == 403
 
