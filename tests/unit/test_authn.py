@@ -112,10 +112,7 @@ def test_callback_bad_csrf(client):
 
 def test_callback_no_csrf(client):
     # go to a page to get redirected to log in
-    response = client.get("/foo")
-    location_str = f"{response.headers['location']}"
-    location = parse.urlparse(location_str)
-    query_params = parse.parse_qs(location.query)
+    client.get("/foo")
     with requests_mock.Mocker() as m:
         body = {
             "access_token": make_random_token(),
