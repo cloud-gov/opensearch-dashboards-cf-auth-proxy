@@ -144,7 +144,7 @@ def create_app():
             "host",
             "x-proxy-user",
             "x-proxy-ext-spaceids",
-            "x-proxt-ext-orgids",
+            "x-proxy-ext-orgids",
         }
         url = request.url.replace(request.host_url, config.KIBANA_URL)
         headers = {
