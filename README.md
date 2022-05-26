@@ -35,6 +35,11 @@ The following are optional:
 - `DEBUG` - whether to enable Flask's debug mode. Defaults to false
 - `PORT` -  the port flask should listen on. Defaults to 8080
 
+## Running Flask locally
+
+1. Copy `.env-sample` to `.env` and update the configuration values
+1. From the `docker` directory, run `docker-compose up`
+1. Run `./dev serve`
 
 ## Adding client
 
