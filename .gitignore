@@ -8,3 +8,4 @@ flask_session
 .env
 
 cf/secrets.yml
+ci/credentials.yml
