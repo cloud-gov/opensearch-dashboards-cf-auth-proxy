@@ -53,8 +53,8 @@ uaac client add <my_client_name> \
    --authorized_grant_types authorization_code,refresh_token \
    --authorities scim.read \
    --scope "cloud_controller.read,openid,scim.read" \
-   -s <my_client_secret>
-   --redirect-url <my_url>
+   -s <my_client_secret> \
+   --redirect_uri <my_url>
 ```
 
 Lastly, update your `.env` value to set these values:
