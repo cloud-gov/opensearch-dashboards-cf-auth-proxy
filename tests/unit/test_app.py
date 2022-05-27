@@ -1,10 +1,5 @@
-import pickle
-import time
-
 from urllib import parse
-import pytest
 import requests_mock
-import flask
 
 
 def test_app_pongs(client):
