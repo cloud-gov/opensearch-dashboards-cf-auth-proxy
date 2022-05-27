@@ -2,7 +2,6 @@ import pytest
 
 from kibana_cf_auth_proxy.app import create_app
 
-
 def pytest_configure(config):
     config.addinivalue_line("markers", "focus: Only run this test.")
 
