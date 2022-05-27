@@ -4,7 +4,6 @@ import os
 import datetime
 
 from flask import Flask, request, session, url_for, redirect
-from flask_session import Session
 import jwt
 import requests
 
@@ -17,7 +16,6 @@ from kibana_cf_auth_proxy.headers import list_to_ext_header
 def create_app():
     app = Flask(__name__)
     app.config.from_object(config)
-    Session(app)
 
     @app.before_request
     def refresh_session():

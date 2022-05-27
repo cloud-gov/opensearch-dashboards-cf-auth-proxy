@@ -32,7 +32,7 @@ class UnitConfig(Config):
         self.DEBUG = True
         self.KIBANA_URL = "mock://kibana/"
         self.SESSION_TYPE = "filesystem"
-        self.CF_URL = "mock://cf/"
+        self.CF_API_URL = "mock://cf/"
         self.UAA_AUTH_URL = "mock://uaa/authorize"
         self.UAA_TOKEN_URL = "mock://uaa/token"
         self.UAA_CLIENT_ID = "EXAMPLE"
@@ -55,7 +55,7 @@ class LocalConfig(Config):
 
         self.SESSION_REFRESH_EACH_REQUEST = True
 
-        self.CF_URL = self.env_parser("CF_URL")
+        self.CF_API_URL = self.env_parser("CF_API_URL")
         self.UAA_AUTH_URL = self.env_parser.str("UAA_AUTH_URL")
         self.UAA_TOKEN_URL = self.env_parser.str("UAA_TOKEN_URL")
         self.UAA_CLIENT_ID = self.env_parser.str("UAA_CLIENT_ID")
@@ -75,7 +75,7 @@ class AppConfig(Config):
         self.SESSION_TYPE = "null"
         self.SESSION_COOKIE_SECURE = True
 
-        self.CF_URL = self.env_parser("CF_URL")
+        self.CF_API_URL = self.env_parser("CF_API_URL")
         self.UAA_AUTH_URL = self.env_parser.str("UAA_AUTH_URL")
         self.UAA_TOKEN_URL = self.env_parser.str("UAA_TOKEN_URL")
         self.UAA_CLIENT_ID = self.env_parser.str("UAA_CLIENT_ID")

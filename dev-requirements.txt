@@ -14,10 +14,6 @@ bandit==1.7.4
     # via -r pip-tools/dev-requirements.in
 black==22.3.0
     # via -r pip-tools/dev-requirements.in
-cachelib==0.7.0
-    # via
-    #   -r pip-tools/../requirements.txt
-    #   flask-session
 certifi==2022.5.18
     # via
     #   -r pip-tools/../requirements.txt
@@ -43,10 +39,6 @@ docopt==0.6.2
 environs==9.5.0
     # via -r pip-tools/../requirements.txt
 flask==2.1.2
-    # via
-    #   -r pip-tools/../requirements.txt
-    #   flask-session
-flask-session==0.4.0
     # via -r pip-tools/../requirements.txt
 gitdb==4.0.9
     # via gitpython

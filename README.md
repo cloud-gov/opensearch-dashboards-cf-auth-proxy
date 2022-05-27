@@ -35,16 +35,29 @@ The following are optional:
 - `DEBUG` - whether to enable Flask's debug mode. Defaults to false
 - `PORT` -  the port flask should listen on. Defaults to 8080
 
+## Running locally
 
-## Adding client
+1. Copy `.env-sample` to `.env` and update the configuration values
+1. From the `docker` directory, run `docker-compose up`
+1. Run `./dev serve`
 
-You can add the client for the app using `uaac` like so:
+### Adding client
 
-```
+In order to run the app locally, you will need to create a UAA client application.
+
+First, log in to the dev jumpbox. Then, you can add create client for the app using `uaac` like so,
+where `<my_url>` is the local host/port on your machine for this app (default `http://localhost:8080`):
+
+```shell
 uaac client add <my_client_name> \
    --authorized_grant_types authorization_code,refresh_token \
    --authorities scim.read \
    --scope "cloud_controller.read,openid,scim.read" \
-   -s <my_client_secret>
-   --redirect-url <my_url>
+   -s <my_client_secret> \
+   --redirect_uri <my_url>
 ```
+
+Lastly, update your `.env` value to set these values:
+
+- `UAA_CLIENT_ID=<my_client_name>`
+- `UAA_CLIENT_SECRET=<my_client_secret>`

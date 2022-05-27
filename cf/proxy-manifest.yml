@@ -9,6 +9,7 @@ version: 1
 applications:
 - name: auth-proxy
   health_check_type: port
+  instances: 2
   buildpacks:
     - python_buildpack
   routes:
@@ -17,7 +18,7 @@ applications:
     FLASK_ENV: local
     KIBANA_URL: http://kbn-test.apps.internal:5601
 
-    CF_URL: ((cf_url))
+    CF_API_URL: ((cf_url))
     UAA_AUTH_URL: ((uaa_auth_url))
     UAA_TOKEN_URL: ((uaa_token_url))
     UAA_CLIENT_ID: ((uaa_client_id))
