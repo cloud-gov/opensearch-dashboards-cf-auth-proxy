@@ -1,7 +1,5 @@
 import requests
 
-from urllib.parse import urljoin
-
 from kibana_cf_auth_proxy.extensions import config
 
 
