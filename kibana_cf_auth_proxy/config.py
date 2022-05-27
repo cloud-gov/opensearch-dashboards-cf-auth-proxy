@@ -34,6 +34,7 @@ class UnitConfig(Config):
         self.SESSION_TYPE = "filesystem"
         self.CF_API_URL = "mock://cf/"
         self.UAA_AUTH_URL = "mock://uaa/authorize"
+        self.UAA_BASE_URL = "mock://uaa"
         self.UAA_TOKEN_URL = "mock://uaa/token"
         self.UAA_CLIENT_ID = "EXAMPLE"
         self.UAA_CLIENT_SECRET = "example"
@@ -57,6 +58,7 @@ class LocalConfig(Config):
 
         self.CF_API_URL = self.env_parser("CF_API_URL")
         self.UAA_AUTH_URL = self.env_parser.str("UAA_AUTH_URL")
+        self.UAA_BASE_URL = self.env_parser.str("UAA_BASE_URL")
         self.UAA_TOKEN_URL = self.env_parser.str("UAA_TOKEN_URL")
         self.UAA_CLIENT_ID = self.env_parser.str("UAA_CLIENT_ID")
         self.UAA_CLIENT_SECRET = self.env_parser.str("UAA_CLIENT_SECRET")
@@ -77,6 +79,7 @@ class AppConfig(Config):
 
         self.CF_API_URL = self.env_parser("CF_API_URL")
         self.UAA_AUTH_URL = self.env_parser.str("UAA_AUTH_URL")
+        self.UAA_BASE_URL = self.env_parser.str("UAA_BASE_URL")
         self.UAA_TOKEN_URL = self.env_parser.str("UAA_TOKEN_URL")
         self.UAA_CLIENT_ID = self.env_parser.str("UAA_CLIENT_ID")
         self.UAA_CLIENT_SECRET = self.env_parser.str("UAA_CLIENT_SECRET")
