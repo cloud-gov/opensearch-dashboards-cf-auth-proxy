@@ -9,6 +9,7 @@ version: 1
 applications:
 - name: auth-proxy
   health_check_type: port
+  instances: 2
   buildpacks:
     - python_buildpack
   routes:
