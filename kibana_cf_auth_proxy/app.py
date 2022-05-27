@@ -11,6 +11,7 @@ from kibana_cf_auth_proxy.extensions import config
 from kibana_cf_auth_proxy.proxy import proxy_request
 from kibana_cf_auth_proxy import cf
 from kibana_cf_auth_proxy.headers import list_to_ext_header
+from kibana_cf_auth_proxy import uaa
 
 
 def create_app():
@@ -106,6 +107,7 @@ def create_app():
         session["orgs"] = cf.get_orgs_for_user(
             session["user_id"], session["access_token"]
         )
+        uaa.get_user_groups(token["user_id"], session["access_token"])
 
         return redirect(session.pop("original-request", "/app/home"))
 

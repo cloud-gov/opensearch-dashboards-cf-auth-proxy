@@ -34,7 +34,7 @@ class UnitConfig(Config):
         self.SESSION_TYPE = "filesystem"
         self.CF_API_URL = "mock://cf/"
         self.UAA_AUTH_URL = "mock://uaa/authorize"
-        self.UAA_BASE_URL = "mock://uaa"
+        self.UAA_BASE_URL = "mock://uaa/"
         self.UAA_TOKEN_URL = "mock://uaa/token"
         self.UAA_CLIENT_ID = "EXAMPLE"
         self.UAA_CLIENT_SECRET = "example"

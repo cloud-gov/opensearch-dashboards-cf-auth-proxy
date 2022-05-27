@@ -148,3 +148,27 @@ def simple_org_response():
         }
       ]
     } """
+
+
+@pytest.fixture()
+def simple_users_response():
+    return """
+   {
+      "resources": [
+         {
+            "groups": [
+               {
+                  "value": "1234-abcd-5678-efgh-9z9d",
+                  "display": "cloud_controller.admin",
+                  "type": "DIRECT"
+               }
+            ]
+         }
+      ],
+      "startIndex": 1,
+      "itemsPerPage": 100,
+      "totalResults": 1,
+      "schemas": [
+         "urn:scim:schemas:core:1.0"
+      ]
+   }"""
