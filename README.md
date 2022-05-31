@@ -50,7 +50,7 @@ where `<my_url>` is the local host/port on your machine for this app (default `h
 
 ```shell
 uaac client add <my_client_name> \
-   --authorized_grant_types authorization_code,refresh_token \
+   --authorized_grant_types authorization_code,refresh_token,client_credentials \
    --authorities scim.read \
    --scope "cloud_controller.read,openid,scim.read" \
    -s <my_client_secret> \
