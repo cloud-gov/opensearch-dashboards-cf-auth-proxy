@@ -114,7 +114,7 @@ def create_app():
             data = uaa.get_client_credentials_token()
             session["client_credentials_token"] = data["access_token"]
             
-        session["groups"] = uaa.get_user_groups(
+        session["is_cf_admin"] = uaa.is_user_cf_admin(
             session["user_id"], session["client_credentials_token"]
         )
 
@@ -168,7 +168,7 @@ def create_app():
         # allowed path
         if session.get("user_id"):
             headers["x-proxy-user"] = session["user_id"]
-            headers["x-proxy-roles"] = "user"
+            headers["x-proxy-roles"] = "admin" if session.get("is_cf_admin") else "user"
 
         headers["x-proxy-roles"] = list_to_ext_header(session.get("groups", []))
 

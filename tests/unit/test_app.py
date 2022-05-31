@@ -77,8 +77,17 @@ def test_spaces_set_correctly(client):
             s["spaces"] = ["space-id-1", "space-id-2"]
         client.get("/home")
 
+def test_user_role_set_correctly(client):
+    with requests_mock.Mocker() as m:
+        m.get(
+            "mock://kibana/home",
+            request_headers={"x-proxy-roles": r'"user"'},
+        )
+        with client.session_transaction() as s:
+            s["user_id"] = "me"
+        client.get("/home")
 
-def test_roles_set_correctly(client):
+def test_admin_role_set_correctly(client):
     with requests_mock.Mocker() as m:
         m.get(
             "mock://kibana/home",
@@ -87,4 +96,5 @@ def test_roles_set_correctly(client):
         with client.session_transaction() as s:
             s["user_id"] = "me"
             s["groups"] = ["admin"]
+            s["is_cf_admin"] = True
         client.get("/home")
