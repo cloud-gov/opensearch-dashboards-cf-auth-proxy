@@ -8,7 +8,6 @@ import string
 import datetime
 
 import jwt
-import pytest
 import requests_mock
 
 
@@ -33,7 +32,7 @@ def make_random_token():
     return "".join(random.choice(string.ascii_letters) for i in range(10))
 
 
-def test_callback_happy_path(client, simple_org_response, simple_space_response):
+def test_callback_happy_path(client, simple_org_response, simple_space_response, uaa_user_groups_response):
     # go to a page to get redirected to log in
     response = client.get("/foo")
     location_str = f"{response.headers['location']}"
@@ -56,6 +55,10 @@ def test_callback_happy_path(client, simple_org_response, simple_space_response)
             text=json.dumps(body),
         )
         m.get(
+            "mock://uaa/users?attributes=groups&filter=id eq 'test_user'",
+            text=uaa_user_groups_response,
+        )
+        m.get(
             "mock://cf/v3/roles?user_guids=test_user&types=space_developer,space_manager,space_auditor",
             text=simple_space_response,
         )
@@ -76,16 +79,14 @@ def test_callback_happy_path(client, simple_org_response, simple_space_response)
         assert s.get("id_token") is not None
         assert s.get("spaces") == ["space-guid-1"]
         assert s.get("orgs") == ["org-guid-1"]
+        assert sorted(s.get("groups")) == sorted(["cloud_controller.admin", "network.admin"])
     assert resp.status_code == 302
     assert resp.headers.get("location").endswith("/foo")
 
 
 def test_callback_bad_csrf(client):
     # go to a page to get redirected to log in
-    response = client.get("/foo")
-    location_str = f"{response.headers['location']}"
-    location = parse.urlparse(location_str)
-    query_params = parse.parse_qs(location.query)
+    client.get("/foo")
     with requests_mock.Mocker() as m:
         body = {
             "access_token": make_random_token(),
