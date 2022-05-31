@@ -84,5 +84,5 @@ def test_roles_set_correctly(client):
         )
         with client.session_transaction() as s:
             s["user_id"] = "me"
-            s["roles"] = ["admin"]
+            s["groups"] = ["admin"]
         client.get("/home")

@@ -107,7 +107,7 @@ def create_app():
         session["orgs"] = cf.get_orgs_for_user(
             session["user_id"], session["access_token"]
         )
-        uaa.get_user_groups(token["user_id"], session["access_token"])
+        session["groups"] = uaa.get_user_groups(token["user_id"], session["access_token"])
 
         return redirect(session.pop("original-request", "/app/home"))
 
@@ -160,6 +160,8 @@ def create_app():
         if session.get("user_id"):
             headers["x-proxy-user"] = session["user_id"]
             headers["x-proxy-roles"] = "user"
+
+        headers["x-proxy-roles"] = list_to_ext_header(session.get("groups", []))
 
         # TODO: add x-forwarded-for functionality
         headers["x-forwarded-for"] = "127.0.0.1"
