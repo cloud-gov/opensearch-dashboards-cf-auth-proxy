@@ -1,6 +1,5 @@
 import requests
 
-from flask import session
 from kibana_cf_auth_proxy.extensions import config
 
 def get_client_credentials_token():

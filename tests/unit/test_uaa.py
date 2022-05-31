@@ -1,4 +1,3 @@
-import json
 import requests_mock
 
 from kibana_cf_auth_proxy import uaa
