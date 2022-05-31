@@ -20,6 +20,7 @@ applications:
 
     CF_API_URL: ((cf_url))
     UAA_AUTH_URL: ((uaa_auth_url))
+    UAA_BASE_URL: ((uaa_base_url))
     UAA_TOKEN_URL: ((uaa_token_url))
     UAA_CLIENT_ID: ((uaa_client_id))
     UAA_CLIENT_SECRET: ((uaa_client_secret))
