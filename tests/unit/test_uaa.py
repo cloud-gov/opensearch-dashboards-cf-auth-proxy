@@ -9,5 +9,5 @@ def test_gets_user_groups(uaa_user_groups_response):
             text=uaa_user_groups_response,
         )
         assert sorted(uaa.get_user_groups("a-user-id", "a_token")) == sorted(
-            ["cloud_controller.admin"]
+            ["cloud_controller.admin", "network.admin"]
         )

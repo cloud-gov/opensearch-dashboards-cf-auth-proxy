@@ -161,6 +161,11 @@ def uaa_user_groups_response():
                   "value": "1234-abcd-5678-efgh-9z9d",
                   "display": "cloud_controller.admin",
                   "type": "DIRECT"
+               },
+               {
+                  "value": "1234-abcd-5678-efgh-9z9d",
+                  "display": "network.admin",
+                  "type": "DIRECT"
                }
             ]
          }
