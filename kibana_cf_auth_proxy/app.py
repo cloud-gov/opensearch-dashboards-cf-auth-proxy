@@ -95,6 +95,8 @@ def create_app():
             options=dict(verify_signature=False),
         )
 
+        print(token)
+
         session["user_id"] = token["user_id"]
         session["access_token"] = response["access_token"]
         session["refresh_token"] = response["refresh_token"]
@@ -107,7 +109,7 @@ def create_app():
         session["orgs"] = cf.get_orgs_for_user(
             session["user_id"], session["access_token"]
         )
-        session["groups"] = uaa.get_user_groups(token["user_id"], session["access_token"])
+        session["groups"] = uaa.get_user_groups(session["user_id"])
 
         return redirect(session.pop("original-request", "/app/home"))
 

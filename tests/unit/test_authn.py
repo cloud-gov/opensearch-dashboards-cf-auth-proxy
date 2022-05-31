@@ -8,18 +8,16 @@ import random
 import requests_mock
 import string
 
+from kibana_cf_auth_proxy.extensions import config
+
 def make_random_token():
     return "".join(random.choice(string.ascii_letters) for i in range(10))
 
-def check_token_body(request):
-    # this is for requests_mock
-    data = request.text
-    data = parse.parse_qs(data)
-    assert data["grant_type"][0] == "authorization_code"
-    assert data["code"][0] == "1234"
-    assert data["redirect_uri"][0] == "http://localhost/cb"
-    return True
+def is_auth_code_token_request(request):
+    return 'grant_type=authorization_code' in request.text
 
+def is_client_credentials_token_request(request):
+    return 'grant_type=client_credentials' in request.text
 
 def test_callback_happy_path(client, fake_jwt_token, simple_org_response, simple_space_response, uaa_user_groups_response):
     # go to a page to get redirected to log in
@@ -40,11 +38,23 @@ def test_callback_happy_path(client, fake_jwt_token, simple_org_response, simple
         }
         m.post(
             "mock://uaa/token",
-            additional_matcher=check_token_body,
+            additional_matcher=is_auth_code_token_request,
             text=json.dumps(body),
         )
+        client_creds_response = {
+            "access_token": fake_jwt_token,
+            "token_type": "bearer",
+            "expires_in": 2000,
+            "scope": "scim.read",
+            "jti": "idk",
+        }
+        m.post(
+            "mock://uaa/token",
+            additional_matcher=is_client_credentials_token_request,
+            text=json.dumps(client_creds_response),
+        )
         m.get(
-            "mock://uaa/users?attributes=groups&filter=id eq 'test_user'",
+            "mock://uaa/Users?attributes=groups&filter=id eq 'test_user'",
             text=uaa_user_groups_response,
         )
         m.get(
@@ -68,7 +78,24 @@ def test_callback_happy_path(client, fake_jwt_token, simple_org_response, simple
         assert s.get("id_token") is not None
         assert s.get("spaces") == ["space-guid-1"]
         assert s.get("orgs") == ["org-guid-1"]
-        # assert sorted(s.get("groups")) == sorted(["cloud_controller.admin", "network.admin"])
+        assert s.get("client_credentials_token") is not None
+        assert sorted(s.get("groups")) == sorted(["cloud_controller.admin", "network.admin"])
+    
+    user_token_request = m.request_history[0]
+    data = user_token_request.text
+    data = parse.parse_qs(data)
+    assert data["grant_type"][0] == "authorization_code"
+    assert data["code"][0] == "1234"
+    assert data["redirect_uri"][0] == "http://localhost/cb"
+
+    client_creds_token_request = m.request_history[3]
+    data = client_creds_token_request.text
+    data = parse.parse_qs(data)
+    assert data["grant_type"][0] == "client_credentials"
+    assert data["response_type"][0] == "token"
+    assert data["client_id"][0] == config.UAA_CLIENT_ID
+    assert data["client_secret"][0] == config.UAA_CLIENT_SECRET
+
     assert resp.status_code == 302
     assert resp.headers.get("location").endswith("/foo")
 

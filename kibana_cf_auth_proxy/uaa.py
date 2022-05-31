@@ -4,7 +4,6 @@ from flask import session
 from kibana_cf_auth_proxy.extensions import config
 
 def client_credentials_token(s):
-    print("here")
     response = requests.post(
         config.UAA_TOKEN_URL,
         data={
@@ -29,10 +28,10 @@ def client_credentials_token(s):
 
 def get_user_groups(user_id):
     with requests.Session() as s:
-        # if session.get("client_credentials_token") is None:
-        #     data = client_credentials_token(s)
-        #     session["client_credentials_token"] = data["access_token"]
-        s.headers["Authorization"] = f"Bearer {s['client_credentials_token']}"
+        if session.get("client_credentials_token") is None:
+            data = client_credentials_token(s)
+            session["client_credentials_token"] = data["access_token"]
+        s.headers["Authorization"] = f"Bearer {session['client_credentials_token']}"
         url = f"{config.UAA_BASE_URL}Users?attributes=groups&filter=id eq '{user_id}'"
         print(url)
         # there should be only one resource when filtering by ID, so no need for paginating results?
