@@ -2,23 +2,6 @@ import requests
 
 from kibana_cf_auth_proxy.extensions import config
 
-
-def iterate_user_resources(session, first_url):
-    """
-    iterates over paginated resources of user info, returning the full list of the resources
-    """
-    resources = []
-    data = session.get(first_url).json()
-    resources.extend(data["resources"])
-    # this logic is wrong
-    while data["startIndex"] < data['totalResults']:
-        newStartIndex = data["startIndex"] + data["itemsPerPage"]
-        itemsPerPage = data["itemsPerPage"]
-        data = session.get(f"{first_url}&startIndex={newStartIndex}&itemsPerPage={itemsPerPage}").json()
-        resources.extend(data["resources"])
-    return resources
-
-
 def get_user_groups(user_id, token):
     with requests.Session() as s:
         s.headers["Authorization"] = f"Bearer {token}"
