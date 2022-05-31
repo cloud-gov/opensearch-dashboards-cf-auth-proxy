@@ -151,7 +151,7 @@ def simple_org_response():
 
 
 @pytest.fixture()
-def simple_users_response():
+def uaa_user_groups_response():
     return """
    {
       "resources": [
