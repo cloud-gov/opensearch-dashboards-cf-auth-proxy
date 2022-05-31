@@ -53,6 +53,7 @@ def test_app_filters_headers(authenticated_client):
             if header.lower() == "x-proxy-ext-orgids":
                 assert m.request_history[0]._request.headers[header] != "4,5,6"
 
+
 def test_orgs_set_correctly(client):
     with requests_mock.Mocker() as m:
         m.get(
@@ -75,6 +76,7 @@ def test_spaces_set_correctly(client):
             s["user_id"] = "me"
             s["spaces"] = ["space-id-1", "space-id-2"]
         client.get("/home")
+
 
 def test_roles_set_correctly(client):
     with requests_mock.Mocker() as m:

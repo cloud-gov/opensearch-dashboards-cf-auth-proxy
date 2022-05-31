@@ -2,6 +2,7 @@ import requests
 
 from kibana_cf_auth_proxy.extensions import config
 
+
 def get_client_credentials_token():
     response = requests.post(
         config.UAA_TOKEN_URL,
@@ -23,7 +24,7 @@ def get_client_credentials_token():
 
     data = response.json()
     return data
-    
+
 
 def get_user_groups(user_id, token):
     with requests.Session() as s:

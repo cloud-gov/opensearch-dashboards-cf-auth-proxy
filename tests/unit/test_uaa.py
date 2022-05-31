@@ -2,6 +2,7 @@ import requests_mock
 
 from kibana_cf_auth_proxy import uaa
 
+
 def test_gets_user_groups(uaa_user_groups_response):
     with requests_mock.Mocker() as m:
         m.get(

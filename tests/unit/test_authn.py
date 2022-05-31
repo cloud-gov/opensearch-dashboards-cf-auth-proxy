@@ -10,11 +10,14 @@ import string
 
 from kibana_cf_auth_proxy.extensions import config
 
+
 def make_random_token():
     return "".join(random.choice(string.ascii_letters) for i in range(10))
 
+
 def is_auth_code_token_request(request):
-    return 'grant_type=authorization_code' in request.text
+    return "grant_type=authorization_code" in request.text
+
 
 def is_valid_auth_code_token_request(request):
     data = request.text
@@ -23,10 +26,18 @@ def is_valid_auth_code_token_request(request):
     assert data["code"][0] == "1234"
     assert data["redirect_uri"][0] == "http://localhost/cb"
 
-def is_client_credentials_token_request(request):
-    return 'grant_type=client_credentials' in request.text
 
-def test_callback_happy_path(client, fake_jwt_token, simple_org_response, simple_space_response, uaa_user_groups_response):
+def is_client_credentials_token_request(request):
+    return "grant_type=client_credentials" in request.text
+
+
+def test_callback_happy_path(
+    client,
+    fake_jwt_token,
+    simple_org_response,
+    simple_space_response,
+    uaa_user_groups_response,
+):
     # go to a page to get redirected to log in
     response = client.get("/foo")
     location_str = f"{response.headers['location']}"
@@ -86,8 +97,10 @@ def test_callback_happy_path(client, fake_jwt_token, simple_org_response, simple
         assert s.get("spaces") == ["space-guid-1"]
         assert s.get("orgs") == ["org-guid-1"]
         assert s.get("client_credentials_token") is not None
-        assert sorted(s.get("groups")) == sorted(["cloud_controller.admin", "network.admin"])
-    
+        assert sorted(s.get("groups")) == sorted(
+            ["cloud_controller.admin", "network.admin"]
+        )
+
     is_valid_auth_code_token_request(m.request_history[0])
 
     client_creds_token_request = m.request_history[3]

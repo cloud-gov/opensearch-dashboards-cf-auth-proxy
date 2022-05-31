@@ -3,6 +3,7 @@ import pytest
 
 from kibana_cf_auth_proxy.app import create_app
 
+
 def pytest_configure(config):
     config.addinivalue_line("markers", "focus: Only run this test.")
 
@@ -37,12 +38,14 @@ def client():
     with app.test_client() as client:
         yield client
 
+
 @pytest.fixture(scope="function")
 def fake_jwt_token(claims=None):
     # todo, clean this up
     claims = claims or {"user_id": "test_user"}
     token = jwt.encode(claims, "", "HS256")
     return token
+
 
 @pytest.fixture(scope="function")
 def authenticated_client(client):
