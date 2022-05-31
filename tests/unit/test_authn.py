@@ -2,13 +2,22 @@
 Tests for the callback endpoint (where users are sent by UAA after logging in)
 """
 import json
-from urllib import parse
+import jwt
 import datetime
 import random
 import requests_mock
 import string
 
+from urllib import parse
+
 from kibana_cf_auth_proxy.extensions import config
+
+
+def make_jwt_token(claims=None):
+    # todo, clean this up
+    claims = claims or {"user_id": "test_user"}
+    token = jwt.encode(claims, "", "HS256")
+    return token
 
 
 def make_random_token():
@@ -33,7 +42,6 @@ def is_client_credentials_token_request(request):
 
 def test_callback_happy_path(
     client,
-    fake_jwt_token,
     simple_org_response,
     simple_space_response,
     uaa_user_groups_response,
@@ -49,7 +57,7 @@ def test_callback_happy_path(
             "access_token": make_random_token(),
             "refresh_token": make_random_token(),
             "token_type": "bearer",
-            "id_token": fake_jwt_token,
+            "id_token": make_jwt_token(),
             "expires_in": 2000,
             "scope": "openid cloud_controller.read scim.read",
             "jti": "idk",
@@ -60,7 +68,7 @@ def test_callback_happy_path(
             text=json.dumps(body),
         )
         client_creds_response = {
-            "access_token": fake_jwt_token,
+            "access_token": make_jwt_token(),
             "token_type": "bearer",
             "expires_in": 2000,
             "scope": "scim.read",
@@ -115,14 +123,14 @@ def test_callback_happy_path(
     assert resp.headers.get("location").endswith("/foo")
 
 
-def test_callback_bad_csrf(client, fake_jwt_token):
+def test_callback_bad_csrf(client):
     # go to a page to get redirected to log in
     client.get("/foo")
     with requests_mock.Mocker() as m:
         body = {
             "access_token": make_random_token(),
             "token_type": "bearer",
-            "id_token": fake_jwt_token,
+            "id_token": make_jwt_token(),
             "expires_in": 2000,
             "scope": "openid email",
             "jti": "idk",
@@ -142,14 +150,14 @@ def test_callback_bad_csrf(client, fake_jwt_token):
     assert resp.status_code == 403
 
 
-def test_callback_no_csrf(client, fake_jwt_token):
+def test_callback_no_csrf(client):
     # go to a page to get redirected to log in
     client.get("/foo")
     with requests_mock.Mocker() as m:
         body = {
             "access_token": make_random_token(),
             "token_type": "bearer",
-            "id_token": fake_jwt_token,
+            "id_token": make_jwt_token(),
             "expires_in": 2000,
             "scope": "openid cloud_controller.read scim.read",
             "jti": "idk",

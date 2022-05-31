@@ -1,4 +1,3 @@
-import jwt
 import pytest
 
 from kibana_cf_auth_proxy.app import create_app
@@ -40,13 +39,6 @@ def client():
 
 
 @pytest.fixture(scope="function")
-def fake_jwt_token(claims=None):
-    # todo, clean this up
-    claims = claims or {"user_id": "test_user"}
-    token = jwt.encode(claims, "", "HS256")
-    return token
-
-
 @pytest.fixture(scope="function")
 def authenticated_client(client):
     with client.session_transaction() as s:
