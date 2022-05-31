@@ -59,7 +59,7 @@ class LocalConfig(Config):
         self.CF_API_URL = self.env_parser("CF_API_URL")
         self.UAA_AUTH_URL = self.env_parser.str("UAA_AUTH_URL")
         self.UAA_BASE_URL = self.env_parser.str("UAA_BASE_URL")
-        self.UAA_TOKEN_URL = self.env_parser.str("UAA_TOKEN_URL")
+        self.UAA_TOKEN_URL = f"{self.UAA_BASE_URL}oauth/token"
         self.UAA_CLIENT_ID = self.env_parser.str("UAA_CLIENT_ID")
         self.UAA_CLIENT_SECRET = self.env_parser.str("UAA_CLIENT_SECRET")
         self.SECRET_KEY = self.env_parser.str("SECRET_KEY")
@@ -80,7 +80,7 @@ class AppConfig(Config):
         self.CF_API_URL = self.env_parser("CF_API_URL")
         self.UAA_AUTH_URL = self.env_parser.str("UAA_AUTH_URL")
         self.UAA_BASE_URL = self.env_parser.str("UAA_BASE_URL")
-        self.UAA_TOKEN_URL = self.env_parser.str("UAA_TOKEN_URL")
+        self.UAA_TOKEN_URL = f"{self.UAA_BASE_URL}oauth/token"
         self.UAA_CLIENT_ID = self.env_parser.str("UAA_CLIENT_ID")
         self.UAA_CLIENT_SECRET = self.env_parser.str("UAA_CLIENT_SECRET")
         self.SECRET_KEY = self.env_parser.str("SECRET_KEY")
