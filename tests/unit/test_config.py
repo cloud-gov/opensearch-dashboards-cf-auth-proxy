@@ -35,6 +35,7 @@ def test_local_config(monkeypatch, kibana_url):
     monkeypatch.setenv("KIBANA_URL", kibana_url)
     monkeypatch.setenv("CF_API_URL", "https://api.example.com/")
     monkeypatch.setenv("UAA_AUTH_URL", "https://uaa.example.com/authorize")
+    monkeypatch.setenv("UAA_BASE_URL", "https://uaa.example.com/")
     monkeypatch.setenv("UAA_TOKEN_URL", "https://uaa.example.com/token")
     monkeypatch.setenv("UAA_CLIENT_ID", "feedabee")
     monkeypatch.setenv("UAA_CLIENT_SECRET", "CHANGEME")
@@ -46,6 +47,7 @@ def test_local_config(monkeypatch, kibana_url):
     assert config.DEBUG
     assert config.TESTING
     assert config.UAA_AUTH_URL == "https://uaa.example.com/authorize"
+    assert config.UAA_BASE_URL == "https://uaa.example.com/"
     assert config.UAA_TOKEN_URL == "https://uaa.example.com/token"
     assert config.UAA_CLIENT_ID == "feedabee"
     assert config.UAA_CLIENT_SECRET == "CHANGEME"
@@ -62,6 +64,7 @@ def test_prod_config(monkeypatch, kibana_url):
     monkeypatch.setenv("PORT", "8888")
     monkeypatch.setenv("KIBANA_URL", kibana_url)
     monkeypatch.setenv("UAA_AUTH_URL", "https://uaa.example.com/authorize")
+    monkeypatch.setenv("UAA_BASE_URL", "https://uaa.example.com/")
     monkeypatch.setenv("UAA_TOKEN_URL", "https://uaa.example.com/token")
     monkeypatch.setenv("CF_API_URL", "https://api.example.com/")
     monkeypatch.setenv("UAA_CLIENT_ID", "feedabee")
@@ -74,6 +77,7 @@ def test_prod_config(monkeypatch, kibana_url):
     assert not config.DEBUG
     assert not config.TESTING
     assert config.UAA_AUTH_URL == "https://uaa.example.com/authorize"
+    assert config.UAA_BASE_URL == "https://uaa.example.com/"
     assert config.UAA_TOKEN_URL == "https://uaa.example.com/token"
     assert config.UAA_CLIENT_ID == "feedabee"
     assert config.UAA_CLIENT_SECRET == "CHANGEME"
