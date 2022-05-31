@@ -109,7 +109,11 @@ def create_app():
         session["orgs"] = cf.get_orgs_for_user(
             session["user_id"], session["access_token"]
         )
-        session["groups"] = uaa.get_user_groups(session["user_id"])
+
+        if session.get("client_credentials_token") is None:
+            data = uaa.get_client_credentials_token()
+            session["client_credentials_token"] = data["access_token"]
+        session["groups"] = uaa.get_user_groups(session["user_id"], session["client_credentials_token"])
 
         return redirect(session.pop("original-request", "/app/home"))
 

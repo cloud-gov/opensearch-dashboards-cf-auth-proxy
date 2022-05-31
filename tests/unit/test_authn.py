@@ -16,6 +16,13 @@ def make_random_token():
 def is_auth_code_token_request(request):
     return 'grant_type=authorization_code' in request.text
 
+def is_valid_auth_code_token_request(request):
+    data = request.text
+    data = parse.parse_qs(data)
+    assert data["grant_type"][0] == "authorization_code"
+    assert data["code"][0] == "1234"
+    assert data["redirect_uri"][0] == "http://localhost/cb"
+
 def is_client_credentials_token_request(request):
     return 'grant_type=client_credentials' in request.text
 
@@ -81,12 +88,7 @@ def test_callback_happy_path(client, fake_jwt_token, simple_org_response, simple
         assert s.get("client_credentials_token") is not None
         assert sorted(s.get("groups")) == sorted(["cloud_controller.admin", "network.admin"])
     
-    user_token_request = m.request_history[0]
-    data = user_token_request.text
-    data = parse.parse_qs(data)
-    assert data["grant_type"][0] == "authorization_code"
-    assert data["code"][0] == "1234"
-    assert data["redirect_uri"][0] == "http://localhost/cb"
+    is_valid_auth_code_token_request(m.request_history[0])
 
     client_creds_token_request = m.request_history[3]
     data = client_creds_token_request.text
@@ -114,7 +116,7 @@ def test_callback_bad_csrf(client, fake_jwt_token):
         }
         m.post(
             "mock://uaa/token",
-            additional_matcher=check_token_body,
+            additional_matcher=is_auth_code_token_request,
             text=json.dumps(body),
         )
         resp = client.get(f"/cb?code=1234&state=badcsrf")
@@ -141,7 +143,7 @@ def test_callback_no_csrf(client, fake_jwt_token):
         }
         m.post(
             "mock://uaa/token",
-            additional_matcher=check_token_body,
+            additional_matcher=is_auth_code_token_request,
             text=json.dumps(body),
         )
         resp = client.get(f"/cb?code=1234")

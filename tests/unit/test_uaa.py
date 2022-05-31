@@ -9,6 +9,6 @@ def test_gets_user_groups(uaa_user_groups_response):
             "mock://uaa/Users?attributes=groups&filter=id eq 'a-user-id'",
             text=uaa_user_groups_response,
         )
-        assert sorted(uaa.get_user_groups("a-user-id", "a_token")) == sorted(
+        assert sorted(uaa.get_user_groups("a-user-id", "a-token")) == sorted(
             ["cloud_controller.admin", "network.admin"]
         )
