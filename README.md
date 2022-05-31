@@ -26,7 +26,6 @@ The following environment variables are required:
 - `KIBANA_URL` - this is the url of the proxied kibana instance
 - `UAA_AUTH_URL` - where to send your users for authentication. Probably looks like `https://login.<domain>/oauth/authorize`
 - `UAA_BASE_URL` - base URL for app where your client can exchange codes and refresh tokens for tokens. Probably looks like `https://uaa.<domain>/`.
-- `UAA_TOKEN_URL` - where your client can exchange codes and refresh tokens for tokens. Probably looks like `https://uaa.<domain>/token`
 - `UAA_CLIENT_ID` - the client ID of your uaa clinet
 - `UAA_CLIENT_SECRET` - the client secret for your uaa client
 - `SECRET_KEY` - the key used for cookie signing
