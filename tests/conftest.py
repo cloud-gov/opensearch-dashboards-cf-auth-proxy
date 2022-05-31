@@ -39,7 +39,6 @@ def client():
 
 
 @pytest.fixture(scope="function")
-@pytest.fixture(scope="function")
 def authenticated_client(client):
     with client.session_transaction() as s:
         s["user_id"] = "me"
@@ -153,7 +152,7 @@ def simple_org_response():
 
 
 @pytest.fixture()
-def uaa_user_groups_response():
+def uaa_user_is_admin_response():
     return """
    {
       "resources": [
@@ -163,10 +162,28 @@ def uaa_user_groups_response():
                   "value": "1234-abcd-5678-efgh-9z9d",
                   "display": "cloud_controller.admin",
                   "type": "DIRECT"
-               },
+               }
+            ]
+         }
+      ],
+      "startIndex": 1,
+      "itemsPerPage": 100,
+      "totalResults": 1,
+      "schemas": [
+         "urn:scim:schemas:core:1.0"
+      ]
+   }"""
+
+@pytest.fixture()
+def uaa_user_is_not_admin_response():
+    return """
+   {
+      "resources": [
+         {
+            "groups": [
                {
                   "value": "1234-abcd-5678-efgh-9z9d",
-                  "display": "network.admin",
+                  "display": "not.admin",
                   "type": "DIRECT"
                }
             ]

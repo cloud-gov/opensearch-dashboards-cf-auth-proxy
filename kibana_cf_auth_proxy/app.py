@@ -113,6 +113,7 @@ def create_app():
         if session.get("client_credentials_token") is None:
             data = uaa.get_client_credentials_token()
             session["client_credentials_token"] = data["access_token"]
+            
         session["groups"] = uaa.get_user_groups(
             session["user_id"], session["client_credentials_token"]
         )
