@@ -22,8 +22,7 @@ def get_client_credentials_token():
     except:
         return "Unexpected error", 500
 
-    data = response.json()
-    return data
+    return response.json()["access_token"]
 
 
 def is_user_cf_admin(user_id, token):

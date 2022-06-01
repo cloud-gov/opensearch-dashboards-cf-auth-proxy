@@ -109,8 +109,7 @@ def create_app():
         )
 
         if session.get("client_credentials_token") is None:
-            data = uaa.get_client_credentials_token()
-            session["client_credentials_token"] = data["access_token"]
+            session["client_credentials_token"] = uaa.get_client_credentials_token()
 
         session["is_cf_admin"] = uaa.is_user_cf_admin(
             session["user_id"], session["client_credentials_token"]
