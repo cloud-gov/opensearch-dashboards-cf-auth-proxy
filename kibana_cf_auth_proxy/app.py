@@ -95,8 +95,6 @@ def create_app():
             options=dict(verify_signature=False),
         )
 
-        print(token)
-
         session["user_id"] = token["user_id"]
         session["access_token"] = response["access_token"]
         session["refresh_token"] = response["refresh_token"]
