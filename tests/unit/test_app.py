@@ -81,20 +81,20 @@ def test_user_role_set_correctly(client):
     with requests_mock.Mocker() as m:
         m.get(
             "mock://kibana/home",
-            request_headers={"x-proxy-roles": r'"user"'},
         )
         with client.session_transaction() as s:
             s["user_id"] = "me"
         client.get("/home")
+        assert m.last_request._request.headers['x-proxy-roles'] is 'user'
 
 def test_admin_role_set_correctly(client):
     with requests_mock.Mocker() as m:
         m.get(
-            "mock://kibana/home",
-            request_headers={"x-proxy-roles": r'"admin"'},
+            "mock://kibana/home"
         )
         with client.session_transaction() as s:
             s["user_id"] = "me"
             s["groups"] = ["admin"]
             s["is_cf_admin"] = True
         client.get("/home")
+        assert m.last_request._request.headers['x-proxy-roles'] is 'admin'

@@ -170,8 +170,6 @@ def create_app():
             headers["x-proxy-user"] = session["user_id"]
             headers["x-proxy-roles"] = "admin" if session.get("is_cf_admin") else "user"
 
-        headers["x-proxy-roles"] = list_to_ext_header(session.get("groups", []))
-
         # TODO: add x-forwarded-for functionality
         headers["x-forwarded-for"] = "127.0.0.1"
 
