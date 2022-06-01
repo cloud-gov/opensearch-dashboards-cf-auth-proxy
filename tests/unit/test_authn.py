@@ -44,7 +44,7 @@ def test_callback_happy_path(
     client,
     simple_org_response,
     simple_space_response,
-    uaa_user_groups_response,
+    uaa_user_is_admin_response,
 ):
     # go to a page to get redirected to log in
     response = client.get("/foo")
@@ -81,7 +81,7 @@ def test_callback_happy_path(
         )
         m.get(
             "mock://uaa/Users?attributes=groups&filter=id eq 'test_user'",
-            text=uaa_user_groups_response,
+            text=uaa_user_is_admin_response,
         )
         m.get(
             "mock://cf/v3/roles?user_guids=test_user&types=space_developer,space_manager,space_auditor",
@@ -105,9 +105,7 @@ def test_callback_happy_path(
         assert s.get("spaces") == ["space-guid-1"]
         assert s.get("orgs") == ["org-guid-1"]
         assert s.get("client_credentials_token") is not None
-        assert sorted(s.get("groups")) == sorted(
-            ["cloud_controller.admin", "network.admin"]
-        )
+        assert s.get("is_cf_admin") is True
 
     is_valid_auth_code_token_request(m.request_history[0])
 
