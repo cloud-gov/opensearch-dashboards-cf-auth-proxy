@@ -174,6 +174,7 @@ def uaa_user_is_admin_response():
       ]
    }"""
 
+
 @pytest.fixture()
 def uaa_user_is_not_admin_response():
     return """
