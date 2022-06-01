@@ -79,7 +79,6 @@ jobs:
           cf_url: ((dev-cf-url))
           uaa_auth_url: ((dev-uaa-auth-url))
           uaa_base_url: ((dev-uaa-base-url))
-          uaa_token_url: ((dev-uaa-token-url))
           uaa_client_id: ((dev-uaa-client-id))
           uaa_client_secret: ((dev-uaa-client-secret))
           secret_key: ((dev-secret-key))
