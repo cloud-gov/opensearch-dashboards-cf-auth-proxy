@@ -15,7 +15,6 @@ class Config:
     def __init__(self):
         self.env_parser = Env()
         self.PORT = self.env_parser.int("PORT", 8080)
-        self.CF_ADMIN_GROUP_NAME = "cloud_controller.admin"
         self.PERMITTED_SPACE_ROLES = self.env_parser.list(
             "PERMITTED_SPACE_ROLES",
             ["space_developer", "space_manager", "space_auditor"],
@@ -42,6 +41,7 @@ class UnitConfig(Config):
         self.SECRET_KEY = "CHANGEME"
         self.PERMANENT_SESSION_LIFETIME = 120
         self.SESSION_REFRESH_EACH_REQUEST = False
+        self.CF_ADMIN_GROUP_NAME = "cloud_controller.admin"
 
 
 class LocalConfig(Config):
@@ -67,6 +67,7 @@ class LocalConfig(Config):
         self.UAA_CLIENT_SECRET = self.env_parser.str("UAA_CLIENT_SECRET")
         self.SECRET_KEY = self.env_parser.str("SECRET_KEY")
         self.PERMANENT_SESSION_LIFETIME = self.env_parser.int("SESSION_LIFETIME")
+        self.CF_ADMIN_GROUP_NAME = self.env_parser.int("CF_ADMIN_GROUP_NAME")
 
 
 class AppConfig(Config):
@@ -90,3 +91,4 @@ class AppConfig(Config):
         self.UAA_CLIENT_SECRET = self.env_parser.str("UAA_CLIENT_SECRET")
         self.SECRET_KEY = self.env_parser.str("SECRET_KEY")
         self.PERMANENT_SESSION_LIFETIME = self.env_parser.int("SESSION_LIFETIME")
+        self.CF_ADMIN_GROUP_NAME = self.env_parser.int("CF_ADMIN_GROUP_NAME")
