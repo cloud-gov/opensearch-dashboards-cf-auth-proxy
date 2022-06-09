@@ -30,12 +30,12 @@ class UnitConfig(Config):
         super().__init__()
         self.TESTING = True
         self.DEBUG = True
-        self.KIBANA_URL = "mock://kibana/"
+        self.KIBANA_URL = "http://mock.kibana/"
         self.SESSION_TYPE = "filesystem"
-        self.CF_API_URL = "mock://cf/"
-        self.UAA_AUTH_URL = "mock://uaa/authorize"
-        self.UAA_BASE_URL = "mock://uaa/"
-        self.UAA_TOKEN_URL = "mock://uaa/token"
+        self.CF_API_URL = "http://mock.cf/"
+        self.UAA_AUTH_URL = "http://mock.uaa/authorize"
+        self.UAA_BASE_URL = "http://mock.uaa/"
+        self.UAA_TOKEN_URL = "http://mock.uaa/token"
         self.UAA_CLIENT_ID = "EXAMPLE"
         self.UAA_CLIENT_SECRET = "example"
         self.SECRET_KEY = "CHANGEME"
