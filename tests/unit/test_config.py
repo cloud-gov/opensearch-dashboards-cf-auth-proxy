@@ -24,6 +24,7 @@ def test_config_loads(monkeypatch):
         "organization_manager",
         "organization_auditor",
     ]
+    assert config.CF_ADMIN_GROUP_NAME == "cloud_controller.admin"
 
 
 @pytest.mark.parametrize(
@@ -40,6 +41,7 @@ def test_local_config(monkeypatch, kibana_url):
     monkeypatch.setenv("UAA_CLIENT_SECRET", "CHANGEME")
     monkeypatch.setenv("SECRET_KEY", "changeme")
     monkeypatch.setenv("SESSION_LIFETIME", "3600")
+    monkeypatch.setenv("CF_ADMIN_GROUP_NAME", "random-group")
     config = config_from_env()
     assert config.PORT == 8888
     assert config.KIBANA_URL == "https://kibana.example.com/"
@@ -53,6 +55,7 @@ def test_local_config(monkeypatch, kibana_url):
     assert config.CF_API_URL == "https://api.example.com/"
     assert config.SECRET_KEY == "changeme"
     assert config.PERMANENT_SESSION_LIFETIME == 3600
+    assert config.CF_ADMIN_GROUP_NAME == "random-group"
 
 
 @pytest.mark.parametrize(
@@ -69,6 +72,7 @@ def test_prod_config(monkeypatch, kibana_url):
     monkeypatch.setenv("UAA_CLIENT_SECRET", "CHANGEME")
     monkeypatch.setenv("SECRET_KEY", "changeme")
     monkeypatch.setenv("SESSION_LIFETIME", "3600")
+    monkeypatch.setenv("CF_ADMIN_GROUP_NAME", "random-group")
     config = config_from_env()
     assert config.PORT == 8888
     assert config.KIBANA_URL == "https://kibana.example.com/"
@@ -91,3 +95,4 @@ def test_prod_config(monkeypatch, kibana_url):
         "organization_manager",
         "organization_auditor",
     ]
+    assert config.CF_ADMIN_GROUP_NAME == "random-group"

@@ -67,7 +67,7 @@ class LocalConfig(Config):
         self.UAA_CLIENT_SECRET = self.env_parser.str("UAA_CLIENT_SECRET")
         self.SECRET_KEY = self.env_parser.str("SECRET_KEY")
         self.PERMANENT_SESSION_LIFETIME = self.env_parser.int("SESSION_LIFETIME")
-        self.CF_ADMIN_GROUP_NAME = self.env_parser.int("CF_ADMIN_GROUP_NAME")
+        self.CF_ADMIN_GROUP_NAME = self.env_parser.str("CF_ADMIN_GROUP_NAME")
 
 
 class AppConfig(Config):
@@ -91,4 +91,4 @@ class AppConfig(Config):
         self.UAA_CLIENT_SECRET = self.env_parser.str("UAA_CLIENT_SECRET")
         self.SECRET_KEY = self.env_parser.str("SECRET_KEY")
         self.PERMANENT_SESSION_LIFETIME = self.env_parser.int("SESSION_LIFETIME")
-        self.CF_ADMIN_GROUP_NAME = self.env_parser.int("CF_ADMIN_GROUP_NAME")
+        self.CF_ADMIN_GROUP_NAME = self.env_parser.str("CF_ADMIN_GROUP_NAME")
