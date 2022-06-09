@@ -63,7 +63,7 @@ def test_callback_happy_path(
             "jti": "idk",
         }
         m.post(
-            "mock://uaa/token",
+            "http://uaa.mock/token",
             additional_matcher=is_auth_code_token_request,
             text=json.dumps(body),
         )
@@ -75,20 +75,20 @@ def test_callback_happy_path(
             "jti": "idk",
         }
         m.post(
-            "mock://uaa/token",
+            "http://uaa.mock/token",
             additional_matcher=is_client_credentials_token_request,
             text=json.dumps(client_creds_response),
         )
         m.get(
-            "mock://uaa/Users?attributes=groups&filter=id eq 'test_user'",
+            "http://uaa.mock/Users?attributes=groups&filter=id eq 'test_user'",
             text=uaa_user_is_admin_response,
         )
         m.get(
-            "mock://cf/v3/roles?user_guids=test_user&types=space_developer,space_manager,space_auditor",
+            "http://cf.mock/v3/roles?user_guids=test_user&types=space_developer,space_manager,space_auditor",
             text=simple_space_response,
         )
         m.get(
-            "mock://cf/v3/roles?user_guids=test_user&types=organization_manager,organization_auditor",
+            "http://cf.mock/v3/roles?user_guids=test_user&types=organization_manager,organization_auditor",
             text=simple_org_response,
         )
         resp = client.get(f"/cb?code=1234&state={csrf}")
@@ -134,7 +134,7 @@ def test_callback_bad_csrf(client):
             "jti": "idk",
         }
         m.post(
-            "mock://uaa/token",
+            "http://uaa.mock/token",
             additional_matcher=is_auth_code_token_request,
             text=json.dumps(body),
         )
@@ -161,7 +161,7 @@ def test_callback_no_csrf(client):
             "jti": "idk",
         }
         m.post(
-            "mock://uaa/token",
+            "http://uaa.mock/token",
             additional_matcher=is_auth_code_token_request,
             text=json.dumps(body),
         )
@@ -207,7 +207,7 @@ def test_uaa_token_refreshed(client):
             "expires_in": 2000,
         }
         m.post(
-            "mock://uaa/token",
+            "http://uaa.mock/token",
             additional_matcher=validate_request,
             text=json.dumps(body),
         )

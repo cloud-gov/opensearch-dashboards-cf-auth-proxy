@@ -7,10 +7,10 @@ def test_config_loads(monkeypatch):
     config = config_from_env()
     assert config.DEBUG
     assert config.TESTING
-    assert config.KIBANA_URL == "mock://kibana/"
-    assert config.UAA_AUTH_URL == "mock://uaa/authorize"
-    assert config.UAA_TOKEN_URL == "mock://uaa/token"
-    assert config.CF_API_URL == "mock://cf/"
+    assert config.KIBANA_URL == "http://mock.kibana/"
+    assert config.UAA_AUTH_URL == "http://uaa.mock/authorize"
+    assert config.UAA_TOKEN_URL == "http://uaa.mock/token"
+    assert config.CF_API_URL == "http://cf.mock/"
     assert config.UAA_CLIENT_ID == "EXAMPLE"
     assert config.UAA_CLIENT_SECRET == "example"
     assert config.SECRET_KEY == "CHANGEME"
