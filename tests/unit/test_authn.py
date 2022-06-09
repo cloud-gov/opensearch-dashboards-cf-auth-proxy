@@ -84,11 +84,11 @@ def test_callback_happy_path(
             text=uaa_user_is_admin_response,
         )
         m.get(
-            "http://cf.mock/v3/roles?user_guids=test_user&types=space_developer,space_manager,space_auditor",
+            "http://mock.cf/v3/roles?user_guids=test_user&types=space_developer,space_manager,space_auditor",
             text=simple_space_response,
         )
         m.get(
-            "http://cf.mock/v3/roles?user_guids=test_user&types=organization_manager,organization_auditor",
+            "http://mock.cf/v3/roles?user_guids=test_user&types=organization_manager,organization_auditor",
             text=simple_org_response,
         )
         resp = client.get(f"/cb?code=1234&state={csrf}")
