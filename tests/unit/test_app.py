@@ -14,7 +14,8 @@ def test_redirected_to_auth(client):
     query_params = parse.parse_qs(location.query)
     assert response.status_code == 302
     assert query_params["state"] is not None
-    assert location.scheme == "mock"
+    assert location.scheme == "http"
+    assert location.hostname == "mock.uaa"
     assert query_params["redirect_uri"][0][0:4] == "http"
     assert query_params["scope"][0] == "openid cloud_controller.read scim.read"
     assert query_params["response_type"][0] == "code"

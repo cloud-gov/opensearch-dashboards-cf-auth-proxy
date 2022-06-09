@@ -8,8 +8,8 @@ def test_config_loads(monkeypatch):
     assert config.DEBUG
     assert config.TESTING
     assert config.KIBANA_URL == "http://mock.kibana/"
-    assert config.UAA_AUTH_URL == "http://uaa.mock/authorize"
-    assert config.UAA_TOKEN_URL == "http://uaa.mock/token"
+    assert config.UAA_AUTH_URL == "http://mock.uaa/authorize"
+    assert config.UAA_TOKEN_URL == "http://mock.uaa/token"
     assert config.CF_API_URL == "http://mock.cf/"
     assert config.UAA_CLIENT_ID == "EXAMPLE"
     assert config.UAA_CLIENT_SECRET == "example"

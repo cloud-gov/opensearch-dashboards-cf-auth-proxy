@@ -63,7 +63,7 @@ def test_callback_happy_path(
             "jti": "idk",
         }
         m.post(
-            "http://uaa.mock/token",
+            "http://mock.uaa/token",
             additional_matcher=is_auth_code_token_request,
             text=json.dumps(body),
         )
@@ -75,12 +75,12 @@ def test_callback_happy_path(
             "jti": "idk",
         }
         m.post(
-            "http://uaa.mock/token",
+            "http://mock.uaa/token",
             additional_matcher=is_client_credentials_token_request,
             text=json.dumps(client_creds_response),
         )
         m.get(
-            "http://uaa.mock/Users?attributes=groups&filter=id eq 'test_user'",
+            "http://mock.uaa/Users/test_user",
             text=uaa_user_is_admin_response,
         )
         m.get(
@@ -134,7 +134,7 @@ def test_callback_bad_csrf(client):
             "jti": "idk",
         }
         m.post(
-            "http://uaa.mock/token",
+            "http://mock.uaa/token",
             additional_matcher=is_auth_code_token_request,
             text=json.dumps(body),
         )
@@ -161,7 +161,7 @@ def test_callback_no_csrf(client):
             "jti": "idk",
         }
         m.post(
-            "http://uaa.mock/token",
+            "http://mock.uaa/token",
             additional_matcher=is_auth_code_token_request,
             text=json.dumps(body),
         )
@@ -207,7 +207,7 @@ def test_uaa_token_refreshed(client):
             "expires_in": 2000,
         }
         m.post(
-            "http://uaa.mock/token",
+            "http://mock.uaa/token",
             additional_matcher=validate_request,
             text=json.dumps(body),
         )
