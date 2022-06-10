@@ -1,5 +1,4 @@
 from kibana_cf_auth_proxy.headers import list_to_ext_header
-import pytest
 
 
 def test_spaces_to_header():

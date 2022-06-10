@@ -25,8 +25,8 @@ The following environment variables are required:
 - `FLASK_ENV` - set to `unit` for tests, `local` for development, `production` for production
 - `KIBANA_URL` - this is the url of the proxied kibana instance
 - `UAA_AUTH_URL` - where to send your users for authentication. Probably looks like `https://login.<domain>/oauth/authorize`
-- `UAA_TOKEN_URL` - where your client can exchange codes and refresh tokens for tokens. Probably looks like `https://uaa.<domain>/token`
-- `UAA_CLIENT_ID` - the client id of your uaa clinet
+- `UAA_BASE_URL` - base URL for app where your client can exchange codes and refresh tokens for tokens. Probably looks like `https://uaa.<domain>/`.
+- `UAA_CLIENT_ID` - the client ID of your uaa clinet
 - `UAA_CLIENT_SECRET` - the client secret for your uaa client
 - `SECRET_KEY` - the key used for cookie signing
 
@@ -50,7 +50,7 @@ where `<my_url>` is the local host/port on your machine for this app (default `h
 
 ```shell
 uaac client add <my_client_name> \
-   --authorized_grant_types authorization_code,refresh_token \
+   --authorized_grant_types authorization_code,refresh_token,client_credentials \
    --authorities scim.read \
    --scope "cloud_controller.read,openid,scim.read" \
    -s <my_client_secret> \

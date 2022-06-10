@@ -2,27 +2,18 @@
 Tests for the callback endpoint (where users are sent by UAA after logging in)
 """
 import json
-from urllib import parse
-import random
-import string
-import datetime
-
 import jwt
-import pytest
+import datetime
+import random
 import requests_mock
+import string
+
+from urllib import parse
+
+from kibana_cf_auth_proxy.extensions import config
 
 
-def check_token_body(request):
-    # this is for requests_mock
-    data = request.text
-    data = parse.parse_qs(data)
-    assert data["grant_type"][0] == "authorization_code"
-    assert data["code"][0] == "1234"
-    assert data["redirect_uri"][0] == "http://localhost/cb"
-    return True
-
-
-def make_id_token(claims=None):
+def make_jwt_token(claims=None):
     # todo, clean this up
     claims = claims or {"user_id": "test_user"}
     token = jwt.encode(claims, "", "HS256")
@@ -33,7 +24,28 @@ def make_random_token():
     return "".join(random.choice(string.ascii_letters) for i in range(10))
 
 
-def test_callback_happy_path(client, simple_org_response, simple_space_response):
+def is_auth_code_token_request(request):
+    return "grant_type=authorization_code" in request.text
+
+
+def is_valid_auth_code_token_request(request):
+    data = request.text
+    data = parse.parse_qs(data)
+    assert data["grant_type"][0] == "authorization_code"
+    assert data["code"][0] == "1234"
+    assert data["redirect_uri"][0] == "http://localhost/cb"
+
+
+def is_client_credentials_token_request(request):
+    return "grant_type=client_credentials" in request.text
+
+
+def test_callback_happy_path(
+    client,
+    simple_org_response,
+    simple_space_response,
+    uaa_user_is_admin_response,
+):
     # go to a page to get redirected to log in
     response = client.get("/foo")
     location_str = f"{response.headers['location']}"
@@ -45,22 +57,38 @@ def test_callback_happy_path(client, simple_org_response, simple_space_response)
             "access_token": make_random_token(),
             "refresh_token": make_random_token(),
             "token_type": "bearer",
-            "id_token": make_id_token(),
+            "id_token": make_jwt_token(),
             "expires_in": 2000,
             "scope": "openid cloud_controller.read scim.read",
             "jti": "idk",
         }
         m.post(
-            "mock://uaa/token",
-            additional_matcher=check_token_body,
+            "http://mock.uaa/token",
+            additional_matcher=is_auth_code_token_request,
             text=json.dumps(body),
         )
+        client_creds_response = {
+            "access_token": make_jwt_token(),
+            "token_type": "bearer",
+            "expires_in": 2000,
+            "scope": "scim.read",
+            "jti": "idk",
+        }
+        m.post(
+            "http://mock.uaa/token",
+            additional_matcher=is_client_credentials_token_request,
+            text=json.dumps(client_creds_response),
+        )
         m.get(
-            "mock://cf/v3/roles?user_guids=test_user&types=space_developer,space_manager,space_auditor",
+            "http://mock.uaa/Users/test_user",
+            text=uaa_user_is_admin_response,
+        )
+        m.get(
+            "http://mock.cf/v3/roles?user_guids=test_user&types=space_developer,space_manager,space_auditor",
             text=simple_space_response,
         )
         m.get(
-            "mock://cf/v3/roles?user_guids=test_user&types=organization_manager,organization_auditor",
+            "http://mock.cf/v3/roles?user_guids=test_user&types=organization_manager,organization_auditor",
             text=simple_org_response,
         )
         resp = client.get(f"/cb?code=1234&state={csrf}")
@@ -76,28 +104,38 @@ def test_callback_happy_path(client, simple_org_response, simple_space_response)
         assert s.get("id_token") is not None
         assert s.get("spaces") == ["space-guid-1"]
         assert s.get("orgs") == ["org-guid-1"]
+        assert s.get("client_credentials_token") is not None
+        assert s.get("is_cf_admin") is True
+
+    is_valid_auth_code_token_request(m.request_history[0])
+
+    client_creds_token_request = m.request_history[3]
+    data = client_creds_token_request.text
+    data = parse.parse_qs(data)
+    assert data["grant_type"][0] == "client_credentials"
+    assert data["response_type"][0] == "token"
+    assert data["client_id"][0] == config.UAA_CLIENT_ID
+    assert data["client_secret"][0] == config.UAA_CLIENT_SECRET
+
     assert resp.status_code == 302
     assert resp.headers.get("location").endswith("/foo")
 
 
 def test_callback_bad_csrf(client):
     # go to a page to get redirected to log in
-    response = client.get("/foo")
-    location_str = f"{response.headers['location']}"
-    location = parse.urlparse(location_str)
-    query_params = parse.parse_qs(location.query)
+    client.get("/foo")
     with requests_mock.Mocker() as m:
         body = {
             "access_token": make_random_token(),
             "token_type": "bearer",
-            "id_token": make_id_token(),
+            "id_token": make_jwt_token(),
             "expires_in": 2000,
             "scope": "openid email",
             "jti": "idk",
         }
         m.post(
-            "mock://uaa/token",
-            additional_matcher=check_token_body,
+            "http://mock.uaa/token",
+            additional_matcher=is_auth_code_token_request,
             text=json.dumps(body),
         )
         resp = client.get(f"/cb?code=1234&state=badcsrf")
@@ -117,14 +155,14 @@ def test_callback_no_csrf(client):
         body = {
             "access_token": make_random_token(),
             "token_type": "bearer",
-            "id_token": make_id_token(),
+            "id_token": make_jwt_token(),
             "expires_in": 2000,
             "scope": "openid cloud_controller.read scim.read",
             "jti": "idk",
         }
         m.post(
-            "mock://uaa/token",
-            additional_matcher=check_token_body,
+            "http://mock.uaa/token",
+            additional_matcher=is_auth_code_token_request,
             text=json.dumps(body),
         )
         resp = client.get(f"/cb?code=1234")
@@ -169,7 +207,7 @@ def test_uaa_token_refreshed(client):
             "expires_in": 2000,
         }
         m.post(
-            "mock://uaa/token",
+            "http://mock.uaa/token",
             additional_matcher=validate_request,
             text=json.dumps(body),
         )

@@ -2,6 +2,7 @@ import pytest
 
 from kibana_cf_auth_proxy.app import create_app
 
+
 def pytest_configure(config):
     config.addinivalue_line("markers", "focus: Only run this test.")
 
@@ -52,10 +53,10 @@ def simple_space_response():
       "total_results": 1,
       "total_pages": 1,
       "first": {
-         "href": "mock://cf/v3/roles?order_by=%2Bcreated_at&page=1&per_page=1&types=space_developer%2Cspace_manager&user_guids=a-user-guid"
+         "href": "http://mock.cf/v3/roles?order_by=%2Bcreated_at&page=1&per_page=1&types=space_developer%2Cspace_manager&user_guids=a-user-guid"
       },
       "last": {
-         "href": "mock://cf/v3/roles?order_by=%2Bcreated_at&page=2&per_page=1&types=space_developer%2Cspace_manager&user_guids=a-user-guid"
+         "href": "http://mock.cf/v3/roles?order_by=%2Bcreated_at&page=2&per_page=1&types=space_developer%2Cspace_manager&user_guids=a-user-guid"
       },
       "next": null,
       "previous": null
@@ -83,13 +84,13 @@ def simple_space_response():
          },
          "links": {
             "self": {
-               "href": "mock://cf/v3/roles/role-guid-1"
+               "href": "http://mock.cf/v3/roles/role-guid-1"
             },
             "user": {
-               "href": "mock://cf/v3/users/a-user-guid"
+               "href": "http://mock.cf/v3/users/a-user-guid"
             },
             "space": {
-               "href": "mock://cf/v3/spaces/space-guid-1"
+               "href": "http://mock.cf/v3/spaces/space-guid-1"
             }
          }
         }
@@ -105,10 +106,10 @@ def simple_org_response():
       "total_results": 1,
       "total_pages": 1,
       "first": {
-         "href": "mock://cf/v3/roles?order_by=%2Bcreated_at&page=1&per_page=1&types=org_manager&user_guids=a-user-guid"
+         "href": "http://mock.cf/v3/roles?order_by=%2Bcreated_at&page=1&per_page=1&types=org_manager&user_guids=a-user-guid"
       },
       "last": {
-         "href": "mock://cf/v3/roles?order_by=%2Bcreated_at&page=2&per_page=1&types=org_manager&user_guids=a-user-guid"
+         "href": "http://mock.cf/v3/roles?order_by=%2Bcreated_at&page=2&per_page=1&types=org_manager&user_guids=a-user-guid"
       },
       "next": null,
       "previous": null
@@ -136,15 +137,43 @@ def simple_org_response():
          },
          "links": {
             "self": {
-               "href": "mock://cf/v3/roles/role-guid-1"
+               "href": "http://mock.cf/v3/roles/role-guid-1"
             },
             "user": {
-               "href": "mock://cf/v3/users/a-user-guid"
+               "href": "http://mock.cf/v3/users/a-user-guid"
             },
             "organization": {
-               "href": "mock://cf/v3/spaces/org-guid-1"
+               "href": "http://mock.cf/v3/spaces/org-guid-1"
             }
          }
         }
       ]
     } """
+
+
+@pytest.fixture()
+def uaa_user_is_admin_response():
+    return """
+   {
+      "groups": [
+         {
+            "value": "1234-abcd-5678-efgh-9z9d",
+            "display": "cloud_controller.admin",
+            "type": "DIRECT"
+         }
+      ]
+   }"""
+
+
+@pytest.fixture()
+def uaa_user_is_not_admin_response():
+    return """
+   {
+      "groups": [
+         {
+            "value": "1234-abcd-5678-efgh-9z9d",
+            "display": "not.admin",
+            "type": "DIRECT"
+         }
+      ]
+   }"""

@@ -14,7 +14,8 @@ def test_redirected_to_auth(client):
     query_params = parse.parse_qs(location.query)
     assert response.status_code == 302
     assert query_params["state"] is not None
-    assert location.scheme == "mock"
+    assert location.scheme == "http"
+    assert location.hostname == "mock.uaa"
     assert query_params["redirect_uri"][0][0:4] == "http"
     assert query_params["scope"][0] == "openid cloud_controller.read scim.read"
     assert query_params["response_type"][0] == "code"
@@ -22,7 +23,7 @@ def test_redirected_to_auth(client):
 
 def test_app_proxies_arbitrary_paths(authenticated_client):
     with requests_mock.Mocker() as m:
-        m.get("mock://kibana/foo/bar/baz/quux/")
+        m.get("http://mock.kibana/foo/bar/baz/quux/")
         authenticated_client.get("/foo/bar/baz/quux/")
     assert m.called
 
@@ -33,7 +34,7 @@ def test_app_filters_headers(authenticated_client):
     it should be dropped or changed
     """
     with requests_mock.Mocker() as m:
-        m.get("mock://kibana/foo/bar/baz/quux/")
+        m.get("http://mock.kibana/foo/bar/baz/quux/")
         authenticated_client.get(
             "/foo/bar/baz/quux/",
             headers={
@@ -53,10 +54,11 @@ def test_app_filters_headers(authenticated_client):
             if header.lower() == "x-proxy-ext-orgids":
                 assert m.request_history[0]._request.headers[header] != "4,5,6"
 
+
 def test_orgs_set_correctly(client):
     with requests_mock.Mocker() as m:
         m.get(
-            "mock://kibana/home",
+            "http://mock.kibana/home",
             request_headers={"x-proxy-ext-orgids": r'"org-id-1", "org-id-2"'},
         )
         with client.session_transaction() as s:
@@ -68,10 +70,32 @@ def test_orgs_set_correctly(client):
 def test_spaces_set_correctly(client):
     with requests_mock.Mocker() as m:
         m.get(
-            "mock://kibana/home",
+            "http://mock.kibana/home",
             request_headers={"x-proxy-ext-spaceids": r'"space-id-1", "space-id-2"'},
         )
         with client.session_transaction() as s:
             s["user_id"] = "me"
             s["spaces"] = ["space-id-1", "space-id-2"]
         client.get("/home")
+
+
+def test_user_role_set_correctly(client):
+    with requests_mock.Mocker() as m:
+        m.get(
+            "http://mock.kibana/home",
+        )
+        with client.session_transaction() as s:
+            s["user_id"] = "me"
+        client.get("/home")
+        assert m.last_request._request.headers["x-proxy-roles"] == "user"
+
+
+def test_admin_role_set_correctly(client):
+    with requests_mock.Mocker() as m:
+        m.get("http://mock.kibana/home")
+        with client.session_transaction() as s:
+            s["user_id"] = "me"
+            s["groups"] = ["admin"]
+            s["is_cf_admin"] = True
+        client.get("/home")
+        assert m.last_request._request.headers["x-proxy-roles"] == "admin"

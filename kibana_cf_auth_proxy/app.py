@@ -11,6 +11,7 @@ from kibana_cf_auth_proxy.extensions import config
 from kibana_cf_auth_proxy.proxy import proxy_request
 from kibana_cf_auth_proxy import cf
 from kibana_cf_auth_proxy.headers import list_to_ext_header
+from kibana_cf_auth_proxy import uaa
 
 
 def create_app():
@@ -107,6 +108,13 @@ def create_app():
             session["user_id"], session["access_token"]
         )
 
+        if session.get("client_credentials_token") is None:
+            session["client_credentials_token"] = uaa.get_client_credentials_token()
+
+        session["is_cf_admin"] = uaa.is_user_cf_admin(
+            session["user_id"], session["client_credentials_token"]
+        )
+
         return redirect(session.pop("original-request", "/app/home"))
 
     @app.route("/", defaults={"path": ""})
@@ -157,7 +165,7 @@ def create_app():
         # allowed path
         if session.get("user_id"):
             headers["x-proxy-user"] = session["user_id"]
-            headers["x-proxy-roles"] = "user"
+            headers["x-proxy-roles"] = "admin" if session.get("is_cf_admin") else "user"
 
         # TODO: add x-forwarded-for functionality
         headers["x-forwarded-for"] = "127.0.0.1"

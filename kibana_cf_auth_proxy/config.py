@@ -30,16 +30,18 @@ class UnitConfig(Config):
         super().__init__()
         self.TESTING = True
         self.DEBUG = True
-        self.KIBANA_URL = "mock://kibana/"
+        self.KIBANA_URL = "http://mock.kibana/"
         self.SESSION_TYPE = "filesystem"
-        self.CF_API_URL = "mock://cf/"
-        self.UAA_AUTH_URL = "mock://uaa/authorize"
-        self.UAA_TOKEN_URL = "mock://uaa/token"
+        self.CF_API_URL = "http://mock.cf/"
+        self.UAA_AUTH_URL = "http://mock.uaa/authorize"
+        self.UAA_BASE_URL = "http://mock.uaa/"
+        self.UAA_TOKEN_URL = "http://mock.uaa/token"
         self.UAA_CLIENT_ID = "EXAMPLE"
         self.UAA_CLIENT_SECRET = "example"
         self.SECRET_KEY = "CHANGEME"
         self.PERMANENT_SESSION_LIFETIME = 120
         self.SESSION_REFRESH_EACH_REQUEST = False
+        self.CF_ADMIN_GROUP_NAME = "cloud_controller.admin"
 
 
 class LocalConfig(Config):
@@ -57,11 +59,15 @@ class LocalConfig(Config):
 
         self.CF_API_URL = self.env_parser("CF_API_URL")
         self.UAA_AUTH_URL = self.env_parser.str("UAA_AUTH_URL")
-        self.UAA_TOKEN_URL = self.env_parser.str("UAA_TOKEN_URL")
+        self.UAA_BASE_URL = self.env_parser.str("UAA_BASE_URL")
+        if self.UAA_BASE_URL[-1] != "/":
+            self.UAA_BASE_URL = f"{self.UAA_BASE_URL}/"
+        self.UAA_TOKEN_URL = f"{self.UAA_BASE_URL}oauth/token"
         self.UAA_CLIENT_ID = self.env_parser.str("UAA_CLIENT_ID")
         self.UAA_CLIENT_SECRET = self.env_parser.str("UAA_CLIENT_SECRET")
         self.SECRET_KEY = self.env_parser.str("SECRET_KEY")
         self.PERMANENT_SESSION_LIFETIME = self.env_parser.int("SESSION_LIFETIME")
+        self.CF_ADMIN_GROUP_NAME = self.env_parser.str("CF_ADMIN_GROUP_NAME")
 
 
 class AppConfig(Config):
@@ -77,8 +83,12 @@ class AppConfig(Config):
 
         self.CF_API_URL = self.env_parser("CF_API_URL")
         self.UAA_AUTH_URL = self.env_parser.str("UAA_AUTH_URL")
-        self.UAA_TOKEN_URL = self.env_parser.str("UAA_TOKEN_URL")
+        self.UAA_BASE_URL = self.env_parser.str("UAA_BASE_URL")
+        if self.UAA_BASE_URL[-1] != "/":
+            self.UAA_BASE_URL = f"{self.UAA_BASE_URL}/"
+        self.UAA_TOKEN_URL = f"{self.UAA_BASE_URL}oauth/token"
         self.UAA_CLIENT_ID = self.env_parser.str("UAA_CLIENT_ID")
         self.UAA_CLIENT_SECRET = self.env_parser.str("UAA_CLIENT_SECRET")
         self.SECRET_KEY = self.env_parser.str("SECRET_KEY")
         self.PERMANENT_SESSION_LIFETIME = self.env_parser.int("SESSION_LIFETIME")
+        self.CF_ADMIN_GROUP_NAME = self.env_parser.str("CF_ADMIN_GROUP_NAME")
