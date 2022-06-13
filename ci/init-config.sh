@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -euo pipefail
-shopt -s inherit_errexit
+shopt -s inherit_errexit || true
 
 
 function cleanup() {
@@ -10,18 +10,18 @@ function cleanup() {
 }
 trap cleanup exit
 
-cf api ${CF_API_URL}
-cf auth
-cf t -o ${CF_ORGANIZATION} -s ${CF_SPACE}
+# cf api ${CF_API_URL}
+# cf auth
+# cf t -o ${CF_ORGANIZATION} -s ${CF_SPACE}
 
-echo "Creating SSH tunnel"
-cf ssh -L 9200:odfe-test.apps.internal:9200 -L 5601:kbn-test.apps.internal:5601 kibana -N &
-ssh_pid=$!
+# echo "Creating SSH tunnel"
+# cf ssh -L 9200:odfe-test.apps.internal:9200 -L 5601:kbn-test.apps.internal:5601 kibana -N &
+# ssh_pid=$!
+
+# echo "Waiting for tunnel to come up ..."
+# sleep 10
 
 cookie_jar=$(mktemp)
-
-echo "Waiting for tunnel to come up ..."
-sleep 10
 
 # we have to create index and component templates
 # to work around the baked-in stream templates
@@ -203,7 +203,7 @@ curl --fail --silent --show-error -u ${ES_USER}:${ES_PASSWORD} -k \
 
 # for the kibana stuff, we need cookies just to deal with the multitenancy
 echo "Setting up kibana http session"
-# this curl is just to get a cookie ready 
+# this curl is just to get a cookie ready
 curl --fail --silent --show-error --cookie-jar ${cookie_jar} -b ${cookie_jar} \
     -X GET \
     -H "x-proxy-roles: admin" \

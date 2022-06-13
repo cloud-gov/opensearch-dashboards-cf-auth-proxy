@@ -1,3 +1,3 @@
 from os import getenv
 
-KIBANA_URL = getenv("KIBANA_URL")
+AUTH_PROXY_URL = getenv("AUTH_PROXY_URL")
