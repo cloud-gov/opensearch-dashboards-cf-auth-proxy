@@ -6,6 +6,13 @@ outside of this repository.
 
 To see all of the available commands, run `./dev -h`.
 
+## Running e2e tests locally
+
+1. Update your `.env` file with values for the variables used for e2e test. You can find the necessary variables in `.env-sample`. You can get the values used in the pipeline from the credentials file stored
+on S3.
+1. [Make sure your local development stack is up and running](./README.md#running-locally)
+1. Run `./dev e2e-local`
+
 ## Code style
 
 Code is styled with `black`, which is configured in `pyproject.toml`. This means you can (and
