@@ -3,12 +3,17 @@
 set -euo pipefail
 shopt -s inherit_errexit || true
 
+function cleanup() {
+  rm "${cookie_jar}"
+}
+trap cleanup exit
+
 cookie_jar=$(mktemp)
 
 # we have to create index and component templates
 # to work around the baked-in stream templates
 echo "creating component template"
-curl --fail --silent --show-error -u ${ES_USER}:${ES_PASSWORD} -k \
+curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
     -X PUT \
     -H "content-type: application/json" \
     https://localhost:9200/_component_template/ct_apps \
@@ -39,7 +44,7 @@ curl --fail --silent --show-error -u ${ES_USER}:${ES_PASSWORD} -k \
 }' | jq
 
 echo "Creating index template"
-curl --fail --silent --show-error -u ${ES_USER}:${ES_PASSWORD} -k \
+curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
     -X PUT \
     -H "content-type: application/json" \
     https://localhost:9200/_index_template/it_apps \
@@ -50,7 +55,7 @@ curl --fail --silent --show-error -u ${ES_USER}:${ES_PASSWORD} -k \
         }' | jq
 
 echo "Creating index"
-curl --silent --show-error -u ${ES_USER}:${ES_PASSWORD} -k \
+curl --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
     -X PUT \
     -H "content-type: application/json" \
     https://localhost:9200/logs-app-now \
@@ -116,7 +121,7 @@ echo "creating test document 1/5"
 # It doesn't seem to make the docs available otherwise
 # We could probably just do this on the last doc we index, but doing
 # it on all of them makes it easier to modify the script
-curl --fail --silent --show-error -u ${ES_USER}:${ES_PASSWORD} -k \
+curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
     -X POST \
     -H "content-type: application/json" \
     https://localhost:9200/logs-app-now/_doc?refresh=true \
@@ -132,7 +137,7 @@ curl --fail --silent --show-error -u ${ES_USER}:${ES_PASSWORD} -k \
 # user 2 should be able to see this log
 # user 3 should be able to see this log
 echo "creating test document 2/5"
-curl --fail --silent --show-error -u ${ES_USER}:${ES_PASSWORD} -k \
+curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
     -X POST \
     -H "content-type: application/json" \
     https://localhost:9200/logs-app-now/_doc?refresh=true \
@@ -146,7 +151,7 @@ curl --fail --silent --show-error -u ${ES_USER}:${ES_PASSWORD} -k \
 
 # none of the users should be able to see this log
 echo "creating test document 3/5"
-curl --fail --silent --show-error -u ${ES_USER}:${ES_PASSWORD} -k \
+curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
     -X POST \
     -H "content-type: application/json" \
     https://localhost:9200/logs-app-now/_doc?refresh=true \
@@ -159,7 +164,7 @@ curl --fail --silent --show-error -u ${ES_USER}:${ES_PASSWORD} -k \
 # user 2 should not be able to see it
 # user 3 should be able to see this log
 echo "creating test document 4/5"
-curl --fail --silent --show-error -u ${ES_USER}:${ES_PASSWORD} -k \
+curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
     -X POST \
     -H "content-type: application/json" \
     https://localhost:9200/logs-app-now/_doc?refresh=true \
@@ -173,7 +178,7 @@ curl --fail --silent --show-error -u ${ES_USER}:${ES_PASSWORD} -k \
 # user 2 should be able to see this log
 # user 3 should be able to see this log
 echo "creating test document 5/5"
-curl --fail --silent --show-error -u ${ES_USER}:${ES_PASSWORD} -k \
+curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
     -X POST \
     -H "content-type: application/json" \
     https://localhost:9200/logs-app-now/_doc?refresh=true \
@@ -204,7 +209,7 @@ curl --fail --silent --show-error --cookie-jar ${cookie_jar} -b ${cookie_jar} \
     -H 'x-forwarded-for: 127.0.0.1' \
     -H "kbn-version: 7.10.0" \
     http://localhost:5601/api/v1/multitenancy/tenant \
-    -d '{"tenant":"","username":"'${ES_USER}'"}'
+    -d '{"tenant":"","username":"'"${ES_USER}"'"}'
 
 echo "Creating index pattern"
 curl --fail --silent --show-error --cookie-jar ${cookie_jar} -b ${cookie_jar} \
