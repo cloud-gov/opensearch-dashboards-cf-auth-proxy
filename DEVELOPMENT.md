@@ -8,7 +8,8 @@ To see all of the available commands, run `./dev -h`.
 
 ## Running e2e tests locally
 
-1. Update your `.env` file with values for the variables used for e2e test. You can find the necessary variables in `.env-sample`. You can get the values used in the pipeline from the credentials file stored
+1. Update your `.env` file and uncomment/set values for the e2e test variables. You can find the necessary
+variables in `.env-sample`. You can get the values used in the pipeline from the credentials file stored
 on S3.
 1. [Make sure your local development stack is up and running](./README.md#running-locally)
 1. Run `./dev e2e-local`
