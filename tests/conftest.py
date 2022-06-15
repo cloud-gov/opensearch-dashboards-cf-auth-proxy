@@ -177,3 +177,10 @@ def uaa_user_is_not_admin_response():
          }
       ]
    }"""
+
+
+@pytest.fixture()
+def uaa_user_has_no_groups_response():
+    return """
+   {
+   }"""

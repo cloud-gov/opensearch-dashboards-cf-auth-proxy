@@ -1,3 +1,4 @@
+from urllib.parse import urljoin
 import requests
 
 from kibana_cf_auth_proxy.extensions import config
@@ -28,12 +29,12 @@ def get_client_credentials_token():
 def is_user_cf_admin(user_id, token):
     with requests.Session() as s:
         s.headers["Authorization"] = f"Bearer {token}"
-        url = f"{config.UAA_BASE_URL}Users/{user_id}"
+        url = urljoin(config.UAA_BASE_URL, f"Users/{user_id}")
         response = s.get(url)
         try:
             response.raise_for_status()
         except:
             return "Unexpected error", 500
         data = response.json()
-        user_groups = [group["display"] for group in data["groups"]]
+        user_groups = [group["display"] for group in data.get("groups", [])]
         return config.CF_ADMIN_GROUP_NAME in user_groups

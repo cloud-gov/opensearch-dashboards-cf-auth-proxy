@@ -1,13 +1,13 @@
 import pytest
 
-from . import KIBANA_URL
+from . import AUTH_PROXY_URL
 from .utils import log_in, switch_tenants
 
 
 def test_see_correct_logs_in_discover_tag(user_1, page):
     log_in(user=user_1, page=page)
 
-    page.goto(KIBANA_URL, wait_until="networkidle")
+    page.goto(AUTH_PROXY_URL, wait_until="networkidle")
     switch_tenants(page)
 
     # open the hamburger menu
@@ -34,7 +34,7 @@ def test_see_correct_logs_in_discover_tag(user_1, page):
 def test_see_correct_logs_in_discover_tag_2(user_2, page):
     log_in(user=user_2, page=page)
 
-    page.goto(KIBANA_URL, wait_until="networkidle")
+    page.goto(AUTH_PROXY_URL, wait_until="networkidle")
     switch_tenants(page)
 
     # open the hamburger menu

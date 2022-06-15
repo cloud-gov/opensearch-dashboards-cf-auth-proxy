@@ -129,7 +129,7 @@ jobs:
         run:
           path: src/ci/e2e.sh
         params:
-          KIBANA_URL: ((kibana-url))
+          AUTH_PROXY_URL: ((auth-proxy-url))
           DEV_TEST_USER_1_USERNAME: ((dev-test-user-1-username))
           DEV_TEST_USER_1_PASSWORD: ((dev-test-user-1-password))
           DEV_TEST_USER_1_TOTP_SEED: ((dev-test-user-1-totp-seed))

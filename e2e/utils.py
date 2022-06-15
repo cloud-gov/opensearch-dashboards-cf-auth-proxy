@@ -1,10 +1,10 @@
-from . import KIBANA_URL
+from . import AUTH_PROXY_URL
 
 
 def log_in(user, page, start_at=None):
     page.set_default_timeout(120000)
     if start_at is None:
-        start_at = KIBANA_URL
+        start_at = AUTH_PROXY_URL
     # go to kibana
     page.goto(start_at)
     # accept the monitoring notice
