@@ -14,7 +14,7 @@ bandit==1.7.4
     # via -r pip-tools/dev-requirements.in
 black==22.3.0
     # via -r pip-tools/dev-requirements.in
-certifi==2022.5.18
+certifi==2022.12.7
     # via
     #   -r pip-tools/../requirements.txt
     #   requests
