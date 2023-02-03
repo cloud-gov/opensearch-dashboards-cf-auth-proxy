@@ -42,7 +42,7 @@ flask==2.1.2
     # via -r pip-tools/../requirements.txt
 gitdb==4.0.9
     # via gitpython
-gitpython==3.1.27
+gitpython==3.1.30
     # via bandit
 greenlet==1.1.2
     # via playwright
