@@ -164,7 +164,7 @@ watchdog==2.1.8
     # via pytest-watch
 websockets==10.1
     # via playwright
-werkzeug==2.1.2
+werkzeug==2.2.3
     # via
     #   -r pip-tools/../requirements.txt
     #   flask
