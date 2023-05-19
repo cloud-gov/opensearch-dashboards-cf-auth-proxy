@@ -16,7 +16,7 @@ deprecated==1.2.13
     # via redis
 environs==9.5.0
     # via -r pip-tools/requirements.in
-flask==2.1.2
+flask==2.2.5
     # via -r pip-tools/requirements.in
 gunicorn==20.1.0
     # via -r pip-tools/requirements.in
