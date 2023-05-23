@@ -44,7 +44,7 @@ python-dotenv==0.20.0
     # via environs
 redis==4.3.1
     # via -r pip-tools/requirements.in
-requests==2.27.1
+requests==2.31.0
     # via -r pip-tools/requirements.in
 urllib3==1.26.9
     # via requests
