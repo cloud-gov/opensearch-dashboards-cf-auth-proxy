@@ -51,8 +51,8 @@ jobs:
 
     - put: dev-kibana-image
       params:
-        build: src/docker/kibana
-        dockerfile: src/docker/kibana/dockerfile
+        build: src/docker/opensearch_dashboards
+        dockerfile: src/docker/opensearch_dashboards/dockerfile
         tag_as_latest: true
         cache: true
 
