@@ -161,8 +161,8 @@ resources:
   icon: github-circle
   check_every: 10s
   source:
-    uri: https://github.com/cloud-gov/((name))
-    branch: ((git-branch))
+    uri: https://github.com/cloud-gov/kibana-cf-auth-proxy
+    branch: docker-opensearch-update
     commit_verification_keys: ((cloud-gov-pgp-keys))
 
 - name: dev-elasticsearch-image
