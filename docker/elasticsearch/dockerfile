@@ -25,6 +25,6 @@ COPY roles_mapping.yml /usr/share/opensearch/plugins/opendistro_security/securit
 
 EXPOSE 9200
 
-ENTRYPOINT ["/usr/local/bin/opensearch-docker-entrypoint.sh"]
+ENTRYPOINT ["./opensearch-docker-entrypoint.sh"]
 # Dummy overridable parameter parsed by entrypoint
 CMD ["opensearch"]
