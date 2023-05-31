@@ -12,19 +12,19 @@ COPY --from=ODFE / /
 
 # copying the files doesn't copy the metadata - that's the whole point
 # these are the same as the upstream
-WORKDIR /usr/share/elasticsearch
+WORKDIR /usr/share/opensearch
 ENV JAVA_HOME /opt/jdk
 ENV PATH $PATH:$JAVA_HOME/bin
 ENV ELASTIC_CONTAINER true
 USER 1000
 
 # add the new stuff
-COPY config.yml /usr/share/elasticsearch/plugins/opendistro_security/securityconfig/config.yml
-COPY roles.yml /usr/share/elasticsearch/plugins/opendistro_security/securityconfig/roles.yml
-COPY roles_mapping.yml /usr/share/elasticsearch/plugins/opendistro_security/securityconfig/roles_mapping.yml
+COPY config.yml /usr/share/opensearch/plugins/opendistro_security/securityconfig/config.yml
+COPY roles.yml /usr/share/opensearch/plugins/opendistro_security/securityconfig/roles.yml
+COPY roles_mapping.yml /usr/share/opensearch/plugins/opendistro_security/securityconfig/roles_mapping.yml
 
 EXPOSE 9200
 
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/opensearch-docker-entrypoint.sh"]
 # Dummy overridable parameter parsed by entrypoint
-CMD ["eswrapper"]
+CMD ["opensearch"]
