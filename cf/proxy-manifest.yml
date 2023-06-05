@@ -16,7 +16,7 @@ applications:
     - route: ((public_route))
   env:
     FLASK_ENV: local
-    KIBANA_URL: http://kbn-test.apps.internal:5601
+    DASHBOARD_URL: http://dashboard-test.apps.internal:5601
     CF_ADMIN_GROUP_NAME: "cloud_controller.admin"
     CF_API_URL: ((cf_url))
     UAA_AUTH_URL: ((uaa_auth_url))

@@ -5,7 +5,7 @@ def log_in(user, page, start_at=None):
     page.set_default_timeout(120000)
     if start_at is None:
         start_at = AUTH_PROXY_URL
-    # go to kibana
+    # go to opensearch dashboard
     page.goto(start_at)
     # accept the monitoring notice
     page.click(".island-button.js-notice-submit")

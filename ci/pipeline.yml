@@ -42,14 +42,14 @@ jobs:
       trigger: true
       passed: [test]
 
-    - put: dev-elasticsearch-image
+    - put: dev-opensearch-image
       params:
         build: src/docker/elasticsearch
         dockerfile: src/docker/elasticsearch/dockerfile
         tag_as_latest: true
         cache: true
 
-    - put: dev-kibana-image
+    - put: dev-opensearch-dashboards-image
       params:
         build: src/docker/opensearch_dashboards
         dockerfile: src/docker/opensearch_dashboards/dockerfile
@@ -65,11 +65,11 @@ jobs:
     
     - put: cf-dev
       params:
-        manifest: src/cf/elasticsearch-manifest.yml
+        manifest: src/cf/opensearch-manifest.yml
     
     - put: cf-dev
       params:
-        manifest: src/cf/kibana-manifest.yml
+        manifest: src/cf/opensearch-dashboards-manifest.yml
     
     - put: cf-dev
       params:
@@ -165,7 +165,7 @@ resources:
     branch: docker-opensearch-update
     commit_verification_keys: ((cloud-gov-pgp-keys))
 
-- name: dev-elasticsearch-image
+- name: dev-opensearch-image
   type: docker-image
   icon: docker
   source:
@@ -174,7 +174,7 @@ resources:
     password: ((docker-password))
     repository: ((docker-image-elasticsearch-dev))
 
-- name: dev-kibana-image
+- name: dev-opensearch-dashboards-image
   type: docker-image
   icon: docker
   source:

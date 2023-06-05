@@ -188,8 +188,8 @@ curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
         "message": "org_id_2"
         }' | jq
 
-# for the kibana stuff, we need cookies just to deal with the multitenancy
-echo "Setting up kibana http session"
+# for the opensearch dashboards stuff, we need cookies just to deal with the multitenancy
+echo "Setting up opensearch dashboards http session"
 # this curl is just to get a cookie ready
 curl --fail --silent --show-error --cookie-jar ${cookie_jar} -b ${cookie_jar} \
     -X GET \

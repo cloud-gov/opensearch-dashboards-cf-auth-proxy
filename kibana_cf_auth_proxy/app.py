@@ -152,7 +152,7 @@ def create_app():
             "x-proxy-ext-spaceids",
             "x-proxy-ext-orgids",
         }
-        url = request.url.replace(request.host_url, config.KIBANA_URL)
+        url = request.url.replace(request.host_url, config.DASHBOARD_URL)
         headers = {
             k: v
             for k, v in request.headers.items()

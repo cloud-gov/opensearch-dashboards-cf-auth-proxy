@@ -11,7 +11,7 @@ applications:
   memory: 1G
   instances: 1
   docker:
-    image: cloudgovoperations/test-kibana-opensearch:latest
+    image: cloudgovoperations/test-opensearch-dashboards:latest
   env:
       "ELASTICSEARCH_URL": https://opensearch-test.apps.internal:9200
       "ELASTICSEARCH_HOSTS": https://0.opensearch-test.apps.internal:9200
@@ -20,4 +20,4 @@ applications:
       "opendistro.security.proxycache.user_header": "x-proxy-user"
       "opendistro.security.proxycache.roles_header": "x-proxy-roles"
   routes:
-    - route: kbn-test.apps.internal
+    - route: dashboard-test.apps.internal

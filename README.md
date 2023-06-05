@@ -23,7 +23,7 @@ spaces the user should have access to.
 The following environment variables are required:
 
 - `FLASK_ENV` - set to `unit` for tests, `local` for development, `production` for production
-- `KIBANA_URL` - this is the url of the proxied kibana instance
+- `DASHBOARD_URL` - this is the url of the proxied Opensearch dashboards instance
 - `UAA_AUTH_URL` - where to send your users for authentication. Probably looks like `https://login.<domain>/oauth/authorize`
 - `UAA_BASE_URL` - base URL for app where your client can exchange codes and refresh tokens for tokens. Probably looks like `https://uaa.<domain>/`.
 - `UAA_CLIENT_ID` - the client ID of your uaa clinet

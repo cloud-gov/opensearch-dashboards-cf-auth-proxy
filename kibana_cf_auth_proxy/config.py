@@ -30,7 +30,7 @@ class UnitConfig(Config):
         super().__init__()
         self.TESTING = True
         self.DEBUG = True
-        self.KIBANA_URL = "http://mock.kibana/"
+        self.DASHBOARD_URL = "http://mock.dashboard/"
         self.SESSION_TYPE = "filesystem"
         self.CF_API_URL = "http://mock.cf/"
         self.UAA_AUTH_URL = "http://mock.uaa/authorize"
@@ -49,9 +49,9 @@ class LocalConfig(Config):
         super().__init__()
         self.TESTING = True
         self.DEBUG = True
-        self.KIBANA_URL = self.env_parser.str("KIBANA_URL")
-        if self.KIBANA_URL[-1] != "/":
-            self.KIBANA_URL = f"{self.KIBANA_URL}/"
+        self.DASHBOARD_URL = self.env_parser.str("DASHBOARD_URL")
+        if self.DASHBOARD_URL[-1] != "/":
+            self.DASHBOARD_URL = f"{self.DASHBOARD_URL}/"
         self.SESSION_TYPE = "filesystem"
         self.SESSION_COOKIE_SECURE = False
 
@@ -75,9 +75,9 @@ class AppConfig(Config):
         super().__init__()
         self.TESTING = False
         self.DEBUG = self.env_parser.bool("DEBUG", False)
-        self.KIBANA_URL = self.env_parser.str("KIBANA_URL")
-        if self.KIBANA_URL[-1] != "/":
-            self.KIBANA_URL = f"{self.KIBANA_URL}/"
+        self.DASHBOARD_URL = self.env_parser.str("DASHBOARD_URL")
+        if self.DASHBOARD_URL[-1] != "/":
+            self.DASHBOARD_URL = f"{self.DASHBOARD_URL}/"
         self.SESSION_TYPE = "null"
         self.SESSION_COOKIE_SECURE = True
 
