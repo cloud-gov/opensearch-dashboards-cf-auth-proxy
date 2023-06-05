@@ -172,7 +172,7 @@ resources:
     email: ((docker-email))
     username: ((docker-username))
     password: ((docker-password))
-    repository: ((docker-image-elasticsearch-dev))
+    repository: ((docker-image-opensearch-dev))
 
 - name: dev-opensearch-dashboards-image
   type: docker-image
@@ -181,7 +181,7 @@ resources:
     email: ((docker-email))
     username: ((docker-username))
     password: ((docker-password))
-    repository: ((docker-image-kibana-dev))
+    repository: ((docker-image-opensearch-dashboards-dev))
 
 - name: cf-dev
   type: cf
