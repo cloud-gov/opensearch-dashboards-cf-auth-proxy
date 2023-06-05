@@ -1,4 +1,4 @@
-FROM opensearchproject/opensearch:2 as ODFE
+FROM opensearchproject/opensearch:2 as opensearch
 
 # ok, this is a little weird.
 # we're building this image to run on Cloud Foundry, where we can
@@ -8,7 +8,7 @@ FROM opensearchproject/opensearch:2 as ODFE
 # everything into scratch, which is a blank image ¯\_(ツ)_/¯
 FROM scratch
 
-COPY --from=ODFE / /
+COPY --from=opensearch / /
 
 # copying the files doesn't copy the metadata - that's the whole point
 # these are the same as the upstream
