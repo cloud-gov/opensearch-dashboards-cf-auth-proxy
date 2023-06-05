@@ -7,14 +7,14 @@
 
 version: 1
 applications:
-- name: kibana
+- name: opensearch-dashboards
   memory: 1G
   instances: 1
   docker:
-    image: cloudgovoperations/test-kibana-odfe:latest
+    image: cloudgovoperations/test-kibana-opensearch:latest
   env:
-      "ELASTICSEARCH_URL": https://odfe-test.apps.internal:9200
-      "ELASTICSEARCH_HOSTS": https://0.odfe-test.apps.internal:9200
+      "ELASTICSEARCH_URL": https://opensearch-test.apps.internal:9200
+      "ELASTICSEARCH_HOSTS": https://0.opensearch-test.apps.internal:9200
       "elasticsearch.requestHeadersWhitelist": "securitytenant,Authorization,x-forwarded-for,x-proxy-user,x-proxy-roles"
       "opendistro.security.auth_type": "proxy"
       "opendistro.security.proxycache.user_header": "x-proxy-user"

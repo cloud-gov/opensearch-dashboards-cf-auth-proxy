@@ -38,13 +38,13 @@ usage() {
     # run flask locally, (Bring Your Own [UAA, CF, Kibana])
     ${me} serve
 
-    # run a local ODfE + Kibana cluster in docker-compose
+    # run a local Opensearch + Opensearch Dashboards cluster in docker-compose
     ${me} cluster
 
     # destroy cluster created above
     ${me} destroy-cluster
 
-    # push ODfE/Kibana/Proxy cluster to CF (make sure you update cf/secrets.yml first)
+    # push Opensearch/Dashboards/Proxy cluster to CF (make sure you update cf/secrets.yml first)
     ${me} cf
 
     # run e2e tests

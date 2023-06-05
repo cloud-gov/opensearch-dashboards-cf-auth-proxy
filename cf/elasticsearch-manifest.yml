@@ -12,11 +12,11 @@ applications:
   instances: 1
   disk_quota: 2G
   routes:
-    - route: odfe-test.apps.internal
+    - route: opensearch-test.apps.internal
   docker:
-    image: cloudgovoperations/test-elasticsearch-odfe:latest
+    image: cloudgovoperations/test-elasticsearch-opensearch:latest
   env:
     "discovery.type": single-node
-    "node.name": odfe-node1
-    "ES_JAVA_OPTS": "-Xms2048m -Xmx2048m" # minimum and maximum Java heap size, recommend setting both to 50% of system RAM
-    "opendistro_security.audit.type": debug
+    "node.name": opensearch-node1
+    "OPENSEARCH_JAVA_OPTS": "-Xms2048m -Xmx2048m" # minimum and maximum Java heap size, recommend setting both to 50% of system RAM
+    "plugins.security.audit.type": debug
