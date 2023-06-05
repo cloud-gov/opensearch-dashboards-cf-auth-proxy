@@ -47,24 +47,22 @@ services:
       - opensearch-data2:/usr/share/opensearch/data
     networks:
       - opensearch-net
-  # kibana:
-  #   build: ./kibana
-  #   container_name: opensearch-kibana
-  #   ports:
-  #     - 5601:5601
-  #   expose:
-  #     - "5601"
-  #   environment:
-  #     ELASTICSEARCH_URL: https://opensearch-node1:9200
-  #     ELASTICSEARCH_HOSTS: https://opensearch-node1:9200
-  #     elasticsearch.requestHeadersWhitelist: "securitytenant,Authorization,x-forwarded-for,x-proxy-user,x-proxy-roles,x-proxy-ext-spaceids,x-proxy-ext-orgids"
-  #     opendistro.security.auth_type: "proxy"
-  #     opendistro.security.proxycache.user_header: "x-proxy-user"
-  #     opendistro.security.proxycache.roles_header: "x-proxy-roles"
-
-  #   networks:
-  #     - opensearch-net
-  #   volumes: []
+  opensearch-dashboards:
+    build: ./opensearch_dashboards
+    container_name: opensearch-dashboards
+    ports:
+      - 5601:5601
+    expose:
+      - "5601"
+    environment:
+      OPENSEARCH_HOSTS: '["https://opensearch-node1:9200","https://opensearch-node2:9200"]' # Define the OpenSearch nodes that OpenSearch Dashboards will query
+      opensearch.requestHeadersAllowlist: "securitytenant,Authorization,x-forwarded-for,x-proxy-user,x-proxy-roles,x-proxy-ext-spaceids,x-proxy-ext-orgids"
+      opensearch_security.auth_type: "proxy"
+      opensearch_security.proxycache.user_header: "x-proxy-user"
+      opensearch_security.proxycache.roles_header: "x-proxy-roles"
+    networks:
+      - opensearch-net
+    volumes: []
 
 volumes:
   opensearch-data1:

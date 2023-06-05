@@ -5,13 +5,15 @@ FROM scratch
 
 COPY --from=opensearch-dashboards / /
 
-WORKDIR /usr/share/opensearch-dashboards
+ARG OPENSEARCH_DASHBOARDS_HOME=/usr/share/opensearch-dashboards
+WORKDIR $OPENSEARCH_DASHBOARDS_HOME
 
-ENV PATH=/usr/share/opensearch-dashboards/bin:$PATH
+ENV PATH=$OPENSEARCH_DASHBOARDS_HOME/bin:$PATH
 USER 1000
 
 EXPOSE 5601
 
-COPY opensearch_dashboards.yml /usr/share/opensearch-dashboards/config/opensearch_dashboards.yml
+COPY opensearch_dashboards.yml $OPENSEARCH_DASHBOARDS_HOME/config/opensearch_dashboards.yml
 
-CMD ["/usr/local/bin/opensearch-dashboards"]
+ENTRYPOINT ["./opensearch-dashboards-docker-entrypoint.sh"]
+CMD ["opensearch-dashboards"]
