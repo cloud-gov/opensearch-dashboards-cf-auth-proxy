@@ -44,8 +44,8 @@ jobs:
 
     - put: dev-opensearch-image
       params:
-        build: src/docker/elasticsearch
-        dockerfile: src/docker/elasticsearch/dockerfile
+        build: src/docker/opensearch
+        dockerfile: src/docker/opensearch/dockerfile
         tag_as_latest: true
         cache: true
 
