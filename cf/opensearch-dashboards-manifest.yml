@@ -10,6 +10,7 @@ applications:
 - name: opensearch-dashboards
   memory: 1G
   instances: 1
+  disk_quota: 2G
   docker:
     image: cloudgovoperations/test-opensearch-dashboards:latest
   env:
