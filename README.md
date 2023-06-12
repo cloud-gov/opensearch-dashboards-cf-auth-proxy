@@ -6,12 +6,12 @@ This is a reverse-proxy used for cf authentication for use with Open Distro for 
 
 (TODO: change this to "how it works" when it's done-ish)
 
-When a user hits the proxy, the proxy checks if they have a valid UAA cookie.
-If they don't, they're redirected to UAA to login.
-If they have a UAA cookie, the proxy then checks if it has in its cache what
-spaces they have access to and whether or not they're an admin. If it doesn't
-know, it checks CAPI to find out.
-Once it the proxy has determined what spaces they're authorized for, it proxies their request to Opensearch Dashboards, setting x-proxy-user and x-proxy-roles based on whether
+1. When a user hits the proxy, the proxy checks if they have a valid UAA cookie.
+   - If they don't, they're redirected to UAA to login.
+   - If they have a UAA cookie, the proxy then:
+      - Checks if it has in its cache what spaces they have access to and whether or not they're an admin.
+      - If it doesn't know, it checks CAPI to find out.
+2. Once the proxy has determined what spaces they're authorized for, it proxies their request to Opensearch Dashboards, setting `x-proxy-user` and `x-proxy-roles` based on whether
 they're an admin or not, and setting x-proxy-ext-spaces based on their space access.
 
 The Opensearch plugin uses x-proxy-user and x-proxy-roles to determine what role
@@ -39,7 +39,7 @@ The following are optional:
 
 1. Copy `.env-sample` to `.env` and update the configuration values
 1. From the `docker` directory, run `docker-compose up`
-1. Run `./dev serve`
+1. Run `./dev serve` (note: you must be on the VPN/using Zscaler because you will be redirected to the CF dev environment to login)
 
 ### Adding client
 
