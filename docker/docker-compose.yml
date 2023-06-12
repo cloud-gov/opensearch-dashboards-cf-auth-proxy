@@ -2,7 +2,7 @@
 version: '3'
 services:
   opensearch-node1:
-    build: ./elasticsearch
+    build: ./opensearch
     container_name: opensearch-node1
     environment:
       - cluster.name=opensearch-cluster
@@ -26,7 +26,7 @@ services:
     networks:
       - opensearch-net
   opensearch-node2:
-    build: ./elasticsearch
+    build: ./opensearch
     container_name: opensearch-node2
     environment:
       - cluster.name=opensearch-cluster
