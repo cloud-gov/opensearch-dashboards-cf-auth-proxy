@@ -14,7 +14,7 @@ applications:
   routes:
     - route: opensearch-test.apps.internal
   docker:
-    image: cloudgovoperations/test-elasticsearch-opensearch:latest
+    image: cloudgovoperations/test-opensearch:latest
   env:
     "discovery.type": single-node
     "node.name": opensearch-node1
