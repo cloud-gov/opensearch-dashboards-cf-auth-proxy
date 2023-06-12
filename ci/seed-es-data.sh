@@ -63,7 +63,6 @@ curl --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
     "mappings": {
         "properties": {
             "@cf": {
-                "type": "object",
                 "dynamic": true,
                 "properties": {
                     "@cf": {
@@ -196,8 +195,7 @@ curl --fail --silent --show-error --cookie-jar ${cookie_jar} -b ${cookie_jar} \
     -H "x-proxy-roles: admin" \
     -H "x-proxy-user: admin" \
     -H 'x-forwarded-for: 127.0.0.1' \
-    -H "kbn-xsrf: 1" \
-    -H "kbn-version: 7.10.0" \
+    -H "osd-xsrf: true" \
     http://localhost:5601/api/v1/configuration/account | jq
 
 echo "Switching to default tenant"
@@ -207,7 +205,7 @@ curl --fail --silent --show-error --cookie-jar ${cookie_jar} -b ${cookie_jar} \
     -H "x-proxy-roles: admin" \
     -H "x-proxy-user: admin" \
     -H 'x-forwarded-for: 127.0.0.1' \
-    -H "kbn-version: 7.10.0" \
+    -H "osd-xsrf: true" \
     http://localhost:5601/api/v1/multitenancy/tenant \
     -d '{"tenant":"","username":"'"${ES_USER}"'"}'
 
@@ -218,14 +216,14 @@ curl --fail --silent --show-error --cookie-jar ${cookie_jar} -b ${cookie_jar} \
     -H "x-proxy-roles: admin" \
     -H "x-proxy-user: admin" \
     -H 'x-forwarded-for: 127.0.0.1' \
-    -H "kbn-version: 7.10.0" \
+    -H "osd-xsrf: true" \
     http://localhost:5601/api/saved_objects/index-pattern \
     -d '
     {
-  "attributes": {
-    "title": "logs-app-*",
-    "timeFieldName": "@timestamp"
-    }
+        "attributes": {
+            "title": "logs-app-*",
+            "timeFieldName": "@timestamp"
+        }
     }' | jq
 
 echo "Setting default index"
@@ -235,6 +233,6 @@ curl --fail --silent --show-error --cookie-jar ${cookie_jar} -b ${cookie_jar} \
     -H "x-proxy-roles: admin" \
     -H "x-proxy-user: admin" \
     -H 'x-forwarded-for: 127.0.0.1' \
-    -H "kbn-version: 7.10.0" \
-    http://localhost:5601/api/kibana/settings \
+    -H "osd-xsrf: true" \
+    http://localhost:5601/api/opensearch-dashboards/settings \
     -d '{"changes":{"defaultIndex":"logs-app-*"}}' | jq
