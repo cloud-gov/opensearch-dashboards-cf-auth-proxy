@@ -35,11 +35,19 @@ The following are optional:
 - `DEBUG` - whether to enable Flask's debug mode. Defaults to false
 - `PORT` -  the port flask should listen on. Defaults to 8080
 
-## Running locally
+## Running the auth-proxy locally
 
 1. Copy `.env-sample` to `.env` and update the configuration values
 1. From the `docker` directory, run `docker-compose up`
 1. Run `./dev serve` (note: you must be on the VPN/using Zscaler because you will be redirected to the CF dev environment to login)
+
+### Running the e2e tests locally
+
+After starting up the auth-proxy using the above steps, run:
+
+```shell
+./dev e2e-local
+```
 
 ### Adding client
 
