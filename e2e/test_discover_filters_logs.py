@@ -8,7 +8,7 @@ def test_see_correct_logs_in_discover_tag(user_1, page):
     log_in(user=user_1, page=page)
 
     page.goto(AUTH_PROXY_URL, wait_until="networkidle")
-    switch_tenants(page)
+    #switch_tenants(page)
 
     # open the hamburger menu
     page.click(
