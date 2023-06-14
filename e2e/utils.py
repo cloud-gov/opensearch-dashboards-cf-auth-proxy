@@ -35,11 +35,11 @@ def switch_tenants(page, tenant="Global"):
     Must start on a page with the user menu accessible.
     """
     # open the user menu
-    page.click("id=actionsMenu")
-    page.wait_for_load_state("networkidle")
+    #page.click("id=actionsMenu")
+    #page.wait_for_load_state("networkidle")
     # open the switch tenant pane
-    page.click("text=Switch tenants")
-    page.wait_for_load_state("networkidle")
+    #page.click("text=Switch tenants")
+    #page.wait_for_load_state("networkidle")
     # select the global tenant
     page.click(f"text={tenant}")
     page.wait_for_load_state("networkidle")
