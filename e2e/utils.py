@@ -29,25 +29,40 @@ def log_in(user, page, start_at=None):
         page.click('text="Explore on my own"')
 
 
-def switch_tenants(page, tenant="Global"):
+def switch_tenants(page, tenant="The global tenant is shared between every OpenSearch Dashboards user."):
     """
     switch to the specified tenant.
-    Must start on a page with the user menu accessible.
     """
-    # open the user menu
-    #page.click("text=Explore")
-    #page.click("id=actionsMenu")
-    #page.wait_for_load_state("networkidle")
-    # open the switch tenant pane
-    #page.click("text=Switch tenants")
-    #page.wait_for_load_state("networkidle")
-    # select the global tenant
-    page.click(f"text={tenant}")
-    page.wait_for_load_state("networkidle")
-    # submit
-    page.click("text=Confirm")
-    page.wait_for_load_state("networkidle")
+    tenant_option = page.get_by_text(tenant)
+    tenant_option.wait_for()
+    tenant_option.click()
 
-    # this page takes a few seconds, but playwright doesn't seem to think anything is happening
-    # todo: find a better thing to wait for here.
+
+    # submit
+    submit_button = page.get_by_text("Confirm")
+    submit_button.wait_for()
+    submit_button.click()
+
+    # todo: there is a page refresh that happens after submitting the tenant option.
+    # we should wait on an element instead of arbitrary timeout
     page.wait_for_timeout(2000)
+    
+
+def go_to_discover_page(page):
+    # open the hamburger menu
+    hamburger_button = page.locator(f"css=div.euiHeaderSectionItem.euiHeaderSectionItem--borderRight.header__toggleNavButtonSection")
+    hamburger_button.wait_for()
+    hamburger_button.click()
+
+    # go to the discover page
+    discover_menu_link = page.get_by_text("Discover")
+    discover_menu_link.wait_for()
+    discover_menu_link.click()
+
+    # wait for the refresh button, signifying the discover page has loaded
+    refresh_button = page.get_by_text("Refresh")
+    refresh_button.wait_for()
+    
+    # the box the results are in
+    content_box = page.locator("css=div.dscWrapper__content")
+    content_box.wait_for()
