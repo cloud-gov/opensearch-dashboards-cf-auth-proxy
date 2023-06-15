@@ -35,7 +35,7 @@ def switch_tenants(page, tenant="Global"):
     Must start on a page with the user menu accessible.
     """
     # open the user menu
-    page.click("text=Explore")
+    #page.click("text=Explore")
     #page.click("id=actionsMenu")
     #page.wait_for_load_state("networkidle")
     # open the switch tenant pane
