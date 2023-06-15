@@ -31,7 +31,7 @@ def log_in(user, page, start_at=None):
         page.click('text="Explore on my own"')
 
 
-def switch_tenants(page, tenant="The global tenant is shared between every OpenSearch Dashboards user."):
+def switch_tenants(page, tenant="Global"):
     """
     switch to the specified tenant.
     """
