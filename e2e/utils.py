@@ -1,3 +1,5 @@
+import re
+
 from . import AUTH_PROXY_URL
 
 
@@ -33,7 +35,7 @@ def switch_tenants(page, tenant="The global tenant is shared between every OpenS
     """
     switch to the specified tenant.
     """
-    tenant_option = page.get_by_text(tenant)
+    tenant_option = page.get_by_text(re.compile(f"^{tenant}.*$"))
     tenant_option.wait_for()
     tenant_option.click()
 
