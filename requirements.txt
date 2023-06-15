@@ -6,53 +6,49 @@
 #
 async-timeout==4.0.2
     # via redis
-certifi==2022.5.18
+blinker==1.6.2
+    # via flask
+certifi==2023.5.7
     # via requests
-charset-normalizer==2.0.12
+charset-normalizer==3.1.0
     # via requests
 click==8.1.3
     # via flask
-deprecated==1.2.13
-    # via redis
 environs==9.5.0
     # via -r pip-tools/requirements.in
-flask==2.1.2
+flask==2.3.2
     # via -r pip-tools/requirements.in
 gunicorn==20.1.0
     # via -r pip-tools/requirements.in
-idna==3.3
+idna==3.4
     # via requests
-importlib-metadata==4.11.4
+importlib-metadata==6.6.0
     # via flask
 itsdangerous==2.1.2
     # via flask
 jinja2==3.1.2
     # via flask
-markupsafe==2.1.1
-    # via jinja2
-marshmallow==3.15.0
-    # via environs
-packaging==21.3
+markupsafe==2.1.3
     # via
-    #   marshmallow
-    #   redis
-pyjwt==2.4.0
-    # via -r pip-tools/requirements.in
-pyparsing==3.0.9
-    # via packaging
-python-dotenv==0.20.0
+    #   jinja2
+    #   werkzeug
+marshmallow==3.19.0
     # via environs
-redis==4.3.1
+packaging==23.1
+    # via marshmallow
+pyjwt==2.7.0
     # via -r pip-tools/requirements.in
-requests==2.27.1
+python-dotenv==1.0.0
+    # via environs
+redis==4.5.5
     # via -r pip-tools/requirements.in
-urllib3==1.26.9
+requests==2.31.0
+    # via -r pip-tools/requirements.in
+urllib3==2.0.3
     # via requests
-werkzeug==2.1.2
+werkzeug==2.3.6
     # via flask
-wrapt==1.14.1
-    # via deprecated
-zipp==3.8.0
+zipp==3.15.0
     # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
