@@ -183,12 +183,12 @@ main() {
       watch_tests "$@"
       ;;
     e2e)
-      ${python} -m pytest e2e --browser firefox
+      ${python} -m pytest e2e --browser firefox "$@"
       ;;
     e2e-local)
       set -o allexport; source "${dir}/.env"; set +o allexport
       bash ./ci/seed-es-data.sh
-      ${python} -m pytest e2e --browser firefox
+      ${python} -m pytest e2e --browser firefox "$@"
       ;;
     format)
       ${python} -m black .
