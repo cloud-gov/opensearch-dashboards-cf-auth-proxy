@@ -7,4 +7,4 @@ apt-get update
 apt-get install -y python3-venv
 
 src/dev set-up-ci-environment
-src/dev e2e --video on
+src/dev e2e --video retain-on-failure
