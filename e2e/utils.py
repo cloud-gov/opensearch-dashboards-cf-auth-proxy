@@ -24,7 +24,7 @@ def log_in(user, page, start_at=None):
         page.wait_for_load_state("networkidle")
 
     # handle first-login stuff when it's here
-    page.wait_for_timeout(1000)
+    page.wait_for_timeout(5000)
     if "Start by adding your data" in page.content():
         page.click('text="Explore on my own"')
 
