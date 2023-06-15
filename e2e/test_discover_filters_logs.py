@@ -8,6 +8,7 @@ def test_see_correct_logs_in_discover_tag(user_1, page):
     log_in(user=user_1, page=page)
 
     page.goto(AUTH_PROXY_URL, wait_until="networkidle")
+    page.click("text=Explore")
     switch_tenants(page)
 
     # open the hamburger menu
@@ -42,7 +43,7 @@ def test_see_correct_logs_in_discover_tag_2(user_2, page):
         "div.euiHeaderSectionItem.euiHeaderSectionItem--borderRight.header__toggleNavButtonSection"
     )
     # go to the discover page
-    page.click("title=Discover")
+    page.click("text=Discover")
 
     # wait for the refresh button, signifying the discover page has loaded
     page.wait_for_selector('button:has-text("Refresh")')
