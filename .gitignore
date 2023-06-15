@@ -10,3 +10,6 @@ flask_session
 
 cf/secrets.yml
 ci/credentials.yml
+test-results
+*.webm
+.DS_STORE
