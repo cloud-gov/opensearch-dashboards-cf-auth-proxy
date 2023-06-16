@@ -23,7 +23,7 @@ def test_redirected_to_auth(client):
 
 def test_app_proxies_arbitrary_paths(authenticated_client):
     with requests_mock.Mocker() as m:
-        m.get("http://mock.kibana/foo/bar/baz/quux/")
+        m.get("http://mock.dashboard/foo/bar/baz/quux/")
         authenticated_client.get("/foo/bar/baz/quux/")
     assert m.called
 
@@ -34,7 +34,7 @@ def test_app_filters_headers(authenticated_client):
     it should be dropped or changed
     """
     with requests_mock.Mocker() as m:
-        m.get("http://mock.kibana/foo/bar/baz/quux/")
+        m.get("http://mock.dashboard/foo/bar/baz/quux/")
         authenticated_client.get(
             "/foo/bar/baz/quux/",
             headers={
@@ -58,7 +58,7 @@ def test_app_filters_headers(authenticated_client):
 def test_orgs_set_correctly(client):
     with requests_mock.Mocker() as m:
         m.get(
-            "http://mock.kibana/home",
+            "http://mock.dashboard/home",
             request_headers={"x-proxy-ext-orgids": r'"org-id-1", "org-id-2"'},
         )
         with client.session_transaction() as s:
@@ -70,7 +70,7 @@ def test_orgs_set_correctly(client):
 def test_spaces_set_correctly(client):
     with requests_mock.Mocker() as m:
         m.get(
-            "http://mock.kibana/home",
+            "http://mock.dashboard/home",
             request_headers={"x-proxy-ext-spaceids": r'"space-id-1", "space-id-2"'},
         )
         with client.session_transaction() as s:
@@ -82,7 +82,7 @@ def test_spaces_set_correctly(client):
 def test_user_role_set_correctly(client):
     with requests_mock.Mocker() as m:
         m.get(
-            "http://mock.kibana/home",
+            "http://mock.dashboard/home",
         )
         with client.session_transaction() as s:
             s["user_id"] = "me"
@@ -92,7 +92,7 @@ def test_user_role_set_correctly(client):
 
 def test_admin_role_set_correctly(client):
     with requests_mock.Mocker() as m:
-        m.get("http://mock.kibana/home")
+        m.get("http://mock.dashboard/home")
         with client.session_transaction() as s:
             s["user_id"] = "me"
             s["groups"] = ["admin"]

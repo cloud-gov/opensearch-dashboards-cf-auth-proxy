@@ -38,13 +38,13 @@ usage() {
     # run flask locally, (Bring Your Own [UAA, CF, Kibana])
     ${me} serve
 
-    # run a local ODfE + Kibana cluster in docker-compose
+    # run a local Opensearch + Opensearch Dashboards cluster in docker-compose
     ${me} cluster
 
     # destroy cluster created above
     ${me} destroy-cluster
 
-    # push ODfE/Kibana/Proxy cluster to CF (make sure you update cf/secrets.yml first)
+    # push Opensearch/Dashboards/Proxy cluster to CF (make sure you update cf/secrets.yml first)
     ${me} cf
 
     # run e2e tests
@@ -118,14 +118,14 @@ watch_tests() {
 }
 
 cf_push() {
-      cf push -f cf/elasticsearch-manifest.yml --vars-file cf/secrets.yml
-      cf push -f cf/kibana-manifest.yml --vars-file cf/secrets.yml
+      cf push -f cf/opensearch-manifest.yml --vars-file cf/secrets.yml
+      cf push -f cf/opensearch-dashboards-manifest.yml --vars-file cf/secrets.yml
       cf push -f cf/proxy-manifest.yml --vars-file cf/secrets.yml
 }
 
 cf_network() {
-      cf add-network-policy kibana elasticsearch --protocol tcp --port 9200
-      cf add-network-policy auth-proxy kibana --protocol tcp --port 5601
+      cf add-network-policy opensearch-dashboards opensearch --protocol tcp --port 9200
+      cf add-network-policy auth-proxy opensearch-dashboards --protocol tcp --port 5601
 }
 
 main() {
@@ -183,12 +183,12 @@ main() {
       watch_tests "$@"
       ;;
     e2e)
-      ${python} -m pytest e2e --browser firefox
+      ${python} -m pytest e2e --browser firefox "$@"
       ;;
     e2e-local)
       set -o allexport; source "${dir}/.env"; set +o allexport
       bash ./ci/seed-es-data.sh
-      ${python} -m pytest e2e --browser firefox
+      ${python} -m pytest e2e --browser firefox "$@"
       ;;
     format)
       ${python} -m black .

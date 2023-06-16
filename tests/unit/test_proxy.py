@@ -5,9 +5,9 @@ from kibana_cf_auth_proxy import proxy
 
 def test_proxy_returns_200():
     with requests_mock.Mocker() as m:
-        m.get("http://mock.kibana/world", text="hello")
+        m.get("http://mock.dashboard/world", text="hello")
         response = proxy.proxy_request(
-            "http://mock.kibana/world",
+            "http://mock.dashboard/world",
             {"user-agent": "special-user-agent"},
             None,
             {},
@@ -22,12 +22,12 @@ def test_proxy_returns_200():
 def test_proxy_works_with_post():
     with requests_mock.Mocker() as m:
         m.post(
-            "http://mock.kibana/world",
+            "http://mock.dashboard/world",
             text='{"accepted": true}',
             headers={"content-type": "application/json"},
         )
         response = proxy.proxy_request(
-            "http://mock.kibana/world",
+            "http://mock.dashboard/world",
             {"user-agent": "special-user-agent", "content-type": "application/json"},
             '{"foo": "bar"}',
             {},
