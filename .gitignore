@@ -13,3 +13,4 @@ ci/credentials.yml
 test-results
 *.webm
 .DS_STORE
+*.vars
