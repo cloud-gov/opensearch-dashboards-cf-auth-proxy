@@ -162,7 +162,7 @@ resources:
   check_every: 10s
   source:
     uri: https://github.com/cloud-gov/kibana-cf-auth-proxy
-    branch: docker-opensearch-update
+    branch: main
     commit_verification_keys: ((cloud-gov-pgp-keys))
 
 - name: dev-opensearch-image
