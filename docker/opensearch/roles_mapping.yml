@@ -1,7 +1,7 @@
 _meta:
   type: "rolesmapping"
   config_version: 2
-kibana_user:
+opensearch_dashboards_user:
   reserved: true
   hidden: false
   backend_roles:
@@ -19,10 +19,10 @@ cf_user:
   users: []
   and_backend_roles: []
   description: "CF users with privileges to their own spaces"
-kibana_server:
+opensearch_dashboards_server:
   reserved: true
   users:
-  - "kibanaserver"
+  - "opensearch_dashboardsserver"
 all_access:
   reserved: true
   hidden: false
