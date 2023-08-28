@@ -1,5 +1,5 @@
 import pytest
-from kibana_cf_auth_proxy.config import config_from_env
+from opensearch_dashboards_cf_auth_proxy.config import config_from_env
 
 
 def test_config_loads(monkeypatch):
@@ -7,7 +7,7 @@ def test_config_loads(monkeypatch):
     config = config_from_env()
     assert config.DEBUG
     assert config.TESTING
-    assert config.KIBANA_URL == "http://mock.kibana/"
+    assert config.DASHBOARD_URL == "http://mock.dashboard/"
     assert config.UAA_AUTH_URL == "http://mock.uaa/authorize"
     assert config.UAA_TOKEN_URL == "http://mock.uaa/token"
     assert config.CF_API_URL == "http://mock.cf/"
@@ -28,12 +28,12 @@ def test_config_loads(monkeypatch):
 
 
 @pytest.mark.parametrize(
-    "kibana_url", ["https://kibana.example.com", "https://kibana.example.com/"]
+    "dashboard_url", ["https://dashboard.example.com", "https://dashboard.example.com/"]
 )
-def test_local_config(monkeypatch, kibana_url):
+def test_local_config(monkeypatch, dashboard_url):
     monkeypatch.setenv("FLASK_ENV", "local")
     monkeypatch.setenv("PORT", "8888")
-    monkeypatch.setenv("KIBANA_URL", kibana_url)
+    monkeypatch.setenv("DASHBOARD_URL", dashboard_url)
     monkeypatch.setenv("CF_API_URL", "https://api.example.com/")
     monkeypatch.setenv("UAA_AUTH_URL", "https://uaa.example.com/authorize")
     monkeypatch.setenv("UAA_BASE_URL", "https://uaa.example.com/")
@@ -44,7 +44,7 @@ def test_local_config(monkeypatch, kibana_url):
     monkeypatch.setenv("CF_ADMIN_GROUP_NAME", "random-group")
     config = config_from_env()
     assert config.PORT == 8888
-    assert config.KIBANA_URL == "https://kibana.example.com/"
+    assert config.DASHBOARD_URL == "https://dashboard.example.com/"
     assert config.DEBUG
     assert config.TESTING
     assert config.UAA_AUTH_URL == "https://uaa.example.com/authorize"
@@ -59,12 +59,12 @@ def test_local_config(monkeypatch, kibana_url):
 
 
 @pytest.mark.parametrize(
-    "kibana_url", ["https://kibana.example.com", "https://kibana.example.com/"]
+    "dashboard_url", ["https://dashboard.example.com", "https://dashboard.example.com/"]
 )
-def test_prod_config(monkeypatch, kibana_url):
+def test_prod_config(monkeypatch, dashboard_url):
     monkeypatch.setenv("FLASK_ENV", "production")
     monkeypatch.setenv("PORT", "8888")
-    monkeypatch.setenv("KIBANA_URL", kibana_url)
+    monkeypatch.setenv("DASHBOARD_URL", dashboard_url)
     monkeypatch.setenv("UAA_AUTH_URL", "https://uaa.example.com/authorize")
     monkeypatch.setenv("UAA_BASE_URL", "https://uaa.example.com/")
     monkeypatch.setenv("CF_API_URL", "https://api.example.com/")
@@ -75,7 +75,7 @@ def test_prod_config(monkeypatch, kibana_url):
     monkeypatch.setenv("CF_ADMIN_GROUP_NAME", "random-group")
     config = config_from_env()
     assert config.PORT == 8888
-    assert config.KIBANA_URL == "https://kibana.example.com/"
+    assert config.DASHBOARD_URL == "https://dashboard.example.com/"
     assert not config.DEBUG
     assert not config.TESTING
     assert config.UAA_AUTH_URL == "https://uaa.example.com/authorize"

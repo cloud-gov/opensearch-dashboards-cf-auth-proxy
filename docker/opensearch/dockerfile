@@ -1,0 +1,31 @@
+FROM opensearchproject/opensearch:2 as opensearch
+
+# ok, this is a little weird.
+# we're building this image to run on Cloud Foundry, where we can
+# only have one port exposed. The upstream exposes more than one,
+# and docker doesn't provide a direct method to override it.
+# so, we're using the opensearch image as a "builder" and then copying
+# everything into scratch, which is a blank image ¯\_(ツ)_/¯
+FROM scratch
+
+COPY --from=opensearch / /
+
+ARG UID=1000
+ARG GID=1000
+ARG OPENSEARCH_HOME=/usr/share/opensearch
+WORKDIR $OPENSEARCH_HOME
+
+ENV PATH $PATH:$OPENSEARCH_HOME/bin
+
+# add the new stuff
+COPY config.yml ${OPENSEARCH_HOME}/config/opensearch-security/config.yml
+COPY roles.yml ${OPENSEARCH_HOME}/config/opensearch-security/roles.yml
+COPY roles_mapping.yml ${OPENSEARCH_HOME}/config/opensearch-security/roles_mapping.yml
+
+# Change user
+USER $UID
+EXPOSE 9200
+
+ENTRYPOINT ["./opensearch-docker-entrypoint.sh"]
+# Dummy overridable parameter parsed by entrypoint
+CMD ["opensearch"]

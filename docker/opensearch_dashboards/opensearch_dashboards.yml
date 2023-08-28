@@ -1,0 +1,21 @@
+server.name: opensearchDashboards
+server.host: "0.0.0.0"
+opensearch.hosts: [https://localhost:9200]
+
+opensearch.ssl.verificationMode: none
+opensearch.username: admin
+opensearch.password: admin
+
+opensearch_security.multitenancy.enabled: true
+opensearch_security.multitenancy.tenants.preferred: ["Private", "Global"]
+opensearch_security.readonly_mode.roles: ["opensearch_dashboards_read_only"]
+
+# Use this setting if you are running opensearch dashboards without https
+opensearch_security.cookie.secure: false
+
+data.search.usageTelemetry.enabled: false
+opensearch.requestHeadersAllowlist: ["securitytenant","Authorization","x-forwarded-for","x-proxy-user","x-proxy-roles","x-proxy-ext-spaceids","x-proxy-ext-orgids"]
+
+opensearch_security.auth.type: "proxy"
+opensearch_security.proxycache.user_header: "x-proxy-user"
+opensearch_security.proxycache.roles_header: "x-proxy-roles"
