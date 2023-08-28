@@ -1,10 +1,8 @@
-# Kibana Authentication Proxy
+# Opensearch Dashboards Authentication Proxy
 
-This is a reverse-proxy used for cf authentication for use with Open Distro for Elasticsearch.
+This is a reverse-proxy used for Cloudfoundry authentication for use with Opensearch Dashboards.
 
-## How it should work
-
-(TODO: change this to "how it works" when it's done-ish)
+## How it works
 
 1. When a user hits the proxy, the proxy checks if they have a valid UAA cookie.
    - If they don't, they're redirected to UAA to login.

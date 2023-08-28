@@ -7,11 +7,11 @@ from flask import Flask, request, session, url_for, redirect
 import jwt
 import requests
 
-from kibana_cf_auth_proxy.extensions import config
-from kibana_cf_auth_proxy.proxy import proxy_request
-from kibana_cf_auth_proxy import cf
-from kibana_cf_auth_proxy.headers import list_to_ext_header
-from kibana_cf_auth_proxy import uaa
+from opensearch_dashboards_cf_auth_proxy.extensions import config
+from opensearch_dashboards_cf_auth_proxy.proxy import proxy_request
+from opensearch_dashboards_cf_auth_proxy import cf
+from opensearch_dashboards_cf_auth_proxy.headers import list_to_ext_header
+from opensearch_dashboards_cf_auth_proxy import uaa
 
 
 def create_app():

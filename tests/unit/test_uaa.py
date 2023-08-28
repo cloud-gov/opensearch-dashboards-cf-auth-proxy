@@ -1,5 +1,5 @@
 import requests_mock
-from kibana_cf_auth_proxy import uaa
+from opensearch_dashboards_cf_auth_proxy import uaa
 
 
 def test_user_is_admin(uaa_user_is_admin_response):

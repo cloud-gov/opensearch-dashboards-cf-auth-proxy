@@ -161,7 +161,7 @@ resources:
   icon: github-circle
   check_every: 10s
   source:
-    uri: https://github.com/cloud-gov/kibana-cf-auth-proxy
+    uri: https://github.com/cloud-gov/opensearch_dashboards-cf-auth-proxy
     branch: main
     commit_verification_keys: ((cloud-gov-pgp-keys))
 
