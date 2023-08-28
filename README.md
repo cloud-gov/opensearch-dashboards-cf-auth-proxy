@@ -1,20 +1,18 @@
-# Kibana Authentication Proxy
+# Opensearch Dashboards Authentication Proxy
 
-This is a reverse-proxy used for cf authentication for use with Open Distro for Elasticsearch.
+This is a reverse-proxy used for Cloudfoundry authentication for use with Opensearch Dashboards.
 
-## How it should work
+## How it works
 
-(TODO: change this to "how it works" when it's done-ish)
-
-When a user hits the proxy, the proxy checks if they have a valid UAA cookie.
-If they don't, they're redirected to UAA to login.
-If they have a UAA cookie, the proxy then checks if it has in its cache what
-spaces they have access to and whether or not they're an admin. If it doesn't
-know, it checks CAPI to find out.
-Once it the proxy has determined what spaces they're authorized for, it proxies their request to Kibana, setting x-proxy-user and x-proxy-roles based on whether
+1. When a user hits the proxy, the proxy checks if they have a valid UAA cookie.
+   - If they don't, they're redirected to UAA to login.
+   - If they have a UAA cookie, the proxy then:
+      - Checks if it has in its cache what spaces they have access to and whether or not they're an admin.
+      - If it doesn't know, it checks CAPI to find out.
+2. Once the proxy has determined what spaces they're authorized for, it proxies their request to Opensearch Dashboards, setting `x-proxy-user` and `x-proxy-roles` based on whether
 they're an admin or not, and setting x-proxy-ext-spaces based on their space access.
 
-The ODfE plugin uses x-proxy-user and x-proxy-roles to determine what role
+The Opensearch plugin uses x-proxy-user and x-proxy-roles to determine what role
 the user has, and then uses the x-proxy-ext-spaces header to determine what
 spaces the user should have access to.
 
@@ -23,7 +21,7 @@ spaces the user should have access to.
 The following environment variables are required:
 
 - `FLASK_ENV` - set to `unit` for tests, `local` for development, `production` for production
-- `KIBANA_URL` - this is the url of the proxied kibana instance
+- `DASHBOARD_URL` - this is the url of the proxied Opensearch dashboards instance
 - `UAA_AUTH_URL` - where to send your users for authentication. Probably looks like `https://login.<domain>/oauth/authorize`
 - `UAA_BASE_URL` - base URL for app where your client can exchange codes and refresh tokens for tokens. Probably looks like `https://uaa.<domain>/`.
 - `UAA_CLIENT_ID` - the client ID of your uaa clinet
@@ -35,11 +33,19 @@ The following are optional:
 - `DEBUG` - whether to enable Flask's debug mode. Defaults to false
 - `PORT` -  the port flask should listen on. Defaults to 8080
 
-## Running locally
+## Running the auth-proxy locally
 
 1. Copy `.env-sample` to `.env` and update the configuration values
 1. From the `docker` directory, run `docker-compose up`
-1. Run `./dev serve`
+1. Run `./dev serve` (note: you must be on the VPN/using Zscaler because you will be redirected to the CF dev environment to login)
+
+### Running the e2e tests locally
+
+After starting up the auth-proxy using the above steps, run:
+
+```shell
+./dev e2e-local
+```
 
 ### Adding client
 

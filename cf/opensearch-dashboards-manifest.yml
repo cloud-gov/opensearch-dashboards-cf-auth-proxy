@@ -1,0 +1,24 @@
+---
+###########################################################
+# NOTE: this cluster is totally insecure and non-durable. #
+# It should only be used for testing the proxy and should #
+# NEVER have any sensitive or important data.             #
+###########################################################
+
+version: 1
+applications:
+- name: opensearch-dashboards
+  memory: 1G
+  instances: 1
+  disk_quota: 2G
+  docker:
+    image: cloudgovoperations/test-opensearch-dashboards:latest
+  env:
+      "ELASTICSEARCH_URL": https://opensearch-test.apps.internal:9200
+      "OPENSEARCH_HOSTS": https://0.opensearch-test.apps.internal:9200
+      "opensearch.requestHeadersAllowlist": "securitytenant,Authorization,x-forwarded-for,x-proxy-user,x-proxy-roles"
+      "opensearch_security.auth_type": "proxy"
+      "opensearch_security.proxycache.user_header": "x-proxy-user"
+      "opensearch_security.proxycache.roles_header": "x-proxy-roles"
+  routes:
+    - route: dashboard-test.apps.internal

@@ -1,7 +1,7 @@
 import pytest
 import requests_mock
 
-from kibana_cf_auth_proxy import cf
+from opensearch_dashboards_cf_auth_proxy import cf
 
 
 def test_gets_spaces():
