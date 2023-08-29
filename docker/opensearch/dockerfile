@@ -17,11 +17,6 @@ WORKDIR $OPENSEARCH_HOME
 
 ENV PATH $PATH:$OPENSEARCH_HOME/bin
 
-# add the new stuff
-COPY config.yml ${OPENSEARCH_HOME}/config/opensearch-security/config.yml
-COPY roles.yml ${OPENSEARCH_HOME}/config/opensearch-security/roles.yml
-COPY roles_mapping.yml ${OPENSEARCH_HOME}/config/opensearch-security/roles_mapping.yml
-
 # Change user
 USER $UID
 EXPOSE 9200

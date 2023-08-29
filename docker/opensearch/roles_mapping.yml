@@ -9,7 +9,7 @@ opensearch_dashboards_user:
   hosts: []
   users: []
   and_backend_roles: []
-  description: "CF users with privileges to their own spaces"
+  description: "Grants basic permissions to use OpenSearch"
 cf_user:
   reserved: true
   hidden: false
