@@ -1,7 +1,7 @@
 _meta:
   type: "rolesmapping"
   config_version: 2
-opensearch_dashboards_user:
+kibana_user:
   reserved: true
   hidden: false
   backend_roles:
