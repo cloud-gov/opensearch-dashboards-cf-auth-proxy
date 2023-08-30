@@ -1,52 +1,52 @@
-# Reference: https://opensearch.org/docs/latest/install-and-configure/install-opensearch/docker/#sample-docker-composeyml
-version: '3'
+# Reference: https://opensearch.org/docs/latest/install-and-configure/install-opensearch/#sample-docker-composeyml
+version: '3.4'
+
+# see https://docs.docker.com/compose/compose-file/11-extension/
+x-opensearch-node-common-vars: &x-opensearch-node-common-vars
+  cluster.name: opensearch-cluster
+  discovery.seed_hosts: opensearch-node1,opensearch-node2
+  cluster.initial_master_nodes: opensearch-node1,opensearch-node2
+  bootstrap.memory_lock: true # along with the memlock settings below, disables swapping
+  OPENSEARCH_JAVA_OPTS: "-Xms2048m -Xmx2048m" # minimum and maximum Java heap size, recommend setting both to 50% of system RAM
+  plugins.security.audit.type: debug
+
+x-opensearch-node: &x-opensearch-node
+  build: ./opensearch
+  ulimits:
+    memlock:
+      soft: -1
+      hard: -1
+    nofile:
+      soft: 65536 # maximum number of open files for the openearch user, set to at least 65536 on modern systems
+      hard: 65536
+  networks:
+    - opensearch-net
+
 services:
   opensearch-node1:
-    build: ./opensearch
+    <<: *x-opensearch-node
     container_name: opensearch-node1
     environment:
-      - cluster.name=opensearch-cluster
-      - node.name=opensearch-node1
-      - discovery.seed_hosts=opensearch-node1,opensearch-node2
-      - cluster.initial_master_nodes=opensearch-node1,opensearch-node2
-      - bootstrap.memory_lock=true # along with the memlock settings below, disables swapping
-      - "OPENSEARCH_JAVA_OPTS=-Xms2048m -Xmx2048m" # minimum and maximum Java heap size, recommend setting both to 50% of system RAM
-      - plugins.security.audit.type=debug
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-      nofile:
-        soft: 65536 # maximum number of open files for the openearch user, set to at least 65536 on modern systems
-        hard: 65536
+      <<: *x-opensearch-node-common-vars
+      node.name: opensearch-node1
     volumes:
       - opensearch-data1:/usr/share/opensearch/data
+      - ./opensearch/config.yml:/usr/share/opensearch/config/opensearch-security/config.yml
+      - ./opensearch/roles.yml:/usr/share/opensearch/config/opensearch-security/roles.yml
+      - ./opensearch/roles_mapping.yml:/usr/share/opensearch/config/opensearch-security/roles_mapping.yml
     ports:
       - 9200:9200
-    networks:
-      - opensearch-net
   opensearch-node2:
-    build: ./opensearch
+    <<: *x-opensearch-node
     container_name: opensearch-node2
     environment:
-      - cluster.name=opensearch-cluster
-      - node.name=opensearch-node2
-      - discovery.seed_hosts=opensearch-node1,opensearch-node2
-      - cluster.initial_master_nodes=opensearch-node1,opensearch-node2
-      - bootstrap.memory_lock=true
-      - "OPENSEARCH_JAVA_OPTS=-Xms2048m -Xmx2048m"
-      - plugins.security.audit.type=debug
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-      nofile:
-        soft: 65536
-        hard: 65536
+      <<: *x-opensearch-node-common-vars
+      node.name: opensearch-node2
     volumes:
       - opensearch-data2:/usr/share/opensearch/data
-    networks:
-      - opensearch-net
+      - ./opensearch/config.yml:/usr/share/opensearch/config/opensearch-security/config.yml
+      - ./opensearch/roles.yml:/usr/share/opensearch/config/opensearch-security/roles.yml
+      - ./opensearch/roles_mapping.yml:/usr/share/opensearch/config/opensearch-security/roles_mapping.yml
   opensearch-dashboards:
     build: ./opensearch_dashboards
     container_name: opensearch-dashboards
@@ -62,7 +62,8 @@ services:
       opensearch_security.proxycache.roles_header: "x-proxy-roles"
     networks:
       - opensearch-net
-    volumes: []
+    volumes:
+      - ./opensearch_dashboards/opensearch_dashboards.yml:/usr/share/opensearch_dashboards/config/opensearch_dashboards.yml
 
 volumes:
   opensearch-data1:
