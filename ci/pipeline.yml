@@ -130,17 +130,17 @@ jobs:
           path: src/ci/e2e.sh
         params:
           AUTH_PROXY_URL: ((auth-proxy-url))
-          DEV_TEST_USER_1_USERNAME: ((dev-test-user-1-username))
-          DEV_TEST_USER_1_PASSWORD: ((dev-test-user-1-password))
-          DEV_TEST_USER_1_TOTP_SEED: ((dev-test-user-1-totp-seed))
-          DEV_TEST_USER_1_SPACE_ID: ((dev-test-user-1-space-id))
-          DEV_TEST_USER_1_ORG_ID: ((dev-test-user-1-org-id))
+          TEST_USER_1_USERNAME: ((dev-test-user-1-username))
+          TEST_USER_1_PASSWORD: ((dev-test-user-1-password))
+          TEST_USER_1_TOTP_SEED: ((dev-test-user-1-totp-seed))
+          TEST_USER_1_SPACE_ID: ((dev-test-user-1-space-id))
+          TEST_USER_1_ORG_ID: ((dev-test-user-1-org-id))
   
-          DEV_TEST_USER_2_USERNAME: ((dev-test-user-2-username))
-          DEV_TEST_USER_2_PASSWORD: ((dev-test-user-2-password))
-          DEV_TEST_USER_2_TOTP_SEED: ((dev-test-user-2-totp-seed))
-          DEV_TEST_USER_2_SPACE_ID: ((dev-test-user-2-space-id))
-          DEV_TEST_USER_2_ORG_ID: ((dev-test-user-2-org-id))
+          TEST_USER_2_USERNAME: ((dev-test-user-2-username))
+          TEST_USER_2_PASSWORD: ((dev-test-user-2-password))
+          TEST_USER_2_TOTP_SEED: ((dev-test-user-2-totp-seed))
+          TEST_USER_2_SPACE_ID: ((dev-test-user-2-space-id))
+          TEST_USER_2_ORG_ID: ((dev-test-user-2-org-id))
 
 
 ##########################
