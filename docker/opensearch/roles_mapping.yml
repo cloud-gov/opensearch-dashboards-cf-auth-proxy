@@ -19,10 +19,10 @@ cf_user:
   users: []
   and_backend_roles: []
   description: "CF users with privileges to their own spaces"
-opensearch_dashboards_server:
+kibana_server:
   reserved: true
   users:
-  - "opensearch_dashboardsserver"
+  - "kibanaserver"
 all_access:
   reserved: true
   hidden: false
