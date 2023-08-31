@@ -17,21 +17,18 @@ jobs:
 
 - name: test
   plan:
-    - get: src
-      params: {depth: 1}
-      trigger: true
-      passed: [reconfigure]
-
+    - in_parallel:
+      - get: src
+        params: {depth: 1}
+        trigger: true
+        passed: [reconfigure]
+      - get: general-task
     - task: test
+      image: general-task
       config:
         inputs:
           - name: src
         platform: linux
-        image_resource:
-          type: docker-image
-          source:
-            repository: python
-            tag: "3.8"
         run:
           path: src/ci/test.sh
 
@@ -58,10 +55,12 @@ jobs:
 
 - name: cf
   plan:
-    - get: src
-      params: {depth: 1}
-      trigger: true
-      passed: [build-test-images]
+    - in_parallel:
+      - get: src
+        params: {depth: 1}
+        trigger: true
+        passed: [build-test-images]
+      - get: general-task
     
     - put: cf-dev
       params:
@@ -86,8 +85,9 @@ jobs:
           public_route: ((dev-public-url))
 
     - task: update-networking
+      image: general-task
       file: src/ci/update-networking.yml
-      params:
+      params: &dev-cf-auth-params
         CF_API_URL: ((dev-cf-api-url))
         CF_USERNAME: ((dev-cf-username))
         CF_PASSWORD: ((dev-cf-password))
@@ -96,25 +96,73 @@ jobs:
 
 - name: e2e
   plan:
-    - get: src
-      params: {depth: 1}
-      trigger: true
-      passed: [cf]
+    - in_parallel:
+      - get: src
+        params: {depth: 1}
+        trigger: true
+        passed: [cf]
+      - get: general-task
+    - task: provision-cf-access
+      image: general-task
+      config:
+        platform: linux
+        inputs:
+        - name: src
+        run:
+          path: src/ci/provision-cf-access.sh
+      params:
+        <<: *dev-cf-auth-params
+
+        CF_ORG_ID_1: ((dev-test-org-1-id))
+        CF_SPACE_ID_1: ((dev-test-org-1-space-1-id))
+
+        CF_ORG_ID_2: ((dev-test-org-2-id))
+        CF_SPACE_ID_2: ((dev-test-org-2-space-2-id))
+        
+        CF_ORG_ID_1_BOTH_ORGS_SPACE: ((dev-test-org-1-both-orgs-space-id))
+        CF_ORG_ID_2_BOTH_ORGS_SPACE: ((dev-test-org-2-both-orgs-space-id))
+        
+        TEST_USER_1_USERNAME: ((dev-test-user-1-username))
+        TEST_USER_1_PASSWORD: ((dev-test-user-1-password))
+        TEST_USER_1_TOTP_SEED: ((dev-test-user-1-totp-seed))
+        TEST_USER_1_SPACE_ID: ((dev-test-user-1-space-id))
+        TEST_USER_1_ORG_ID: ((dev-test-user-1-org-id))
+
+        TEST_USER_2_USERNAME: ((dev-test-user-2-username))
+        TEST_USER_2_PASSWORD: ((dev-test-user-2-password))
+        TEST_USER_2_TOTP_SEED: ((dev-test-user-2-totp-seed))
+        TEST_USER_2_SPACE_ID: ((dev-test-user-2-space-id))
+        TEST_USER_2_ORG_ID: ((dev-test-user-2-org-id))
+
+        TEST_USER_3_USERNAME: ((dev-test-user-3-username))
+        TEST_USER_3_PASSWORD: ((dev-test-user-3-password))
+        TEST_USER_3_TOTP_SEED: ((dev-test-user-3-totp-seed))
+        TEST_USER_3_SPACE_ID: ((dev-test-user-3-space-id))
+        TEST_USER_3_ORG_ID: ((dev-test-user-3-org-id))
+
+        TEST_USER_4_USERNAME: ((dev-test-user-4-username))
+        TEST_USER_4_PASSWORD: ((dev-test-user-4-password))
+        TEST_USER_4_TOTP_SEED: ((dev-test-user-4-totp-seed))
+        TEST_USER_4_SPACE_ID: ((dev-test-user-4-space-id))
+        TEST_USER_4_ORG_ID: ((dev-test-user-4-org-id))
 
     - task: initialize-config
+      image: general-task
       file: src/ci/init-config.yml
       params:
-        CF_API_URL: ((dev-cf-api-url))
-        CF_USERNAME: ((dev-cf-username))
-        CF_PASSWORD: ((dev-cf-password))
-        CF_ORGANIZATION: ((dev-cf-organization))
-        CF_SPACE: ((dev-cf-space))
+        <<: *dev-cf-auth-params
+
         ES_USER: ((es-admin-username))
         ES_PASSWORD: ((es-admin-password))
-        CF_SPACE_ID_1: ((dev-test-user-1-space-id))
-        CF_ORG_ID_1: ((dev-test-user-1-org-id))
-        CF_SPACE_ID_2: ((dev-test-user-2-space-id))
-        CF_ORG_ID_2: ((dev-test-user-2-org-id))
+
+        CF_ORG_ID_1: ((dev-test-org-1-id))
+        CF_SPACE_ID_1: ((dev-test-org-1-space-1-id))
+
+        CF_ORG_ID_2: ((dev-test-org-2-id))
+        CF_SPACE_ID_2: ((dev-test-org-2-space-2-id))
+        
+        CF_ORG_ID_1_BOTH_ORGS_SPACE: ((dev-test-org-1-both-orgs-space-id))
+        CF_ORG_ID_2_BOTH_ORGS_SPACE: ((dev-test-org-2-both-orgs-space-id))
         
     - task: e2e-tests
       config:
@@ -130,17 +178,29 @@ jobs:
           path: src/ci/e2e.sh
         params:
           AUTH_PROXY_URL: ((auth-proxy-url))
-          DEV_TEST_USER_1_USERNAME: ((dev-test-user-1-username))
-          DEV_TEST_USER_1_PASSWORD: ((dev-test-user-1-password))
-          DEV_TEST_USER_1_TOTP_SEED: ((dev-test-user-1-totp-seed))
-          DEV_TEST_USER_1_SPACE_ID: ((dev-test-user-1-space-id))
-          DEV_TEST_USER_1_ORG_ID: ((dev-test-user-1-org-id))
+          TEST_USER_1_USERNAME: ((dev-test-user-1-username))
+          TEST_USER_1_PASSWORD: ((dev-test-user-1-password))
+          TEST_USER_1_TOTP_SEED: ((dev-test-user-1-totp-seed))
+          TEST_USER_1_SPACE_ID: ((dev-test-user-1-space-id))
+          TEST_USER_1_ORG_ID: ((dev-test-user-1-org-id))
   
-          DEV_TEST_USER_2_USERNAME: ((dev-test-user-2-username))
-          DEV_TEST_USER_2_PASSWORD: ((dev-test-user-2-password))
-          DEV_TEST_USER_2_TOTP_SEED: ((dev-test-user-2-totp-seed))
-          DEV_TEST_USER_2_SPACE_ID: ((dev-test-user-2-space-id))
-          DEV_TEST_USER_2_ORG_ID: ((dev-test-user-2-org-id))
+          TEST_USER_2_USERNAME: ((dev-test-user-2-username))
+          TEST_USER_2_PASSWORD: ((dev-test-user-2-password))
+          TEST_USER_2_TOTP_SEED: ((dev-test-user-2-totp-seed))
+          TEST_USER_2_SPACE_ID: ((dev-test-user-2-space-id))
+          TEST_USER_2_ORG_ID: ((dev-test-user-2-org-id))
+
+          TEST_USER_3_USERNAME: ((dev-test-user-3-username))
+          TEST_USER_3_PASSWORD: ((dev-test-user-3-password))
+          TEST_USER_3_TOTP_SEED: ((dev-test-user-3-totp-seed))
+          TEST_USER_3_SPACE_ID: ((dev-test-user-3-space-id))
+          TEST_USER_3_ORG_ID: ((dev-test-user-3-org-id))
+  
+          TEST_USER_4_USERNAME: ((dev-test-user-4-username))
+          TEST_USER_4_PASSWORD: ((dev-test-user-4-password))
+          TEST_USER_4_TOTP_SEED: ((dev-test-user-4-totp-seed))
+          TEST_USER_4_SPACE_ID: ((dev-test-user-4-space-id))
+          TEST_USER_4_ORG_ID: ((dev-test-user-4-org-id))
 
 
 ##########################
@@ -161,7 +221,7 @@ resources:
   icon: github-circle
   check_every: 10s
   source:
-    uri: https://github.com/cloud-gov/opensearch_dashboards-cf-auth-proxy
+    uri: https://github.com/cloud-gov/opensearch-dashboards-cf-auth-proxy
     branch: main
     commit_verification_keys: ((cloud-gov-pgp-keys))
 
@@ -193,12 +253,33 @@ resources:
     organization: ((dev-cf-organization))
     space: ((dev-cf-space))
 
+- name: general-task
+  type: registry-image
+  source:
+    aws_access_key_id: ((ecr_aws_key))
+    aws_secret_access_key: ((ecr_aws_secret))
+    repository: general-task
+    aws_region: us-gov-west-1
+    tag: latest
+
 ############################
 #  RESOURCE TYPES
 
 resource_types:
+- name: registry-image
+  type: registry-image
+  source:
+    aws_access_key_id: ((ecr_aws_key))
+    aws_secret_access_key: ((ecr_aws_secret))
+    repository: registry-image-resource
+    aws_region: us-gov-west-1
+    tag: latest
 
 - name: s3-iam
-  type: docker-image
+  type: registry-image
   source:
-    repository: 18fgsa/s3-resource
+    aws_access_key_id: ((ecr_aws_key))
+    aws_secret_access_key: ((ecr_aws_secret))
+    repository: s3-resource
+    aws_region: us-gov-west-1
+    tag: latest

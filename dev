@@ -154,6 +154,10 @@ main() {
       ${python} -m piptools sync requirements.txt dev-requirements.txt
       ${python} -m pytest tests
       ;;
+    provision-cf-access)
+      set -o allexport; source "${dir}/.env"; set +o allexport
+      ./ci/provision-cf-access.sh
+      ;;
     serve)
       set -o allexport; source "${dir}/.env"; set +o allexport
       export FLASK_APP="opensearch_dashboards_cf_auth_proxy.app:create_app()"

@@ -63,7 +63,7 @@ services:
     networks:
       - opensearch-net
     volumes:
-      - ./opensearch_dashboards/opensearch_dashboards.yml:/usr/share/opensearch_dashboards/config/opensearch_dashboards.yml
+      - ./opensearch_dashboards/opensearch_dashboards.yml:/usr/share/opensearch-dashboards/config/opensearch_dashboards.yml
 
 volumes:
   opensearch-data1:

@@ -13,5 +13,7 @@ USER 1000
 
 EXPOSE 5601
 
+COPY opensearch_dashboards.yml $OPENSEARCH_DASHBOARDS_HOME/config/opensearch_dashboards.yml
+
 ENTRYPOINT ["./opensearch-dashboards-docker-entrypoint.sh"]
 CMD ["opensearch-dashboards"]
