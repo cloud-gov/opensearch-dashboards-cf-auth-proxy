@@ -17,15 +17,17 @@ jobs:
 
 - name: test
   plan:
-    - in_parallel:
-      - get: src
-        params: {depth: 1}
-        trigger: true
-        passed: [reconfigure]
-      - get: general-task
+    - get: src
+      params: {depth: 1}
+      trigger: true
+      passed: [reconfigure]
     - task: test
-      image: general-task
       config:
+        image_resource:
+          type: docker-image
+          source:
+            repository: python
+            tag: "3.8"
         inputs:
           - name: src
         platform: linux
