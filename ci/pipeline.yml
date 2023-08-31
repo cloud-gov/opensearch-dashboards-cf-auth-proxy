@@ -17,11 +17,12 @@ jobs:
 
 - name: test
   plan:
-    - get: src
-      params: {depth: 1}
-      trigger: true
-      passed: [reconfigure]
-
+    - in_parallel:
+      - get: src
+        params: {depth: 1}
+        trigger: true
+        passed: [reconfigure]
+      - get: general-task
     - task: test
       image: general-task
       config:
@@ -54,10 +55,12 @@ jobs:
 
 - name: cf
   plan:
-    - get: src
-      params: {depth: 1}
-      trigger: true
-      passed: [build-test-images]
+    - in_parallel:
+      - get: src
+        params: {depth: 1}
+        trigger: true
+        passed: [build-test-images]
+      - get: general-task
     
     - put: cf-dev
       params:
@@ -93,11 +96,12 @@ jobs:
 
 - name: e2e
   plan:
-    - get: src
-      params: {depth: 1}
-      trigger: true
-      passed: [cf]
-
+    - in_parallel:
+      - get: src
+        params: {depth: 1}
+        trigger: true
+        passed: [cf]
+      - get: general-task
     - task: provision-cf-access
       image: general-task
       config:
@@ -147,7 +151,7 @@ jobs:
       file: src/ci/init-config.yml
       params:
         <<: *dev-cf-auth-params
-        
+
         ES_USER: ((es-admin-username))
         ES_PASSWORD: ((es-admin-password))
 
@@ -217,7 +221,7 @@ resources:
   icon: github-circle
   check_every: 10s
   source:
-    uri: https://github.com/cloud-gov/opensearch_dashboards-cf-auth-proxy
+    uri: https://github.com/cloud-gov/opensearch-dashboards-cf-auth-proxy
     branch: main
     commit_verification_keys: ((cloud-gov-pgp-keys))
 
