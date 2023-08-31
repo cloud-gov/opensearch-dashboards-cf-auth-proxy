@@ -84,7 +84,7 @@ jobs:
     - task: update-networking
       image: general-task
       file: src/ci/update-networking.yml
-      params:
+      params: &dev-cf-auth-params
         CF_API_URL: ((dev-cf-api-url))
         CF_USERNAME: ((dev-cf-username))
         CF_PASSWORD: ((dev-cf-password))
@@ -107,17 +107,16 @@ jobs:
         run:
           path: src/ci/provision-cf-access.sh
       params:
-        CF_API_URL: ((dev-cf-api-url))
-        CF_USERNAME: ((dev-cf-username))
-        CF_PASSWORD: ((dev-cf-password))
+        <<: *dev-cf-auth-params
 
-        CF_SPACE_ID_1: ((dev-test-user-1-space-id))
-        CF_ORG_ID_1: ((dev-test-user-1-org-id))
-        CF_SPACE_ID_2: ((dev-test-user-2-space-id))
-        CF_ORG_ID_2: ((dev-test-user-2-org-id))
+        CF_ORG_ID_1: ((dev-test-org-1-id))
+        CF_SPACE_ID_1: ((dev-test-org-1-space-1-id))
 
-        CF_ORG_ID_1_BOTH_ORGS_SPACE: ((dev-test-org-1-both-orgs-space))
-        CF_ORG_ID_2_BOTH_ORGS_SPACE: ((dev-test-org-2-both-orgs-space))
+        CF_ORG_ID_2: ((dev-test-org-2-id))
+        CF_SPACE_ID_2: ((dev-test-org-2-space-2-id))
+        
+        CF_ORG_ID_1_BOTH_ORGS_SPACE: ((dev-test-org-1-both-orgs-space-id))
+        CF_ORG_ID_2_BOTH_ORGS_SPACE: ((dev-test-org-2-both-orgs-space-id))
         
         TEST_USER_1_USERNAME: ((dev-test-user-1-username))
         TEST_USER_1_PASSWORD: ((dev-test-user-1-password))
@@ -147,17 +146,19 @@ jobs:
       image: general-task
       file: src/ci/init-config.yml
       params:
-        CF_API_URL: ((dev-cf-api-url))
-        CF_USERNAME: ((dev-cf-username))
-        CF_PASSWORD: ((dev-cf-password))
-        CF_ORGANIZATION: ((dev-cf-organization))
-        CF_SPACE: ((dev-cf-space))
+        <<: *dev-cf-auth-params
+        
         ES_USER: ((es-admin-username))
         ES_PASSWORD: ((es-admin-password))
-        CF_SPACE_ID_1: ((dev-test-user-1-space-id))
-        CF_ORG_ID_1: ((dev-test-user-1-org-id))
-        CF_SPACE_ID_2: ((dev-test-user-2-space-id))
-        CF_ORG_ID_2: ((dev-test-user-2-org-id))
+
+        CF_ORG_ID_1: ((dev-test-org-1-id))
+        CF_SPACE_ID_1: ((dev-test-org-1-space-1-id))
+
+        CF_ORG_ID_2: ((dev-test-org-2-id))
+        CF_SPACE_ID_2: ((dev-test-org-2-space-2-id))
+        
+        CF_ORG_ID_1_BOTH_ORGS_SPACE: ((dev-test-org-1-both-orgs-space-id))
+        CF_ORG_ID_2_BOTH_ORGS_SPACE: ((dev-test-org-2-both-orgs-space-id))
         
     - task: e2e-tests
       config:
