@@ -156,7 +156,7 @@ main() {
       ;;
     provision-cf-access)
       set -o allexport; source "${dir}/.env"; set +o allexport
-      ./ci/provision-org-spaces.sh
+      ./ci/provision-cf-access.sh
       ;;
     serve)
       set -o allexport; source "${dir}/.env"; set +o allexport
