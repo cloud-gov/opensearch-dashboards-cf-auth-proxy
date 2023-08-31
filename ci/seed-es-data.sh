@@ -115,6 +115,7 @@ time=$(${date_bin} --iso-8601=seconds)
 # user 1 should be able to see this log
 # user 2 should not be able to see it
 # user 3 should be able to see this log
+# user 4 should not be able to see it
 echo "creating test document 1/5"
 # we use refresh=true on all these to force elasticsearch to refresh
 # It doesn't seem to make the docs available otherwise
@@ -136,6 +137,7 @@ curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
 # user 1 should not be able to see it
 # user 2 should be able to see this log
 # user 3 should be able to see this log
+# user 4 should not be able to see it
 echo "creating test document 2/5"
 curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
     -X POST \
@@ -164,6 +166,7 @@ curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
 # user 1 should be able to see this log
 # user 2 should not be able to see it
 # user 3 should be able to see this log
+# user 4 should not be able to see it
 echo "creating test document 4/5"
 curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
     -X POST \
@@ -178,6 +181,7 @@ curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
 # user 1 should not be able to see it
 # user 2 should be able to see this log
 # user 3 should be able to see this log
+# user 4 should not be able to see it
 echo "creating test document 5/5"
 curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
     -X POST \
@@ -200,14 +204,17 @@ curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
     https://localhost:9200/logs-app-now/_doc?refresh=true \
     -d '{
         "@timestamp": "'${time}'",
-        "@cf": {"org_id":"'${CF_ORG_ID_1}'"},
+        "@cf": {
+            "org_id": "'${CF_ORG_ID_1}'",
+            "space_id":"'${CF_ORG_ID_1_BOTH_ORGS_SPACE}'"
+        },
         "message": "org_1_both_orgs_space"
         }' | jq
 
 # user 1 should not be able to see it
 # user 2 should be able to see this log
 # user 3 should not be able to see it
-# user 4 should not be able to see this log
+# user 4 should not be able to see it
 echo "creating test document 7/7"
 curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
     -X POST \
@@ -215,7 +222,10 @@ curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
     https://localhost:9200/logs-app-now/_doc?refresh=true \
     -d '{
         "@timestamp": "'${time}'",
-        "@cf": {"org_id":"'${CF_ORG_ID_2}'"},
+        "@cf": {
+            "org_id": "'${CF_ORG_ID_2}'",
+            "space_id":"'${CF_ORG_ID_2_BOTH_ORGS_SPACE}'"
+        },
         "message": "org_2_both_orgs_space"
         }' | jq
 
