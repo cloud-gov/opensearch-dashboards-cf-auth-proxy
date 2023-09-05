@@ -6,14 +6,8 @@ jobs:
   - get: src
     params: {depth: 1}
     trigger: true
-  - get: secrets
-    # Remember to manually trigger a new build if you upload a new version
-    # of the credentials file.
-    trigger: false
-  - set_pipeline: ((name))
+  - set_pipeline: opensearch-dashboards-cf-auth-proxy
     file: src/ci/pipeline.yml
-    var_files:
-    - secrets/((name)).yml
 
 - name: test
   plan:
@@ -77,7 +71,7 @@ jobs:
         path: src
         manifest: src/cf/proxy-manifest.yml
         vars:
-          cf_url: ((dev-cf-url))
+          cf_url: ((dev-cf-api-url))
           uaa_auth_url: ((dev-uaa-auth-url))
           uaa_base_url: ((dev-uaa-base-url))
           uaa_client_id: ((dev-uaa-client-id))
@@ -194,14 +188,6 @@ jobs:
 
 resources:
 
-- name: secrets
-  type: s3-iam
-  icon: cloud-lock
-  source:
-    region_name: ((concourse-varz-bucket-region))
-    bucket: ((concourse-varz-bucket))
-    versioned_file: ((name)).yml
-
 - name: src
   type: git
   icon: github-circle
@@ -218,7 +204,7 @@ resources:
     email: ((docker-email))
     username: ((docker-username))
     password: ((docker-password))
-    repository: ((docker-image-opensearch-dev))
+    repository: cloudgovoperations/test-opensearch
 
 - name: dev-opensearch-dashboards-image
   type: docker-image
@@ -227,7 +213,7 @@ resources:
     email: ((docker-email))
     username: ((docker-username))
     password: ((docker-password))
-    repository: ((docker-image-opensearch-dashboards-dev))
+    repository: cloudgovoperations/test-opensearch-dashboards
 
 - name: cf-dev
   type: cf
