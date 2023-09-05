@@ -82,7 +82,12 @@ jobs:
 
     - task: update-networking
       image: general-task
-      file: src/ci/update-networking.yml
+      config:
+        platform: linux
+        inputs:
+        - name: src
+        run:
+          path: src/ci/update-networking.sh
       params: &dev-cf-auth-params
         CF_API_URL: ((dev-cf-api-url))
         CF_USERNAME: ((dev-cf-username))
@@ -136,7 +141,12 @@ jobs:
 
     - task: initialize-config
       image: general-task
-      file: src/ci/init-config.yml
+      config:
+        platform: linux
+        inputs:
+        - name: src
+        run:
+          path: src/ci/init-config.sh
       params:
         <<: *dev-cf-auth-params
 
