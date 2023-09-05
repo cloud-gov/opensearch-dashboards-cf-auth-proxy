@@ -17,15 +17,17 @@ jobs:
 
 - name: test
   plan:
-    - in_parallel:
-      - get: src
-        params: {depth: 1}
-        trigger: true
-        passed: [reconfigure]
-      - get: general-task
+    - get: src
+      params: {depth: 1}
+      trigger: true
+      passed: [reconfigure]
     - task: test
-      image: general-task
       config:
+        image_resource:
+          type: docker-image
+          source:
+            repository: python
+            tag: "3.8"
         inputs:
           - name: src
         platform: linux
@@ -125,26 +127,18 @@ jobs:
         TEST_USER_1_USERNAME: ((dev-test-user-1-username))
         TEST_USER_1_PASSWORD: ((dev-test-user-1-password))
         TEST_USER_1_TOTP_SEED: ((dev-test-user-1-totp-seed))
-        TEST_USER_1_SPACE_ID: ((dev-test-user-1-space-id))
-        TEST_USER_1_ORG_ID: ((dev-test-user-1-org-id))
 
         TEST_USER_2_USERNAME: ((dev-test-user-2-username))
         TEST_USER_2_PASSWORD: ((dev-test-user-2-password))
         TEST_USER_2_TOTP_SEED: ((dev-test-user-2-totp-seed))
-        TEST_USER_2_SPACE_ID: ((dev-test-user-2-space-id))
-        TEST_USER_2_ORG_ID: ((dev-test-user-2-org-id))
 
         TEST_USER_3_USERNAME: ((dev-test-user-3-username))
         TEST_USER_3_PASSWORD: ((dev-test-user-3-password))
         TEST_USER_3_TOTP_SEED: ((dev-test-user-3-totp-seed))
-        TEST_USER_3_SPACE_ID: ((dev-test-user-3-space-id))
-        TEST_USER_3_ORG_ID: ((dev-test-user-3-org-id))
 
         TEST_USER_4_USERNAME: ((dev-test-user-4-username))
         TEST_USER_4_PASSWORD: ((dev-test-user-4-password))
         TEST_USER_4_TOTP_SEED: ((dev-test-user-4-totp-seed))
-        TEST_USER_4_SPACE_ID: ((dev-test-user-4-space-id))
-        TEST_USER_4_ORG_ID: ((dev-test-user-4-org-id))
 
     - task: initialize-config
       image: general-task
@@ -181,26 +175,18 @@ jobs:
           TEST_USER_1_USERNAME: ((dev-test-user-1-username))
           TEST_USER_1_PASSWORD: ((dev-test-user-1-password))
           TEST_USER_1_TOTP_SEED: ((dev-test-user-1-totp-seed))
-          TEST_USER_1_SPACE_ID: ((dev-test-user-1-space-id))
-          TEST_USER_1_ORG_ID: ((dev-test-user-1-org-id))
   
           TEST_USER_2_USERNAME: ((dev-test-user-2-username))
           TEST_USER_2_PASSWORD: ((dev-test-user-2-password))
           TEST_USER_2_TOTP_SEED: ((dev-test-user-2-totp-seed))
-          TEST_USER_2_SPACE_ID: ((dev-test-user-2-space-id))
-          TEST_USER_2_ORG_ID: ((dev-test-user-2-org-id))
 
           TEST_USER_3_USERNAME: ((dev-test-user-3-username))
           TEST_USER_3_PASSWORD: ((dev-test-user-3-password))
           TEST_USER_3_TOTP_SEED: ((dev-test-user-3-totp-seed))
-          TEST_USER_3_SPACE_ID: ((dev-test-user-3-space-id))
-          TEST_USER_3_ORG_ID: ((dev-test-user-3-org-id))
   
           TEST_USER_4_USERNAME: ((dev-test-user-4-username))
           TEST_USER_4_PASSWORD: ((dev-test-user-4-password))
           TEST_USER_4_TOTP_SEED: ((dev-test-user-4-totp-seed))
-          TEST_USER_4_SPACE_ID: ((dev-test-user-4-space-id))
-          TEST_USER_4_ORG_ID: ((dev-test-user-4-org-id))
 
 
 ##########################
