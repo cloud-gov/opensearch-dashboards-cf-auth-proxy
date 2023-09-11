@@ -11,10 +11,12 @@ jobs:
 
 - name: test
   plan:
-    - get: src
-      params: {depth: 1}
-      trigger: true
-      passed: [reconfigure]
+    - in_parallel:
+      - get: src
+        params: {depth: 1}
+        trigger: true
+        passed: [reconfigure]
+      - get: general-task
     - task: test
       image: general-task
       config:
