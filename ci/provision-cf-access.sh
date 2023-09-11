@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+if ! cf target > /dev/null; then
+  cf api "${CF_API_URL}"
+  cf auth
+  cf t -o "${CF_ORGANIZATION}" -s "${CF_SPACE}"
+fi
+
 if [[ -z "$TEST_USER_1_USERNAME" ]]; then
   echo "TEST_USER_1_USERNAME environment variable is required"
   exit 1
