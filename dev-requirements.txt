@@ -173,7 +173,7 @@ urllib3==2.0.4
     #   requests
 watchdog==3.0.0
     # via pytest-watch
-werkzeug==2.3.7
+werkzeug==3.0.1
     # via
     #   -r pip-tools/../requirements.txt
     #   flask
