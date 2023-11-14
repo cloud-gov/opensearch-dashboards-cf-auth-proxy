@@ -9,7 +9,7 @@ version: 1
 applications:
 - name: ((app_name))
   health_check_type: port
-  instances: 2
+  instances: ((num_instances))
   buildpacks:
     - python_buildpack
   routes:

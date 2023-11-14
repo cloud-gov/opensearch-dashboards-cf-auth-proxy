@@ -76,9 +76,10 @@ jobs:
           uaa_client_secret: ((dev-uaa-client-secret))
           secret_key: ((dev-secret-key))
           session_lifetime: "3600"
-          public_route: ((dev-public-url))
+          public_route: ((dev-test-public-url))
           dashboard_url: ((dev-test-dashboard-url))
           app_name: test-auth-proxy
+          num_instances: 1
 
     - task: update-networking
       image: general-task
@@ -215,6 +216,7 @@ jobs:
           public_route: ((dev-public-url))
           dashboard_url: ((dev-dashboard-url))
           app_name: auth-proxy
+          num_instances: 1
 
 ##########################
 #  RESOURCES
