@@ -102,7 +102,7 @@ jobs:
       - get: src
         params: {depth: 1}
         trigger: true
-        passed: [cf]
+        passed: [deploy-test-apps]
       - get: general-task
     - task: provision-cf-access
       image: general-task
