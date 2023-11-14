@@ -79,7 +79,7 @@ jobs:
           public_route: ((dev-test-public-url))
           dashboard_url: ((dev-test-dashboard-url))
           app_name: test-auth-proxy
-          num_instances: 1
+          num_instances: "1"
 
     - task: update-networking
       image: general-task
@@ -198,9 +198,8 @@ jobs:
     - get: src
       params: {depth: 1}
       trigger: true
-      passed: [build-test-images]
-      # passed: [e2e] uncomment once e2e tests are fixed
-    
+      # change to e2e once tests are fixed
+      passed: [test]
     - put: cf-dev
       params:
         path: src
@@ -216,7 +215,7 @@ jobs:
           public_route: ((dev-public-url))
           dashboard_url: ((dev-dashboard-url))
           app_name: auth-proxy
-          num_instances: 1
+          num_instances: "1"
 
 ##########################
 #  RESOURCES
