@@ -7,7 +7,7 @@
 
 version: 1
 applications:
-- name: opensearch-dashboards
+- name: test-opensearch-dashboards
   memory: 1G
   instances: 1
   disk_quota: 2G
