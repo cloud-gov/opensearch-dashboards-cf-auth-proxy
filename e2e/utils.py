@@ -4,32 +4,59 @@ from . import AUTH_PROXY_URL
 
 
 def log_in(user, page, start_at=None):
-    page.set_default_timeout(30000)
+    page.set_default_timeout(15000)
+
     if start_at is None:
         start_at = AUTH_PROXY_URL
+    
     # go to opensearch dashboard
     page.goto(start_at)
+    
     # accept the monitoring notice
-    page.click(".island-button.js-notice-submit")
+    agree_continue_button = page.get_by_text("AGREE AND CONTINUE")
+    agree_continue_button.wait_for()
+    agree_continue_button.click()
+    
     # select the cloud.gov IdP
-    page.click("a>span:has-text('cloud.gov')")
-    page.fill("input[id='username']", user.username)
-    page.fill("input[id='password']", user.password)
-    page.click("text='Login'")
-    page.fill("input[id='j_tokenNumber']", user.totp.now())
-    page.click("text='Login'")
+    cloud_gov_idp_button = page.get_by_role("link", name="cloud.gov")
+    cloud_gov_idp_button.wait_for()
+    cloud_gov_idp_button.click()
+    
+    username_field = page.get_by_label("Email address")
+    password_field = page.get_by_label("Password")
+    username_field.wait_for()
+    password_field.wait_for()
+    username_field.fill(user.username)
+    password_field.fill(user.password)
+
+    login_button = page.get_by_text("Login")
+    login_button.wait_for()
+    login_button.click()
+
+    # totp_field = page.get_by_role("input", name="j_tokenNumber")
+    totp_field = page.locator("css=input[id='j_tokenNumber']")
+    totp_field.wait_for()
+    totp_field.fill(user.totp.now())
+
+    login_button = page.get_by_text("Login")
+    login_button.wait_for()
+    login_button.click()
+    
     # lots of redirects and stuff happen here, so just, like, chill, ok?
     page.wait_for_load_state("networkidle")
     if "/authorize?" in page.url:
         # first time using this app with this user
-        page.click("text='Authorize'")
+        authorize_button = page.get_by_text("Authorize")
+        authorize_button.wait_for()
+        authorize_button.click()
         page.wait_for_load_state("networkidle")
 
     # handle first-login stuff when it's here
     page.wait_for_timeout(5000)
     if "Start by adding your data" in page.content():
-        page.click('text="Explore on my own"')
-
+        explore_button = page.get_by_text("Explore on my own")
+        explore_button.wait_for()
+        explore_button.click()
 
 def switch_tenants(page, tenant="Global"):
     """
@@ -38,7 +65,6 @@ def switch_tenants(page, tenant="Global"):
     tenant_option = page.get_by_text(re.compile(f"^{tenant}.*$"))
     tenant_option.wait_for()
     tenant_option.click()
-
 
     # submit
     submit_button = page.get_by_text("Confirm")
