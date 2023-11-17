@@ -7,7 +7,7 @@
 
 version: 1
 applications:
-- name: test-opensearch
+- name: ((app_name))
   memory: 3G
   instances: 1
   disk_quota: 2G

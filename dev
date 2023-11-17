@@ -124,8 +124,15 @@ cf_push() {
 }
 
 cf_network() {
-  cf add-network-policy opensearch-dashboards opensearch --protocol tcp --port 9200
-  cf add-network-policy auth-proxy opensearch-dashboards --protocol tcp --port 5601
+  if [[ $# -lt 3 ]]; then
+    echo "Three arguments required: opensearch app name, dashboards app name, and proxy app name"
+    exit 1
+  fi
+  OPENSEARCH_APP_NAME="$1"
+  DASHBOARDS_APP_NAME="$2"
+  PROXY_APP_NAME="$3"
+  cf add-network-policy "$DASHBOARDS_APP_NAME" "$OPENSEARCH_APP_NAME" --protocol tcp --port 9200
+  cf add-network-policy "$PROXY_APP_NAME" "$DASHBOARDS_APP_NAME" --protocol tcp --port 5601
 }
 
 main() {
@@ -178,10 +185,10 @@ main() {
       ;;
     cf-push)
       cf_push
-      cf_network
+      cf_network "$@"
       ;;
     cf-network)
-      cf_network
+      cf_network "$@"
       ;;
     watch-test|watch-tests)
       watch_tests "$@"
