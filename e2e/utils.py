@@ -33,7 +33,6 @@ def log_in(user, page, start_at=None):
     login_button.wait_for()
     login_button.click()
 
-    # totp_field = page.get_by_role("input", name="j_tokenNumber")
     totp_field = page.locator("css=input[id='j_tokenNumber']")
     totp_field.wait_for()
     totp_field.fill(user.totp.now())
