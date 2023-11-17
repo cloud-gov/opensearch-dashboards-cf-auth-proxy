@@ -7,7 +7,7 @@
 
 version: 1
 applications:
-- name: test-opensearch-dashboards
+- name: ((app_name))
   memory: 1G
   instances: 1
   disk_quota: 2G

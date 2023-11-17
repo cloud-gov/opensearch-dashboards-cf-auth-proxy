@@ -59,10 +59,14 @@ jobs:
     - put: cf-dev
       params:
         manifest: src/cf/opensearch-manifest.yml
-    
+        vars:
+          app_name: ((dev-test-opensearch-app-name))
+
     - put: cf-dev
       params:
         manifest: src/cf/opensearch-dashboards-manifest.yml
+        vars:
+          app_name: ((dev-test-opensearch-dashboards-app-name))
     
     - put: cf-dev
       params:
@@ -78,7 +82,7 @@ jobs:
           session_lifetime: "3600"
           public_route: ((dev-test-public-url))
           dashboard_url: ((dev-test-dashboard-url))
-          app_name: test-auth-proxy
+          app_name: ((dev-test-auth-proxy-app-name))
           num_instances: "1"
 
     - task: update-networking
@@ -95,6 +99,9 @@ jobs:
         CF_PASSWORD: ((dev-cf-password))
         CF_ORGANIZATION: ((dev-cf-organization))
         CF_SPACE: ((dev-cf-space))
+        OPENSEARCH_APP_NAME: ((dev-test-opensearch-app-name))
+        DASHBOARDS_APP_NAME: ((dev-test-opensearch-dashboards-app-name))
+        PROXY_APP_NAME: ((dev-test-auth-proxy-app-name))
 
 - name: e2e
   plan:

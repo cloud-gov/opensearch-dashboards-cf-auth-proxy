@@ -9,9 +9,9 @@ pushd ${dir}
 trap popd exit
 
 cf api ${CF_API_URL}
-cf auth 
+cf auth
 cf t -o ${CF_ORGANIZATION} -s ${CF_SPACE}
 
 sleep 10
 
-../dev cf-network
+../dev cf-network "$OPENSEARCH_APP_NAME" "$DASHBOARDS_APP_NAME" "$PROXY_APP_NAME"
