@@ -1,5 +1,6 @@
 import pyotp
 
+
 class User:
     def __init__(self, username, password, totp_seed):
         self.username = username

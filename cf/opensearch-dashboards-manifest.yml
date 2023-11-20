@@ -7,8 +7,8 @@
 
 version: 1
 applications:
-- name: ((app_name))
-  memory: 1G
+- name: ((dashboards_app_name))
+  memory: 2G
   instances: 1
   disk_quota: 2G
   docker:

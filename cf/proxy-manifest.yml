@@ -7,9 +7,9 @@
 
 version: 1
 applications:
-- name: ((app_name))
+- name: ((auth_proxy_app_name))
   health_check_type: port
-  instances: ((num_instances))
+  instances: ((auth_proxy_num_instances))
   buildpacks:
     - python_buildpack
   routes:

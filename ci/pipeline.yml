@@ -76,14 +76,14 @@ jobs:
           cf_url: ((dev-cf-api-url))
           uaa_auth_url: ((dev-uaa-auth-url))
           uaa_base_url: ((dev-uaa-base-url))
-          uaa_client_id: ((dev-uaa-client-id))
-          uaa_client_secret: ((dev-uaa-client-secret))
+          uaa_client_id: ((dev-uaa-test-client-id))
+          uaa_client_secret: ((dev-uaa-test-client-secret))
           secret_key: ((dev-secret-key))
           session_lifetime: "3600"
           public_route: ((dev-test-public-url))
           dashboard_url: ((dev-test-dashboard-url))
-          app_name: ((dev-test-auth-proxy-app-name))
-          num_instances: "1"
+          auth_proxy_app_name: ((dev-test-auth-proxy-app-name))
+          auth_proxy_num_instances: ((dev-test-auth-proxy-num-instances))
 
     - task: update-networking
       image: general-task
@@ -223,8 +223,8 @@ jobs:
           session_lifetime: "3600"
           public_route: ((dev-public-url))
           dashboard_url: ((dev-dashboard-url))
-          app_name: auth-proxy
-          num_instances: "1"
+          auth_proxy_app_name: auth-proxy
+          auth_proxy_num_instances: ((dev-auth-proxy-num-instances))
 
 ##########################
 #  RESOURCES
