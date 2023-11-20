@@ -8,7 +8,7 @@
 version: 1
 applications:
 - name: ((app_name))
-  memory: 3G
+  memory: 4G
   instances: 1
   disk_quota: 2G
   routes:
