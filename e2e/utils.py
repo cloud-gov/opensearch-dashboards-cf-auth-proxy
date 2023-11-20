@@ -2,9 +2,8 @@ import re
 
 from . import AUTH_PROXY_URL
 
-
 def log_in(user, page, start_at=None):
-    page.set_default_timeout(15000)
+    page.set_default_timeout(60000)
 
     if start_at is None:
         start_at = AUTH_PROXY_URL
@@ -43,6 +42,7 @@ def log_in(user, page, start_at=None):
     
     # lots of redirects and stuff happen here, so just, like, chill, ok?
     page.wait_for_load_state("networkidle")
+
     if "/authorize?" in page.url:
         # first time using this app with this user
         authorize_button = page.get_by_text("Authorize")
@@ -50,9 +50,12 @@ def log_in(user, page, start_at=None):
         authorize_button.click()
         page.wait_for_load_state("networkidle")
 
+    page.wait_for_url(f"{AUTH_PROXY_URL}*")
+
     # handle first-login stuff when it's here
     page.wait_for_timeout(5000)
-    if "Start by adding your data" in page.content():
+
+    if page.get_by_text("Start by adding your data").is_visible():
         explore_button = page.get_by_text("Explore on my own")
         explore_button.wait_for()
         explore_button.click()
