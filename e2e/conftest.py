@@ -30,6 +30,7 @@ def user_2():
     )
     return user_2
 
+
 @pytest.fixture
 def user_3():
     user_3_username = getenv(f"TEST_USER_3_USERNAME")
@@ -41,6 +42,7 @@ def user_3():
         user_3_totp_seed,
     )
     return user_3
+
 
 @pytest.fixture
 def user_4():
