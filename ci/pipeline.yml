@@ -169,6 +169,8 @@ jobs:
         
         CF_ORG_ID_1_BOTH_ORGS_SPACE: ((dev-test-org-1-both-orgs-space-id))
         CF_ORG_ID_2_BOTH_ORGS_SPACE: ((dev-test-org-2-both-orgs-space-id))
+
+        DASHBOARDS_APP_NAME: ((dev-test-opensearch-dashboards-app-name))
         
     - task: e2e-tests
       config:
