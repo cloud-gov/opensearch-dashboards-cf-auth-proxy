@@ -3,12 +3,12 @@ import re
 from . import AUTH_PROXY_URL, UAA_AUTH_URL
 
 def log_in(user, page, start_at=None):
-    # page.set_default_timeout(30000)
+    page.set_default_timeout(30000)
 
     if start_at is None:
         start_at = AUTH_PROXY_URL
 
-    # go to opensearch dashboard
+    # go to auth proxy
     page.goto(start_at)
 
     # accept the monitoring notice
@@ -43,15 +43,17 @@ def log_in(user, page, start_at=None):
     # wait for OAuth authorize page or auth proxy page
     page.wait_for_url(re.compile(f"({AUTH_PROXY_URL}|{UAA_AUTH_URL})"))
 
+    # if OAuth authorize page, then authorize the application
     if "/authorize?" in page.url:
         # first time using this app with this user
         authorize_button = page.get_by_text("Authorize")
         authorize_button.wait_for()
         authorize_button.click()
 
+    # wait for redirect to auth proxy from OAuth URL
     page.wait_for_url(f"{AUTH_PROXY_URL}*")
 
-    # Ensure that dashboards has loaded
+    # wait for dashboard to finish loading
     home_title = page.get_by_text("Home")
     home_title.wait_for()
 
@@ -74,16 +76,13 @@ def switch_tenants(page, tenant="Global"):
     submit_button.wait_for()
     submit_button.click()
 
+    # wait for loading screen
     loading_text = page.get_by_text("Loading Opensearch Dashboards")
     loading_text.wait_for()
 
+    # wait for dashboard to finish loading
     home_title = page.get_by_text("Home")
     home_title.wait_for()
-
-    # todo: there is a page refresh that happens after submitting the tenant option.
-    # we should wait on an element instead of arbitrary timeout
-    # page.wait_for_timeout(2000)
-
 
 def go_to_discover_page(page):
     # open the hamburger menu
