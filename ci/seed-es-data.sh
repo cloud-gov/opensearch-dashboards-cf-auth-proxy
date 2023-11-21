@@ -10,6 +10,23 @@ trap cleanup exit
 
 cookie_jar=$(mktemp)
 
+required_env_vars=(
+    ES_USER
+    ES_PASSWORD
+    CF_ORG_1_ID
+    CF_ORG_1_SPACE_1_ID
+    CF_ORG_1_BOTH_ORGS_SPACE_ID
+    CF_ORG_2_ID
+    CF_ORG_2_SPACE_2_ID
+    CF_ORG_2_BOTH_ORGS_SPACE_ID
+)
+for var in "${required_env_vars[@]}"; do
+    if [ -z "${!var+x}" ]; then
+        echo "$var is a required environment variable"
+        exit 1
+    fi
+done
+
 # we have to create index and component templates
 # to work around the baked-in stream templates
 echo "creating component template"
@@ -89,8 +106,8 @@ curl --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
 #  - user should not be able to see logs without a space id
 
 # We should have this set up ahead of time:
-#   - org 1 has space space 1 with id ${CF_SPACE_ID_1}
-#   - org 2 has space space 2 with id ${CF_SPACE_ID_2}
+#   - org 1 has space space 1 with id ${CF_ORG_1_SPACE_1_ID}
+#   - org 2 has space space 2 with id ${CF_ORG_2_SPACE_2_ID}
 #   - user 1 is a space developer in space 1, with no org-level role
 #   - user 2 is an org manager in org 2, with no space-level role
 #   - user 3 is a space developer in space 1 and space 2, with no org-level roles
@@ -128,8 +145,8 @@ curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
     -d '{
         "@timestamp": "'${time}'",
         "@cf": {
-            "org_id": "'${CF_ORG_ID_1}'",
-            "space_id":"'${CF_SPACE_ID_1}'"
+            "org_id": "'${CF_ORG_1_ID}'",
+            "space_id":"'${CF_ORG_1_SPACE_1_ID}'"
         },
         "message": "space_id_1"
         }' | jq
@@ -146,8 +163,8 @@ curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
     -d '{
         "@timestamp": "'${time}'",
         "@cf": {
-            "org_id": "'${CF_ORG_ID_2}'",
-            "space_id":"'${CF_SPACE_ID_2}'"
+            "org_id": "'${CF_ORG_2_ID}'",
+            "space_id":"'${CF_ORG_2_SPACE_2_ID}'"
         },
         "message": "space_id_2"
         }' | jq
@@ -174,7 +191,7 @@ curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
     https://localhost:9200/logs-app-now/_doc?refresh=true \
     -d '{
         "@timestamp": "'${time}'",
-        "@cf":{ "org_id":"'${CF_ORG_ID_1}'"},
+        "@cf":{ "org_id":"'${CF_ORG_1_ID}'"},
         "message": "org_id_1"
         }' | jq
 
@@ -189,7 +206,7 @@ curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
     https://localhost:9200/logs-app-now/_doc?refresh=true \
     -d '{
         "@timestamp": "'${time}'",
-        "@cf": {"org_id":"'${CF_ORG_ID_2}'"},
+        "@cf": {"org_id":"'${CF_ORG_2_ID}'"},
         "message": "org_id_2"
         }' | jq
 
@@ -205,8 +222,8 @@ curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
     -d '{
         "@timestamp": "'${time}'",
         "@cf": {
-            "org_id": "'${CF_ORG_ID_1}'",
-            "space_id":"'${CF_ORG_ID_1_BOTH_ORGS_SPACE}'"
+            "org_id": "'${CF_ORG_1_ID}'",
+            "space_id":"'${CF_ORG_1_BOTH_ORGS_SPACE_ID}'"
         },
         "message": "org_1_both_orgs_space"
         }' | jq
@@ -223,8 +240,8 @@ curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
     -d '{
         "@timestamp": "'${time}'",
         "@cf": {
-            "org_id": "'${CF_ORG_ID_2}'",
-            "space_id":"'${CF_ORG_ID_2_BOTH_ORGS_SPACE}'"
+            "org_id": "'${CF_ORG_2_ID}'",
+            "space_id":"'${CF_ORG_2_BOTH_ORGS_SPACE_ID}'"
         },
         "message": "org_2_both_orgs_space"
         }' | jq
