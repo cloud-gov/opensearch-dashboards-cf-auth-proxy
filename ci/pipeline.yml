@@ -60,13 +60,13 @@ jobs:
       params:
         manifest: src/cf/opensearch-manifest.yml
         vars:
-          app_name: ((dev-test-opensearch-app-name))
+          opensearch_app_name: ((dev-test-opensearch-app-name))
 
     - put: cf-dev
       params:
         manifest: src/cf/opensearch-dashboards-manifest.yml
         vars:
-          app_name: ((dev-test-opensearch-dashboards-app-name))
+          dashboards_app_name: ((dev-test-opensearch-dashboards-app-name))
     
     - put: cf-dev
       params:
