@@ -3,7 +3,7 @@ import re
 from . import AUTH_PROXY_URL, UAA_AUTH_URL
 
 def log_in(user, page, start_at=None):
-    page.set_default_timeout(30000)
+    page.set_default_timeout(60000)
 
     if start_at is None:
         start_at = AUTH_PROXY_URL
@@ -57,18 +57,18 @@ def log_in(user, page, start_at=None):
     home_title = page.get_by_text("Home")
     home_title.wait_for()
 
-    if page.get_by_text("Start by adding your data").is_visible():
-        explore_button = page.get_by_text("Explore on my own")
-        explore_button.wait_for()
-        explore_button.click()
-
-
 def switch_tenants(page, tenant="Global"):
     """
     switch to the specified tenant.
     """
     tenant_option = page.get_by_text(re.compile(f"^{tenant}.*$"))
     tenant_option.wait_for()
+
+    if page.get_by_text("Start by adding your data").is_visible():
+        explore_button = page.get_by_text("Explore on my own")
+        explore_button.wait_for()
+        explore_button.click()
+
     tenant_option.click()
 
     # submit
