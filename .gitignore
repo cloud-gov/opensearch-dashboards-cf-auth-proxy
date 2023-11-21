@@ -14,3 +14,4 @@ test-results
 *.webm
 .DS_STORE
 *.vars
+*.log
