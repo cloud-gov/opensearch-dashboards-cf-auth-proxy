@@ -47,6 +47,24 @@ After starting up the auth-proxy using the above steps, run:
 ./dev e2e-local
 ```
 
+To debug the e2e tests (see <https://playwright.dev/python/docs/debug>):
+
+```shell
+PWDEBUG=1 ./dev e2e-local
+```
+
+To target specific e2e test(s), you can supply an `E2E_TEST_FILTER` environment variable:
+
+```shell
+E2E_TEST_FILTER="discover_user" ./dev e2e-local
+```
+
+To retain video records of failed tests:
+
+```shell
+./dev e2e-local --video retain-on-failure
+```
+
 ### Adding client
 
 In order to run the app locally, you will need to create a UAA client application.
