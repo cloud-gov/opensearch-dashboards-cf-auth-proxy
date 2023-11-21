@@ -81,7 +81,7 @@ def switch_tenants(page, tenant="Global"):
     loading_text.wait_for()
 
     # wait for dashboard to finish loading
-    home_title = page.get_by_text("Home")
+    home_title = page.get_by_role("heading", name="Home")
     home_title.wait_for()
 
 def go_to_discover_page(page):
