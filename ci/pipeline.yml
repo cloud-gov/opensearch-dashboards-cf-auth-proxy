@@ -122,14 +122,13 @@ jobs:
       params:
         <<: *dev-cf-auth-params
 
-        CF_ORG_ID_1: ((dev-test-org-1-id))
-        CF_SPACE_ID_1: ((dev-test-org-1-space-1-id))
+        CF_ORG_1_NAME: ((dev-test-org-1-name))
+        CF_ORG_2_NAME: ((dev-test-org-2-name))
 
-        CF_ORG_ID_2: ((dev-test-org-2-id))
-        CF_SPACE_ID_2: ((dev-test-org-2-space-2-id))
-        
-        CF_ORG_ID_1_BOTH_ORGS_SPACE: ((dev-test-org-1-both-orgs-space-id))
-        CF_ORG_ID_2_BOTH_ORGS_SPACE: ((dev-test-org-2-both-orgs-space-id))
+        CF_ORG_1_SPACE_1_NAME: ((dev-test-org-1-space-1-name))
+        CF_ORG_2_SPACE_2_NAME: ((dev-test-org-1-space-1-name))
+
+        BOTH_ORGS_SPACE_NAME: ((dev-test-both-orgs-space-name))
         
         TEST_USER_1_USERNAME: ((dev-test-user-1-username))
         TEST_USER_1_PASSWORD: ((dev-test-user-1-password))
@@ -161,14 +160,13 @@ jobs:
         ES_USER: ((es-admin-username))
         ES_PASSWORD: ((es-admin-password))
 
-        CF_ORG_ID_1: ((dev-test-org-1-id))
-        CF_SPACE_ID_1: ((dev-test-org-1-space-1-id))
+        CF_ORG_1_NAME: ((dev-test-org-1-name))
+        CF_ORG_2_NAME: ((dev-test-org-2-name))
 
-        CF_ORG_ID_2: ((dev-test-org-2-id))
-        CF_SPACE_ID_2: ((dev-test-org-2-space-2-id))
-        
-        CF_ORG_ID_1_BOTH_ORGS_SPACE: ((dev-test-org-1-both-orgs-space-id))
-        CF_ORG_ID_2_BOTH_ORGS_SPACE: ((dev-test-org-2-both-orgs-space-id))
+        CF_ORG_1_SPACE_1_NAME: ((dev-test-org-1-space-1-name))
+        CF_ORG_2_SPACE_2_NAME: ((dev-test-org-1-space-1-name))
+
+        BOTH_ORGS_SPACE_NAME: ((dev-test-both-orgs-space-name))
 
         DASHBOARDS_APP_NAME: ((dev-test-opensearch-dashboards-app-name))
         
