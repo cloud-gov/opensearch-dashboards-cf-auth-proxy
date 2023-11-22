@@ -135,6 +135,72 @@ cf_network() {
   cf add-network-policy "$PROXY_APP_NAME" "$DASHBOARDS_APP_NAME" --protocol tcp --port 5601
 }
 
+source_env_vars() {
+  set -o allexport
+
+  ENVIRONMENT=${ENVIRONMENT:-}
+  
+  pushd "${dir}"
+    case $ENVIRONMENT in
+      prod|production)
+        source "prod.env"
+        ;;
+      
+      *)
+        source ".env"
+        ;;
+    esac
+  popd
+
+  set +o allexport
+}
+
+set_cf_default_vars() {
+  CF_ORG_1_NAME=${CF_ORG_1_NAME:-kibana-test-org-1}
+  CF_ORG_2_NAME=${CF_ORG_2_NAME:-kibana-test-org-2}
+
+  export CF_ORG_1_NAME
+  export CF_ORG_2_NAME
+
+  CF_ORG_1_SPACE_1_NAME=${CF_ORG_1_SPACE_1_NAME:-test-kibana-space-1}
+  CF_ORG_2_SPACE_2_NAME=${CF_ORG_2_SPACE_2_NAME:-test-kibana-space-2}
+  BOTH_ORGS_SPACE_NAME=${BOTH_ORGS_SPACE_NAME:-both-orgs-space}
+  
+  export CF_ORG_1_SPACE_1_NAME
+  export CF_ORG_2_SPACE_2_NAME
+  export BOTH_ORGS_SPACE_NAME
+}
+
+set_cf_env_vars() {
+  CF_ORG_1_ID=$(cf org "$CF_ORG_1_NAME" --guid)
+  CF_ORG_2_ID=$(cf org "$CF_ORG_2_NAME" --guid)
+  
+  export CF_ORG_1_ID
+  export CF_ORG_2_ID
+
+  cf target -o "$CF_ORG_1_NAME"
+  CF_ORG_1_SPACE_1_ID=$(cf space "$CF_ORG_1_SPACE_1_NAME" --guid)
+  CF_ORG_1_BOTH_ORGS_SPACE_ID=$(cf space "$BOTH_ORGS_SPACE_NAME" --guid)
+  
+  export CF_ORG_1_SPACE_1_ID
+  export CF_ORG_1_BOTH_ORGS_SPACE_ID
+
+  cf target -o "$CF_ORG_2_NAME"
+  CF_ORG_2_SPACE_2_ID=$(cf space "$CF_ORG_2_SPACE_2_NAME" --guid)
+  CF_ORG_2_BOTH_ORGS_SPACE_ID=$(cf space "$BOTH_ORGS_SPACE_NAME" --guid)
+  
+  export CF_ORG_2_SPACE_2_ID
+  export CF_ORG_2_BOTH_ORGS_SPACE_ID
+}
+
+seed_es_data() {
+  bash ./ci/seed-es-data.sh
+}
+
+provision_cf_access() {
+  bash ./ci/provision-cf-access.sh
+}
+
 main() {
   pushd "${dir}"
   trap popd exit
@@ -162,11 +228,12 @@ main() {
       ${python} -m pytest tests
       ;;
     provision-cf-access)
-      set -o allexport; source "${dir}/.env"; set +o allexport
-      ./ci/provision-cf-access.sh
+      source_env_vars
+      set_cf_default_vars
+      provision_cf_access
       ;;
     serve)
-      set -o allexport; source "${dir}/.env"; set +o allexport
+      source_env_vars
       export FLASK_APP="opensearch_dashboards_cf_auth_proxy.app:create_app()"
       
       ${python} -m flask run -p "${PORT}"
@@ -197,12 +264,20 @@ main() {
       ${python} -m pytest e2e --browser firefox "$@"
       ;;
     e2e-local)
-      set -o allexport; source "${dir}/.env"; set +o allexport
-      bash ./ci/seed-es-data.sh
-      ${python} -m pytest e2e --browser firefox "$@"
+      E2E_TEST_FILTER=${E2E_TEST_FILTER:-*}
+      source_env_vars
+      set_cf_default_vars
+      set_cf_env_vars
+      seed_es_data
+      ${python} -m pytest e2e -k "$E2E_TEST_FILTER" --browser firefox "$@"
       ;;
     format)
       ${python} -m black .
+      ;;
+    seed-es-data)
+      set_cf_default_vars
+      set_cf_env_vars
+      seed_es_data
       ;;
     *)
       usage

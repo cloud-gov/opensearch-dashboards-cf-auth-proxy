@@ -1,7 +1,6 @@
 import re
 
-from . import AUTH_PROXY_URL
-
+from . import AUTH_PROXY_URL, UAA_AUTH_URL
 
 def log_in(user, page, start_at=None):
     page.set_default_timeout(60000)
@@ -9,7 +8,7 @@ def log_in(user, page, start_at=None):
     if start_at is None:
         start_at = AUTH_PROXY_URL
 
-    # go to opensearch dashboard
+    # go to auth proxy
     page.goto(start_at)
 
     # accept the monitoring notice
@@ -41,26 +40,22 @@ def log_in(user, page, start_at=None):
     login_button.wait_for()
     login_button.click()
 
-    # lots of redirects and stuff happen here, so just, like, chill, ok?
-    page.wait_for_load_state("networkidle")
+    # wait for OAuth authorize page or auth proxy page
+    page.wait_for_url(re.compile(f"({AUTH_PROXY_URL}|{UAA_AUTH_URL})"))
 
+    # if OAuth authorize page, then authorize the application
     if "/authorize?" in page.url:
         # first time using this app with this user
         authorize_button = page.get_by_text("Authorize")
         authorize_button.wait_for()
         authorize_button.click()
-        page.wait_for_load_state("networkidle")
 
+    # wait for redirect to auth proxy from OAuth URL
     page.wait_for_url(f"{AUTH_PROXY_URL}*")
 
-    # handle first-login stuff when it's here
-    page.wait_for_timeout(5000)
-
-    if page.get_by_text("Start by adding your data").is_visible():
-        explore_button = page.get_by_text("Explore on my own")
-        explore_button.wait_for()
-        explore_button.click()
-
+    # wait for dashboard to finish loading
+    home_title = page.get_by_text("Home")
+    home_title.wait_for()
 
 def switch_tenants(page, tenant="Global"):
     """
@@ -68,6 +63,12 @@ def switch_tenants(page, tenant="Global"):
     """
     tenant_option = page.get_by_text(re.compile(f"^{tenant}.*$"))
     tenant_option.wait_for()
+
+    if page.get_by_text("Start by adding your data").is_visible():
+        explore_button = page.get_by_text("Explore on my own")
+        explore_button.wait_for()
+        explore_button.click()
+
     tenant_option.click()
 
     # submit
@@ -75,10 +76,13 @@ def switch_tenants(page, tenant="Global"):
     submit_button.wait_for()
     submit_button.click()
 
-    # todo: there is a page refresh that happens after submitting the tenant option.
-    # we should wait on an element instead of arbitrary timeout
-    page.wait_for_timeout(2000)
+    # wait for loading screen
+    loading_text = page.get_by_text("Loading Opensearch Dashboards")
+    loading_text.wait_for()
 
+    # wait for dashboard to finish loading
+    home_title = page.get_by_role("heading", name="Home")
+    home_title.wait_for()
 
 def go_to_discover_page(page):
     # open the hamburger menu
