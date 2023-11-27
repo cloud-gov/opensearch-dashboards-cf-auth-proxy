@@ -59,7 +59,7 @@ def switch_tenants(page, tenant="Global"):
     """
     tenant_option = page.get_by_text(re.compile(f"^{tenant}.*$"))
     tenant_option.wait_for()
-
+    
     if page.get_by_text("Start by adding your data").is_visible():
         explore_button = page.get_by_text("Explore on my own")
         explore_button.wait_for()
@@ -73,7 +73,7 @@ def switch_tenants(page, tenant="Global"):
     submit_button.click()
 
     # wait for loading screen
-    loading_text = page.get_by_text("Loading Opensearch Dashboards")
+    loading_text = page.get_by_text("Loading OpenSearch Dashboards")
     loading_text.wait_for()
 
     # wait for dashboard to finish loading
