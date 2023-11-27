@@ -20,4 +20,7 @@ ssh_pid=$!
 echo "Waiting for tunnel to come up ..."
 sleep 10
 
-bash "${dir}/../dev seed-es-data"
+pushd "${dir}/.."
+  bash "dev seed-es-data"
+popd
+
