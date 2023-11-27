@@ -153,7 +153,8 @@ jobs:
         inputs:
         - name: src
         run:
-          path: src/ci/init-config.sh
+          dir: src
+          path: ci/init-config.sh
       params:
         <<: *dev-cf-auth-params
 
@@ -164,7 +165,7 @@ jobs:
         CF_ORG_2_NAME: ((dev-test-org-2-name))
 
         CF_ORG_1_SPACE_1_NAME: ((dev-test-org-1-space-1-name))
-        CF_ORG_2_SPACE_2_NAME: ((dev-test-org-1-space-2-name))
+        CF_ORG_2_SPACE_2_NAME: ((dev-test-org-2-space-2-name))
 
         BOTH_ORGS_SPACE_NAME: ((dev-test-both-orgs-space-name))
 

@@ -2,7 +2,6 @@
 
 set -euo pipefail
 shopt -s inherit_errexit || true
-dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 function cleanup() {
   [[ -n "${ssh_pid:-}" ]] && kill "${ssh_pid}"
@@ -20,7 +19,4 @@ ssh_pid=$!
 echo "Waiting for tunnel to come up ..."
 sleep 10
 
-pushd "${dir}/.."
-  bash "dev seed-es-data"
-popd
-
+./dev seed-es-data
