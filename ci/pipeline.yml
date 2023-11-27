@@ -180,7 +180,7 @@ jobs:
           type: docker-image
           source:
             repository: mcr.microsoft.com/playwright
-            tag: focal
+            tag: jammy
         run:
           path: src/ci/e2e.sh
         params:
