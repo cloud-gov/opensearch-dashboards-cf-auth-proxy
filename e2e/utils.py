@@ -53,10 +53,6 @@ def log_in(user, page, start_at=None):
     # wait for redirect to auth proxy from OAuth URL
     page.wait_for_url(f"{AUTH_PROXY_URL}*")
 
-    # wait for dashboard to finish loading
-    home_title = page.get_by_text("Home")
-    home_title.wait_for()
-
 def switch_tenants(page, tenant="Global"):
     """
     switch to the specified tenant.

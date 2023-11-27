@@ -13,7 +13,7 @@ def test_login_redirects_home_without_slash(page, user_1):
     # a trailing slash (e.g. logs.example.com) causes a redirect
     # to an invalid endpoint.
     log_in(user_1, page, str.rstrip(AUTH_PROXY_URL, "/"))
-    assert page.url.startswith(f"{AUTH_PROXY_URL}app/home")
+    assert page.url.startswith(urljoin(AUTH_PROXY_URL, "app/home"))
 
 
 def test_login_redirects_home(page, user_1):
@@ -23,5 +23,5 @@ def test_login_redirects_home(page, user_1):
 
 
 def test_login_remembers_target(page, user_1):
-    log_in(user_1, page, f"{AUTH_PROXY_URL}app/dev_tools")
+    log_in(user_1, page, urljoin(AUTH_PROXY_URL, "app/dev_tools"))
     assert page.url.startswith(urljoin(AUTH_PROXY_URL, "app/dev_tools"))
