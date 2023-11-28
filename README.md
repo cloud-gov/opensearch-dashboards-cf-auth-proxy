@@ -65,7 +65,7 @@ To retain video records of failed tests:
 ./dev e2e-local --video retain-on-failure
 ```
 
-To retain a trace of failed tests:
+To retain a [trace](https://playwright.dev/python/docs/trace-viewer-intro) of failed tests:
 
 ```shell
 ./dev e2e-local --tracing retain-on-failure
