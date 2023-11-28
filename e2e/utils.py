@@ -59,13 +59,6 @@ def switch_tenants(page, tenant="Global"):
     """
     tenant_option = page.get_by_text(re.compile(f"^{tenant}.*$"))
     tenant_option.wait_for()
-        
-    welcome_heading = page.get_by_role("heading", name="Welcome to OpenSearch Dashboards")
-    if welcome_heading.is_visible():
-        explore_button = page.get_by_text("Explore on my own")
-        explore_button.wait_for()
-        explore_button.click()
-
     tenant_option.click()
 
     # submit
@@ -76,6 +69,12 @@ def switch_tenants(page, tenant="Global"):
     # wait for loading screen
     loading_text = page.get_by_text("Loading OpenSearch Dashboards")
     loading_text.wait_for()
+
+    welcome_heading = page.get_by_role("heading", name="Welcome to OpenSearch Dashboards")
+    if welcome_heading.is_visible():
+        explore_button = page.get_by_text("Explore on my own")
+        explore_button.wait_for()
+        explore_button.click()
 
     # wait for dashboard to finish loading
     home_title = page.get_by_role("heading", name="Home")
