@@ -1,4 +1,5 @@
 import re
+import time
 
 from . import AUTH_PROXY_URL, UAA_AUTH_URL
 
@@ -54,64 +55,45 @@ def log_in(user, page, start_at=None):
     page.wait_for_url(f"{AUTH_PROXY_URL}*")
 
 def handle_welcome_message(page):
-    welcome_heading = page.get_by_role("heading", name="Welcome to OpenSearch Dashboards")
-    if welcome_heading.is_visible():
-        explore_button = page.get_by_text("Explore on my own")
-        explore_button.wait_for()
-        explore_button.click()
+    total_wait_period_secs = 10
+    wait_between_retry_secs = 0.25
+    num_retries = total_wait_period_secs / wait_between_retry_secs
+
+    # this welcome page can appear anywhere in the dashboard loading process,
+    # so we're waiting to see if it appears and handling it
+    for i in range(1, num_retries):
+        welcome_heading = page.get_by_role("heading", name="Welcome to OpenSearch Dashboards")
+        if welcome_heading.is_visible():
+            explore_button = page.get_by_text("Explore on my own")
+            explore_button.wait_for()
+            explore_button.click()
+        
+        time.sleep(wait_between_retry_secs)
 
 def switch_tenants(page, tenant="Global"):
     """
     switch to the specified tenant.
     """
 
-    # this welcome page can appear anywhere in the dashboard loading process,
-    # so we're checking for it before/after every assertion so we can close it
-    # if it appears, otherwise the tests will fail
     handle_welcome_message(page)
 
     tenant_option = page.get_by_text(re.compile(f"^{tenant}.*$"))
-    
-    handle_welcome_message(page)
-    
     tenant_option.wait_for()
-    
-    handle_welcome_message(page)
-    
     tenant_option.click()
-    
-    handle_welcome_message(page)
 
     # submit
     submit_button = page.get_by_text("Confirm")
 
-    handle_welcome_message(page)
-
     submit_button.wait_for()
-    
-    handle_welcome_message(page)
-
     submit_button.click()
-
-    handle_welcome_message(page)
 
     # wait for loading screen
     loading_text = page.get_by_text("Loading OpenSearch Dashboards")
-
-    handle_welcome_message(page)
-    
     loading_text.wait_for()
-    
-    handle_welcome_message(page)
 
     # wait for dashboard to finish loading
     home_title = page.get_by_role("heading", name="Home")
-    
-    handle_welcome_message(page)
-
     home_title.wait_for()
-
-    handle_welcome_message(page)
 
 def go_to_discover_page(page):
     # open the hamburger menu
