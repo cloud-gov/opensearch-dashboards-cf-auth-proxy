@@ -1,3 +1,4 @@
+import math
 import re
 import time
 
@@ -57,7 +58,7 @@ def log_in(user, page, start_at=None):
 def handle_welcome_message(page):
     total_wait_period_secs = 10
     wait_between_retry_secs = 0.25
-    num_retries = total_wait_period_secs / wait_between_retry_secs
+    num_retries = math.floor(total_wait_period_secs / wait_between_retry_secs)
 
     # this welcome page can appear anywhere in the dashboard loading process,
     # so we're waiting to see if it appears and handling it
