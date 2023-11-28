@@ -65,6 +65,12 @@ To retain video records of failed tests:
 ./dev e2e-local --video retain-on-failure
 ```
 
+To retain a trace of failed tests:
+
+```shell
+./dev e2e-local --tracing retain-on-failure
+```
+
 ### Adding client
 
 In order to run the app locally, you will need to create a UAA client application.
