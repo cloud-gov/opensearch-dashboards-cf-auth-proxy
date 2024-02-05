@@ -134,7 +134,7 @@ time=$(${date_bin} --iso-8601=seconds)
 # user 3 should be able to see this log
 # user 4 should not be able to see it
 echo "creating test document 1/5"
-# we use refresh=true on all these to force elasticsearch to refresh
+# we use refresh=true on all these to opensearch to refresh
 # It doesn't seem to make the docs available otherwise
 # We could probably just do this on the last doc we index, but doing
 # it on all of them makes it easier to modify the script
