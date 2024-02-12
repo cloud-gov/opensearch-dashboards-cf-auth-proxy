@@ -1,6 +1,6 @@
 import pytest
 import requests_mock
-from opensearch_dashboards_cf_auth_proxy import proxy
+from cf_auth_proxy import proxy
 
 
 def test_proxy_returns_200():

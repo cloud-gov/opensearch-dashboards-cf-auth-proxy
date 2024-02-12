@@ -1,7 +1,7 @@
 import pytest
 import requests_mock
 
-from opensearch_dashboards_cf_auth_proxy import cf
+from cf_auth_proxy import cf
 
 
 def test_gets_spaces():

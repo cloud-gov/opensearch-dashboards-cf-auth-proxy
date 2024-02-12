@@ -16,3 +16,6 @@ test-results
 *.vars
 *.log
 ci-test-results
+*.egg-info
+build
+dist
