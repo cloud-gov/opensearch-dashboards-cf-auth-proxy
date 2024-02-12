@@ -10,7 +10,7 @@ import string
 
 from urllib import parse
 
-from opensearch_dashboards_cf_auth_proxy.extensions import config
+from cf_auth_proxy.extensions import config
 
 
 def make_jwt_token(claims=None):

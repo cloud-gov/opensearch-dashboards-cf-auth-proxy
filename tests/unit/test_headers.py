@@ -1,4 +1,4 @@
-from opensearch_dashboards_cf_auth_proxy.headers import list_to_ext_header
+from cf_auth_proxy.headers import list_to_ext_header
 
 
 def test_spaces_to_header():

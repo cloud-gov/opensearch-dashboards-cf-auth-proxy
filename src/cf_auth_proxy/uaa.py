@@ -1,7 +1,7 @@
 from urllib.parse import urljoin
 import requests
 
-from opensearch_dashboards_cf_auth_proxy.extensions import config
+from cf_auth_proxy.extensions import config
 
 
 def get_client_credentials_token():
