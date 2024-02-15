@@ -2,6 +2,8 @@ from flask import Response
 
 import requests
 
+from cf_auth_proxy.extensions import config
+
 
 def proxy_request(url, headers, data, cookies, method):
     resp = requests.request(
@@ -11,6 +13,8 @@ def proxy_request(url, headers, data, cookies, method):
         data=data,
         cookies=cookies,
         allow_redirects=False,
+        cert=(config.DASHBOARD_CERTIFICATE, config.DASHBOARD_CERTIFICATE_KEY),
+        verify=config.DASHBOARD_CERTIFICATE_CA
     )
 
     excluded_headers = [
