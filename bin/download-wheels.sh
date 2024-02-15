@@ -17,4 +17,6 @@ python3 -m pip download flask \
 # download eventlet
 python3 -m pip download eventlet \
   --only-binary=:all: \
+  --platform none \
+  --platform manylinux_2_17_x86_64 \
   --python-version "$PYTHON_VERSION"
