@@ -92,3 +92,7 @@ class AppConfig(Config):
         self.SECRET_KEY = self.env_parser.str("SECRET_KEY")
         self.PERMANENT_SESSION_LIFETIME = self.env_parser.int("SESSION_LIFETIME")
         self.CF_ADMIN_GROUP_NAME = self.env_parser.str("CF_ADMIN_GROUP_NAME")
+
+        self.DASHBOARD_CERTIFICATE = self.env_parser.str("DASHBOARD_CERTIFICATE")
+        self.DASHBOARD_CERTIFICATE_KEY = self.env_parser.str("DASHBOARD_CERTIFICATE_KEY")
+        self.DASHBOARD_CERTIFICATE_CA = self.env_parser.str("DASHBOARD_CERTIFICATE_CA")
