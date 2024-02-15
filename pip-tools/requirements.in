@@ -4,3 +4,4 @@ gunicorn
 pyjwt
 redis
 requests
+eventlet
