@@ -234,8 +234,7 @@ main() {
       ;;
     serve)
       source_env_vars
-      export FLASK_APP="opensearch_dashboards_cf_auth_proxy.app:create_app()"
-      
+      export FLASK_APP="cf_auth_proxy.app:create_app()"
       ${python} -m flask run -p "${PORT}"
       ;;
     cluster)
