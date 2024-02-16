@@ -226,6 +226,7 @@ main() {
     test|tests)
       export FLASK_ENV=unit
       ${python} -m piptools sync requirements.txt dev-requirements.txt
+      ${python} -m pip install -e .
       ${python} -m pytest tests
       ;;
     provision-cf-access)
