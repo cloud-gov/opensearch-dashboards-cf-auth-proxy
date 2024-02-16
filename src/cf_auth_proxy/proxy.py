@@ -9,11 +9,13 @@ def proxy_request(url, headers, data, cookies, method):
     cert = None
     verify = None
 
-    if hasattr(config, 'DASHBOARD_CERTIFICATE') and hasattr(config, 'DASHBOARD_CERTIFICATE_KEY'):
+    if hasattr(config, "DASHBOARD_CERTIFICATE") and hasattr(
+        config, "DASHBOARD_CERTIFICATE_KEY"
+    ):
         cert = (config.DASHBOARD_CERTIFICATE, config.DASHBOARD_CERTIFICATE_KEY)
 
-    if hasattr(config, 'DASHBOARD_CERTIFICATE_CA'):
-        verify=config.DASHBOARD_CERTIFICATE_CA
+    if hasattr(config, "DASHBOARD_CERTIFICATE_CA"):
+        verify = config.DASHBOARD_CERTIFICATE_CA
 
     resp = requests.request(
         method=method,
