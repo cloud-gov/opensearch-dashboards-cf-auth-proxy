@@ -265,12 +265,11 @@ main() {
       ${python} -m pytest e2e --browser firefox "$@"
       ;;
     e2e-local)
-      E2E_TEST_FILTER=${E2E_TEST_FILTER:-*}
       source_env_vars
       set_cf_default_vars
       set_cf_env_vars
       seed_es_data
-      ${python} -m pytest e2e -k "$E2E_TEST_FILTER" --browser firefox "$@"
+      ${python} -m pytest e2e --browser firefox "$@"
       ;;
     format)
       ${python} -m black .
