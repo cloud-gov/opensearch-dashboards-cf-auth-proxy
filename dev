@@ -90,6 +90,7 @@ set_up_ci_environment () {
 
 set_up_environment () {
   python -m venv venv
+  source venv/bin/activate
   # do this first to make sure we have piptools
   ${python} -m pip install -r dev-requirements.txt
   # do this again for syncs that might involve deletions
