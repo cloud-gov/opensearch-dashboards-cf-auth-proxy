@@ -27,6 +27,9 @@ The following environment variables are required:
 - `UAA_CLIENT_ID` - the client ID of your uaa clinet
 - `UAA_CLIENT_SECRET` - the client secret for your uaa client
 - `SECRET_KEY` - the key used for cookie signing
+- `DASHBOARD_CERTIFICATE` - the certificate used for signing requests to OpenSearch Dashboards
+- `DASHBOARD_CERTIFICATE_KEY` - the certificate private key used for signing requests to OpenSearch Dashboards
+- `DASHBOARD_CERTIFICATE_KEY` - the CA used for signing requests to OpenSearch Dashboards
 
 The following are optional:
 
