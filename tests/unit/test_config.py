@@ -56,6 +56,9 @@ def test_local_config(monkeypatch, dashboard_url):
     assert config.SECRET_KEY == "changeme"
     assert config.PERMANENT_SESSION_LIFETIME == 3600
     assert config.CF_ADMIN_GROUP_NAME == "random-group"
+    assert config.DASHBOARD_CERTIFICATE == None
+    assert config.DASHBOARD_CERTIFICATE_KEY == None
+    assert config.DASHBOARD_CERTIFICATE_CA == None
 
 
 @pytest.mark.parametrize(
@@ -73,6 +76,9 @@ def test_prod_config(monkeypatch, dashboard_url):
     monkeypatch.setenv("SECRET_KEY", "changeme")
     monkeypatch.setenv("SESSION_LIFETIME", "3600")
     monkeypatch.setenv("CF_ADMIN_GROUP_NAME", "random-group")
+    monkeypatch.setenv("DASHBOARD_CERTIFICATE", "fake-cert")
+    monkeypatch.setenv("DASHBOARD_CERTIFICATE_KEY", "fake-key")
+    monkeypatch.setenv("DASHBOARD_CERTIFICATE_CA", "fake-ca")
     config = config_from_env()
     assert config.PORT == 8888
     assert config.DASHBOARD_URL == "https://dashboard.example.com/"
@@ -96,3 +102,6 @@ def test_prod_config(monkeypatch, dashboard_url):
         "organization_auditor",
     ]
     assert config.CF_ADMIN_GROUP_NAME == "random-group"
+    assert config.DASHBOARD_CERTIFICATE == "fake-cert"
+    assert config.DASHBOARD_CERTIFICATE_KEY == "fake-key"
+    assert config.DASHBOARD_CERTIFICATE_CA == "fake-ca"

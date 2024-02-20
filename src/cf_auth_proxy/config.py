@@ -42,6 +42,9 @@ class UnitConfig(Config):
         self.PERMANENT_SESSION_LIFETIME = 120
         self.SESSION_REFRESH_EACH_REQUEST = False
         self.CF_ADMIN_GROUP_NAME = "cloud_controller.admin"
+        self.DASHBOARD_CERTIFICATE = "fake-cert"
+        self.DASHBOARD_CERTIFICATE_KEY = "fake-key"
+        self.DASHBOARD_CERTIFICATE_CA = "fake-ca"
 
 
 class LocalConfig(Config):
@@ -68,6 +71,9 @@ class LocalConfig(Config):
         self.SECRET_KEY = self.env_parser.str("SECRET_KEY")
         self.PERMANENT_SESSION_LIFETIME = self.env_parser.int("SESSION_LIFETIME")
         self.CF_ADMIN_GROUP_NAME = self.env_parser.str("CF_ADMIN_GROUP_NAME")
+        self.DASHBOARD_CERTIFICATE = None
+        self.DASHBOARD_CERTIFICATE_KEY = None
+        self.DASHBOARD_CERTIFICATE_CA = None
 
 
 class AppConfig(Config):
@@ -92,7 +98,8 @@ class AppConfig(Config):
         self.SECRET_KEY = self.env_parser.str("SECRET_KEY")
         self.PERMANENT_SESSION_LIFETIME = self.env_parser.int("SESSION_LIFETIME")
         self.CF_ADMIN_GROUP_NAME = self.env_parser.str("CF_ADMIN_GROUP_NAME")
-
         self.DASHBOARD_CERTIFICATE = self.env_parser.str("DASHBOARD_CERTIFICATE")
-        self.DASHBOARD_CERTIFICATE_KEY = self.env_parser.str("DASHBOARD_CERTIFICATE_KEY")
+        self.DASHBOARD_CERTIFICATE_KEY = self.env_parser.str(
+            "DASHBOARD_CERTIFICATE_KEY"
+        )
         self.DASHBOARD_CERTIFICATE_CA = self.env_parser.str("DASHBOARD_CERTIFICATE_CA")

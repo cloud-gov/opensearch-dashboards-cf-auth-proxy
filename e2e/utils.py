@@ -4,6 +4,7 @@ import time
 
 from . import AUTH_PROXY_URL, UAA_AUTH_URL
 
+
 def log_in(user, page, start_at=None):
     page.set_default_timeout(60000)
 
@@ -52,8 +53,6 @@ def log_in(user, page, start_at=None):
         authorize_button.wait_for()
         authorize_button.click()
 
-    # wait for redirect to auth proxy from OAuth URL
-    page.wait_for_url(f"{AUTH_PROXY_URL}*")
 
 def handle_welcome_message(page):
     total_wait_period_secs = 10
@@ -63,13 +62,16 @@ def handle_welcome_message(page):
     # this welcome page can appear anywhere in the dashboard loading process,
     # so we're waiting to see if it appears and handling it
     for i in range(1, num_retries):
-        welcome_heading = page.get_by_role("heading", name="Welcome to OpenSearch Dashboards")
+        welcome_heading = page.get_by_role(
+            "heading", name="Welcome to OpenSearch Dashboards"
+        )
         if welcome_heading.is_visible():
             explore_button = page.get_by_text("Explore on my own")
             explore_button.wait_for()
             explore_button.click()
-        
+
         time.sleep(wait_between_retry_secs)
+
 
 def switch_tenants(page, tenant="Global"):
     """
@@ -95,6 +97,7 @@ def switch_tenants(page, tenant="Global"):
     # wait for dashboard to finish loading
     home_title = page.get_by_role("heading", name="Home")
     home_title.wait_for()
+
 
 def go_to_discover_page(page):
     # open the hamburger menu

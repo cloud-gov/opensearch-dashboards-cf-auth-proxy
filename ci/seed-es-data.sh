@@ -133,7 +133,7 @@ time=$(${date_bin} --iso-8601=seconds)
 # user 2 should not be able to see it
 # user 3 should be able to see this log
 # user 4 should not be able to see it
-echo "creating test document 1/5"
+echo "creating test document 1/7"
 # we use refresh=true on all these to opensearch to refresh
 # It doesn't seem to make the docs available otherwise
 # We could probably just do this on the last doc we index, but doing
@@ -155,7 +155,7 @@ curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
 # user 2 should be able to see this log
 # user 3 should be able to see this log
 # user 4 should not be able to see it
-echo "creating test document 2/5"
+echo "creating test document 2/7"
 curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
     -X POST \
     -H "content-type: application/json" \
@@ -170,7 +170,7 @@ curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
         }' | jq
 
 # none of the users should be able to see this log
-echo "creating test document 3/5"
+echo "creating test document 3/7"
 curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
     -X POST \
     -H "content-type: application/json" \
@@ -184,7 +184,7 @@ curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
 # user 2 should not be able to see it
 # user 3 should be able to see this log
 # user 4 should not be able to see it
-echo "creating test document 4/5"
+echo "creating test document 4/7"
 curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
     -X POST \
     -H "content-type: application/json" \
@@ -199,7 +199,7 @@ curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
 # user 2 should be able to see this log
 # user 3 should be able to see this log
 # user 4 should not be able to see it
-echo "creating test document 5/5"
+echo "creating test document 5/7"
 curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
     -X POST \
     -H "content-type: application/json" \
@@ -214,7 +214,7 @@ curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
 # user 2 should not be able to see it
 # user 3 should not be able to see it
 # user 4 should be able to see this log
-echo "creating test document 6/6"
+echo "creating test document 6/7"
 curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
     -X POST \
     -H "content-type: application/json" \
