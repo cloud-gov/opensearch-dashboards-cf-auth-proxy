@@ -23,6 +23,8 @@ class Config:
             "PERMITTED_ORG_ROLES", ["organization_manager", "organization_auditor"]
         )
         self.SESSION_COOKIE_NAME = "cfsession"
+        # see https://requests.readthedocs.io/en/latest/user/advanced/#timeouts
+        self.REQUEST_TIMEOUT = 30
 
 
 class UnitConfig(Config):
