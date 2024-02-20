@@ -201,30 +201,6 @@ jobs:
           TEST_USER_4_PASSWORD: ((dev-test-user-4-password))
           TEST_USER_4_TOTP_SEED: ((dev-test-user-4-totp-seed))
 
-- name: deploy-dev
-  plan:
-    - get: src
-      params: {depth: 1}
-      trigger: true
-      # change to e2e once tests are fixed
-      passed: [test]
-    - put: cf-dev
-      params:
-        path: src
-        manifest: src/cf/proxy-manifest.yml
-        vars:
-          cf_url: ((dev-cf-api-url))
-          uaa_auth_url: ((dev-uaa-auth-url))
-          uaa_base_url: ((dev-uaa-base-url))
-          uaa_client_id: ((dev-uaa-client-id))
-          uaa_client_secret: ((dev-uaa-client-secret))
-          secret_key: ((dev-secret-key))
-          session_lifetime: "3600"
-          public_route: ((dev-public-url))
-          dashboard_url: ((dev-dashboard-url))
-          auth_proxy_app_name: auth-proxy
-          auth_proxy_num_instances: ((dev-auth-proxy-num-instances))
-
 ##########################
 #  RESOURCES
 
