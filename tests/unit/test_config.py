@@ -56,6 +56,9 @@ def test_local_config(monkeypatch, dashboard_url):
     assert config.SECRET_KEY == "changeme"
     assert config.PERMANENT_SESSION_LIFETIME == 3600
     assert config.CF_ADMIN_GROUP_NAME == "random-group"
+    assert config.DASHBOARD_CERTIFICATE == None
+    assert config.DASHBOARD_CERTIFICATE_KEY == None
+    assert config.DASHBOARD_CERTIFICATE_CA == None
 
 
 @pytest.mark.parametrize(
