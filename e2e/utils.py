@@ -53,9 +53,6 @@ def log_in(user, page, start_at=None):
         authorize_button.wait_for()
         authorize_button.click()
 
-    # wait for redirect to auth proxy from OAuth URL
-    page.wait_for_url(f"{AUTH_PROXY_URL}*")
-
 
 def handle_welcome_message(page):
     total_wait_period_secs = 10
