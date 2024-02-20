@@ -37,10 +37,10 @@ class UnitConfig(Config):
         self.CF_API_URL = "http://mock.cf/"
         self.UAA_AUTH_URL = "http://mock.uaa/authorize"
         self.UAA_BASE_URL = "http://mock.uaa/"
-        self.UAA_TOKEN_URL = "http://mock.uaa/token"
+        self.UAA_TOKEN_URL = "http://mock.uaa/token" # nosec
         self.UAA_CLIENT_ID = "EXAMPLE"
-        self.UAA_CLIENT_SECRET = "example"
-        self.SECRET_KEY = "CHANGEME"
+        self.UAA_CLIENT_SECRET = "example" # nosec
+        self.SECRET_KEY = "CHANGEME" # nosec
         self.PERMANENT_SESSION_LIFETIME = 120
         self.SESSION_REFRESH_EACH_REQUEST = False
         self.CF_ADMIN_GROUP_NAME = "cloud_controller.admin"
