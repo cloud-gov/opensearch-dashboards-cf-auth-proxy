@@ -25,6 +25,7 @@ def test_config_loads(monkeypatch):
         "organization_auditor",
     ]
     assert config.CF_ADMIN_GROUP_NAME == "cloud_controller.admin"
+    assert config.REQUEST_TIMEOUT == 30
 
 
 @pytest.mark.parametrize(
@@ -59,6 +60,7 @@ def test_local_config(monkeypatch, dashboard_url):
     assert config.DASHBOARD_CERTIFICATE == None
     assert config.DASHBOARD_CERTIFICATE_KEY == None
     assert config.DASHBOARD_CERTIFICATE_CA == None
+    assert config.REQUEST_TIMEOUT == 30
 
 
 @pytest.mark.parametrize(
@@ -105,3 +107,4 @@ def test_prod_config(monkeypatch, dashboard_url):
     assert config.DASHBOARD_CERTIFICATE == "fake-cert"
     assert config.DASHBOARD_CERTIFICATE_KEY == "fake-key"
     assert config.DASHBOARD_CERTIFICATE_CA == "fake-ca"
+    assert config.REQUEST_TIMEOUT == 30

@@ -16,6 +16,7 @@ def get_client_credentials_token():
         auth=requests.auth.HTTPBasicAuth(
             config.UAA_CLIENT_ID, config.UAA_CLIENT_SECRET
         ),
+        timeout=config.REQUEST_TIMEOUT
     )
 
     try:

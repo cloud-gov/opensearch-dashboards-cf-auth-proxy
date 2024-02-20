@@ -33,6 +33,7 @@ def create_app():
                         "token_format": "opaque",
                         "refresh_token": session["refresh_token"],
                     },
+                    timeout=config.REQUEST_TIMEOUT
                 )
                 try:
                     r.raise_for_status()
@@ -80,6 +81,7 @@ def create_app():
             auth=requests.auth.HTTPBasicAuth(
                 config.UAA_CLIENT_ID, config.UAA_CLIENT_SECRET
             ),
+            timeout=config.REQUEST_TIMEOUT
         )
         try:
             r.raise_for_status()
