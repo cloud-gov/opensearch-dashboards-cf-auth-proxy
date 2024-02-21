@@ -72,6 +72,7 @@ update_requirements() {
     pip-tools/requirements.in
    $python -m piptools compile \
     --quiet \
+    --allow-unsafe  \
     --output-file=dev-requirements.txt \
     pip-tools/dev-requirements.in
 }
@@ -104,11 +105,11 @@ upgrade_requirements() {
       echo "can't update more than one package at a time"
     fi
     ${python} -m piptools compile --upgrade-package "$1" --output-file requirements.txt pip-tools/requirements.in
-    ${python} -m piptools compile --upgrade-package "$1" --output-file dev-requirements.txt pip-tools/dev-requirements.in
+    ${python} -m piptools compile --upgrade-package "$1" --allow-unsafe --output-file dev-requirements.txt pip-tools/dev-requirements.in
 
   else
     ${python} -m piptools compile --upgrade --output-file requirements.txt pip-tools/requirements.in
-    ${python} -m piptools compile --upgrade --output-file dev-requirements.txt pip-tools/dev-requirements.in
+    ${python} -m piptools compile --upgrade --allow-unsafe --output-file dev-requirements.txt pip-tools/dev-requirements.in
   fi
 }
 
@@ -224,12 +225,11 @@ main() {
       set_up_environment
       ;;
     bandit)
-      ${python} -m bandit -r src/cf_auth_proxy
+      ${python} -m bandit -r cf_auth_proxy
       ;;
     test|tests)
       export FLASK_ENV=unit
       ${python} -m piptools sync requirements.txt dev-requirements.txt
-      ${python} -m pip install -e .
       ${python} -m pytest tests
       ;;
     provision-cf-access)
