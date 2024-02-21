@@ -8,3 +8,4 @@ pytest
 pytest-playwright
 pytest-watch
 requests-mock
+setuptools
