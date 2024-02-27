@@ -172,15 +172,11 @@ jobs:
         DASHBOARDS_APP_NAME: ((dev-test-opensearch-dashboards-app-name))
         
     - task: e2e-tests
+      image: harden-playwright
       config:
         inputs:
           - name: src
         platform: linux
-        image_resource:
-          type: docker-image
-          source:
-            repository: mcr.microsoft.com/playwright
-            tag: jammy
         run:
           path: src/ci/e2e.sh
         params:
@@ -249,6 +245,15 @@ resources:
     aws_access_key_id: ((ecr_aws_key))
     aws_secret_access_key: ((ecr_aws_secret))
     repository: general-task
+    aws_region: us-gov-west-1
+    tag: latest
+
+- name: harden-playwright
+  type: registry-image
+  source:
+    aws_access_key_id: ((ecr_aws_key))
+    aws_secret_access_key: ((ecr_aws_secret))
+    repository: harden-playwright
     aws_region: us-gov-west-1
     tag: latest
 
