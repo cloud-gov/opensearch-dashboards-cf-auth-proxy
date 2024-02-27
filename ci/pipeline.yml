@@ -111,6 +111,7 @@ jobs:
         trigger: true
         passed: [deploy-test-apps]
       - get: general-task
+      - get: harden-playwright
     - task: provision-cf-access
       image: general-task
       config:
