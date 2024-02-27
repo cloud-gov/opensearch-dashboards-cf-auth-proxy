@@ -226,6 +226,9 @@ main() {
     bandit)
       ${python} -m bandit -r cf_auth_proxy
       ;;
+    black)
+      ${python} -m black . "$@"
+      ;;
     test|tests)
       export FLASK_ENV=unit
       ${python} -m piptools sync requirements.txt dev-requirements.txt
