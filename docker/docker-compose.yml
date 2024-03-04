@@ -5,7 +5,7 @@ version: '3.4'
 x-opensearch-node-common-vars: &x-opensearch-node-common-vars
   cluster.name: opensearch-cluster
   discovery.seed_hosts: opensearch-node1,opensearch-node2
-  cluster.initial_master_nodes: opensearch-node1,opensearch-node2
+  cluster.initial_cluster_manager_nodes: opensearch-node1,opensearch-node2
   bootstrap.memory_lock: true # along with the memlock settings below, disables swapping
   OPENSEARCH_JAVA_OPTS: "-Xms4096m -Xmx4096m" # minimum and maximum Java heap size, recommend setting both to 50% of system RAM
   plugins.security.audit.type: debug
