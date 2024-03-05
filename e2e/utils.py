@@ -52,32 +52,10 @@ def log_in(user, page, start_at=None):
         authorize_button.wait_for()
         authorize_button.click()
 
-
-def handle_welcome_message(page):
-    total_wait_period_secs = 20
-    wait_between_retry_secs = 0.25
-
-    # this welcome page can appear anywhere in the dashboard loading process,
-    # so we're waiting to see if it appears and handling it
-    t_end = time.time() + total_wait_period_secs
-    while time.time() < t_end:
-        welcome_heading = page.get_by_role(
-            "heading", name="Welcome to OpenSearch Dashboards"
-        )
-        if welcome_heading.is_visible():
-            explore_button = page.get_by_text("Explore on my own")
-            explore_button.wait_for()
-            explore_button.click()
-
-        time.sleep(wait_between_retry_secs)
-
-
 def switch_tenants(page, tenant="Global"):
     """
     switch to the specified tenant.
     """
-
-    handle_welcome_message(page)
 
     tenant_option = page.get_by_text(re.compile(f"^{tenant}.*$"))
     tenant_option.wait_for()
@@ -115,6 +93,6 @@ def go_to_discover_page(page):
     refresh_button = page.get_by_text("Refresh")
     refresh_button.wait_for()
 
-    # the box the results are in
-    content_box = page.locator("css=div.dscWrapper__content")
-    content_box.wait_for()
+    # wait for the columhs header, which indicates the results box has loaded
+    refresh_button = page.get_by_text("Columns")
+    refresh_button.wait_for()
