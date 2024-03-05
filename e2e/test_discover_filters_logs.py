@@ -8,26 +8,12 @@ def test_see_correct_logs_in_discover_user_1(user_1, page):
 
     go_to_discover_page(page)
 
-    assert page.query_selector(".dscTimechart") is not None
-
-    org_should_exist_results = page.query_selector_all("text=org_id_1")
-    assert len(org_should_exist_results) == 0
-
-    space_should_exist_results = page.query_selector_all("text=space_id_1")
-    assert len(space_should_exist_results) >= 1
-
-    should_not_exist_results = page.query_selector_all("text=/(org|space)_id_2/")
-    assert len(should_not_exist_results) == 0
-
-    space_should_not_exist_results = page.query_selector_all(
-        "text=org_1_both_orgs_space"
-    )
-    assert len(space_should_not_exist_results) == 0
-
-    space_should_not_exist_results = page.query_selector_all(
-        "text=org_2_both_orgs_space"
-    )
-    assert len(space_should_not_exist_results) == 0
+    assert page.get_by_text("1 hit").count() == 1
+    assert page.get_by_text("org_id_1").count() == 0
+    assert page.get_by_text("space_id_1").count() == 1
+    assert page.locator("text=/(org|space)_id_2/").count() == 0
+    assert page.get_by_text("org_1_both_orgs_space").count() == 0
+    assert page.get_by_text("org_2_both_orgs_space").count() == 0
 
 
 def test_see_correct_logs_in_discover_user_2(user_2, page):
