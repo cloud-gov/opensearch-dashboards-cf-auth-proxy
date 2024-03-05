@@ -22,3 +22,5 @@ opensearch_security.proxycache.roles_header: "x-proxy-roles"
 
 # disable the welcome screen to make e2e tests less flaky
 home.disableWelcomeScreen: true
+# disable the new theme modal to make e2e tests less flaky
+home.disableNewThemeModal: true
