@@ -280,6 +280,7 @@ main() {
       ${python} -m black .
       ;;
     seed-es-data)
+      source_env_vars
       set_cf_default_vars
       set_cf_env_vars
       seed_es_data
