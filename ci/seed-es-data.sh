@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -euo pipefail
-shopt -s inherit_errexit || true
+shopt -s inherit_errexit 2>/dev/null || true
 
 function cleanup() {
   rm "${cookie_jar}"
@@ -70,6 +70,12 @@ curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
           "priority" : 1,
           "composed_of": ["ct_apps"]
         }' | jq
+
+# Delete index if it already exists
+echo "delete index if it already exists"
+curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
+    -X DELETE \
+    https://localhost:9200/logs-app-now | jq
 
 echo "Creating index"
 curl --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
@@ -180,7 +186,7 @@ curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
         "message": "no_space_id"
         }' | jq
 
-# user 1 should be able to see this log
+# user 1 should not be able to see this log
 # user 2 should not be able to see it
 # user 3 should be able to see this log
 # user 4 should not be able to see it
@@ -269,7 +275,7 @@ curl --fail --silent --show-error --cookie-jar ${cookie_jar} -b ${cookie_jar} \
     -d '{"tenant":"","username":"'"${ES_USER}"'"}'
 
 echo "Creating index pattern"
-curl --fail --silent --show-error --cookie-jar ${cookie_jar} -b ${cookie_jar} \
+INDEX_PATTERN_GUID=$(curl --cookie-jar ${cookie_jar} -b ${cookie_jar} \
     -X POST \
     -H "content-type: application/json" \
     -H "x-proxy-roles: admin" \
@@ -283,7 +289,7 @@ curl --fail --silent --show-error --cookie-jar ${cookie_jar} -b ${cookie_jar} \
             "title": "logs-app-*",
             "timeFieldName": "@timestamp"
         }
-    }' | jq
+    }' | jq -r '.id')
 
 echo "Setting default index"
 curl --fail --silent --show-error --cookie-jar ${cookie_jar} -b ${cookie_jar} \
@@ -294,4 +300,4 @@ curl --fail --silent --show-error --cookie-jar ${cookie_jar} -b ${cookie_jar} \
     -H 'x-forwarded-for: 127.0.0.1' \
     -H "osd-xsrf: true" \
     http://localhost:5601/api/opensearch-dashboards/settings \
-    -d '{"changes":{"defaultIndex":"logs-app-*"}}' | jq
+    -d "{\"changes\":{\"defaultIndex\":\"$INDEX_PATTERN_GUID\"}}" | jq
