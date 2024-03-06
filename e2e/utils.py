@@ -79,9 +79,7 @@ def switch_tenants(page, tenant="Global"):
 
 def go_to_discover_page(page):
     # open the hamburger menu
-    hamburger_button = page.locator(
-        'button[aria-label="Toggle primary navigation"]'
-    )
+    hamburger_button = page.locator('button[aria-label="Toggle primary navigation"]')
     hamburger_button.wait_for()
     hamburger_button.click()
 
