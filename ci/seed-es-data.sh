@@ -11,8 +11,8 @@ trap cleanup exit
 cookie_jar=$(mktemp)
 
 required_env_vars=(
-    ES_USER
-    ES_PASSWORD
+    OPENSEARCH_USER
+    OPENSEARCH_PASSWORD
     CF_ORG_1_ID
     CF_ORG_1_SPACE_1_ID
     CF_ORG_1_BOTH_ORGS_SPACE_ID
@@ -30,7 +30,7 @@ done
 # we have to create index and component templates
 # to work around the baked-in stream templates
 echo "creating component template"
-curl --fail-with-body --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
+curl --fail-with-body --silent --show-error -u "${OPENSEARCH_USER}":"${OPENSEARCH_PASSWORD}" -k \
     -X PUT \
     -H "content-type: application/json" \
     https://localhost:9200/_component_template/ct_apps \
@@ -61,7 +61,7 @@ curl --fail-with-body --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k 
 }' | jq
 
 echo "Creating index template"
-curl --fail-with-body --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
+curl --fail-with-body --silent --show-error -u "${OPENSEARCH_USER}":"${OPENSEARCH_PASSWORD}" -k \
     -X PUT \
     -H "content-type: application/json" \
     https://localhost:9200/_index_template/it_apps \
@@ -78,7 +78,7 @@ HTTP_CODE=$(curl --silent \
     --output "$OUTPUT_FILE" \
     --write-out "%{http_code}" \
     -k \
-    -u "${ES_USER}":"${ES_PASSWORD}" \
+    -u "${OPENSEARCH_USER}":"${OPENSEARCH_PASSWORD}" \
     -X DELETE \
     https://localhost:9200/logs-app-now)
 if [[ $HTTP_CODE != 200 && $HTTP_CODE != 404 ]]; then
@@ -89,7 +89,7 @@ jq < "$OUTPUT_FILE"
 rm "$OUTPUT_FILE"
 
 echo "Creating index"
-curl --fail-with-body --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
+curl --fail-with-body --silent --show-error -u "${OPENSEARCH_USER}":"${OPENSEARCH_PASSWORD}" -k \
     -X PUT \
     -H "content-type: application/json" \
     https://localhost:9200/logs-app-now \
@@ -154,7 +154,7 @@ echo "creating test document 1/7"
 # It doesn't seem to make the docs available otherwise
 # We could probably just do this on the last doc we index, but doing
 # it on all of them makes it easier to modify the script
-curl --fail-with-body --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
+curl --fail-with-body --silent --show-error -u "${OPENSEARCH_USER}":"${OPENSEARCH_PASSWORD}" -k \
     -X POST \
     -H "content-type: application/json" \
     https://localhost:9200/logs-app-now/_doc?refresh=true \
@@ -172,7 +172,7 @@ curl --fail-with-body --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k 
 # user 3 should be able to see this log
 # user 4 should not be able to see it
 echo "creating test document 2/7"
-curl --fail-with-body --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
+curl --fail-with-body --silent --show-error -u "${OPENSEARCH_USER}":"${OPENSEARCH_PASSWORD}" -k \
     -X POST \
     -H "content-type: application/json" \
     https://localhost:9200/logs-app-now/_doc?refresh=true \
@@ -187,7 +187,7 @@ curl --fail-with-body --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k 
 
 # none of the users should be able to see this log
 echo "creating test document 3/7"
-curl --fail-with-body --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
+curl --fail-with-body --silent --show-error -u "${OPENSEARCH_USER}":"${OPENSEARCH_PASSWORD}" -k \
     -X POST \
     -H "content-type: application/json" \
     https://localhost:9200/logs-app-now/_doc?refresh=true \
@@ -201,7 +201,7 @@ curl --fail-with-body --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k 
 # user 3 should be able to see this log
 # user 4 should not be able to see it
 echo "creating test document 4/7"
-curl --fail-with-body --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
+curl --fail-with-body --silent --show-error -u "${OPENSEARCH_USER}":"${OPENSEARCH_PASSWORD}" -k \
     -X POST \
     -H "content-type: application/json" \
     https://localhost:9200/logs-app-now/_doc?refresh=true \
@@ -216,7 +216,7 @@ curl --fail-with-body --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k 
 # user 3 should be able to see this log
 # user 4 should not be able to see it
 echo "creating test document 5/7"
-curl --fail-with-body --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
+curl --fail-with-body --silent --show-error -u "${OPENSEARCH_USER}":"${OPENSEARCH_PASSWORD}" -k \
     -X POST \
     -H "content-type: application/json" \
     https://localhost:9200/logs-app-now/_doc?refresh=true \
@@ -231,7 +231,7 @@ curl --fail-with-body --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k 
 # user 3 should not be able to see it
 # user 4 should be able to see this log
 echo "creating test document 6/7"
-curl --fail-with-body --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
+curl --fail-with-body --silent --show-error -u "${OPENSEARCH_USER}":"${OPENSEARCH_PASSWORD}" -k \
     -X POST \
     -H "content-type: application/json" \
     https://localhost:9200/logs-app-now/_doc?refresh=true \
@@ -249,7 +249,7 @@ curl --fail-with-body --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k 
 # user 3 should not be able to see it
 # user 4 should not be able to see it
 echo "creating test document 7/7"
-curl --fail-with-body --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
+curl --fail-with-body --silent --show-error -u "${OPENSEARCH_USER}":"${OPENSEARCH_PASSWORD}" -k \
     -X POST \
     -H "content-type: application/json" \
     https://localhost:9200/logs-app-now/_doc?refresh=true \
@@ -282,7 +282,7 @@ curl --fail-with-body --silent --show-error --cookie-jar ${cookie_jar} -b ${cook
     -H 'x-forwarded-for: 127.0.0.1' \
     -H "osd-xsrf: true" \
     http://localhost:5601/api/v1/multitenancy/tenant \
-    -d '{"tenant":"","username":"'"${ES_USER}"'"}'
+    -d '{"tenant":"","username":"'"${OPENSEARCH_USER}"'"}'
 
 echo "Creating index pattern"
 INDEX_PATTERN_GUID=$(curl --cookie-jar ${cookie_jar} -b ${cookie_jar} \
