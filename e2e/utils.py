@@ -80,7 +80,7 @@ def switch_tenants(page, tenant="Global"):
 def go_to_discover_page(page):
     # open the hamburger menu
     hamburger_button = page.locator(
-        f"css=div.euiHeaderSectionItem.euiHeaderSectionItem--borderRight.header__toggleNavButtonSection"
+        'button[aria-label="Toggle primary navigation"]'
     )
     hamburger_button.wait_for()
     hamburger_button.click()
