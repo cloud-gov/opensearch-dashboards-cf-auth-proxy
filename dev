@@ -244,12 +244,11 @@ main() {
       export FLASK_APP="cf_auth_proxy.app:create_app()"
       ${python} -m flask run -p "${PORT}"
       ;;
-    cluster)
-      
+    start-cluster)
+      source_env_vars
       pushd docker
-        docker-compose up --force-recreate --build -d
+        docker-compose up --force-recreate --build "$@"
       popd
-
       ;;
     destroy-cluster)
       pushd docker
