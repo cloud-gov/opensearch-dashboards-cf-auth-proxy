@@ -91,7 +91,3 @@ def go_to_discover_page(page):
     # wait for the refresh button, signifying the discover page has loaded
     refresh_button = page.get_by_text("Refresh")
     refresh_button.wait_for()
-
-    # wait for the columhs header, which indicates the results box has loaded
-    refresh_button = page.get_by_text("Columns")
-    refresh_button.wait_for()
