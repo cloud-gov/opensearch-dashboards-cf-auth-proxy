@@ -194,8 +194,8 @@ set_cf_env_vars() {
   export CF_ORG_2_BOTH_ORGS_SPACE_ID
 }
 
-seed_es_data() {
-  bash ./ci/seed-es-data.sh
+seed_opensearch_data() {
+  bash ./ci/seed-opensearch-data.sh
 }
 
 provision_cf_access() {
@@ -272,22 +272,22 @@ main() {
       source_env_vars
       set_cf_default_vars
       set_cf_env_vars
-      seed_es_data
+      seed_opensearch_data
       ${python} -m pytest e2e --browser firefox "$@"
       ;;
     format)
       ${python} -m black .
       ;;
-    seed-es-data-local)
+    seed-opensearch-data-local)
       source_env_vars
       set_cf_default_vars
       set_cf_env_vars
-      seed_es_data
+      seed_opensearch_data
       ;;
-    seed-es-data)
+    seed-opensearch-data)
       set_cf_default_vars
       set_cf_env_vars
-      seed_es_data
+      seed_opensearch_data
       ;;
     *)
       usage

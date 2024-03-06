@@ -19,4 +19,4 @@ ssh_pid=$!
 echo "Waiting for tunnel to come up ..."
 sleep 10
 
-./dev seed-es-data
+./dev seed-opensearch-data
