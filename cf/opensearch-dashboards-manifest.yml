@@ -20,5 +20,6 @@ applications:
       "opensearch_security.auth_type": "proxy"
       "opensearch_security.proxycache.user_header": "x-proxy-user"
       "opensearch_security.proxycache.roles_header": "x-proxy-roles"
+      OPENSEARCH_PASSWORD: ((opensearch_password))
   routes:
     - route: dashboard-test.apps.internal

@@ -61,12 +61,14 @@ jobs:
         manifest: src/cf/opensearch-manifest.yml
         vars:
           opensearch_app_name: ((dev-test-opensearch-app-name))
+          opensearch_password: ((es-admin-password))
 
     - put: cf-dev
       params:
         manifest: src/cf/opensearch-dashboards-manifest.yml
         vars:
           dashboards_app_name: ((dev-test-opensearch-dashboards-app-name))
+          opensearch_password: ((es-admin-password))
     
     - put: cf-dev
       params:
@@ -159,8 +161,8 @@ jobs:
       params:
         <<: *dev-cf-auth-params
 
-        ES_USER: ((es-admin-username))
-        ES_PASSWORD: ((es-admin-password))
+        OPENSEARCH_USER: ((es-admin-username))
+        OPENSEARCH_PASSWORD: ((es-admin-password))
 
         CF_ORG_1_NAME: ((dev-test-org-1-name))
         CF_ORG_2_NAME: ((dev-test-org-2-name))
