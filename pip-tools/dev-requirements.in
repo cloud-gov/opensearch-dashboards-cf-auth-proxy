@@ -2,7 +2,6 @@
 bandit
 black
 pip-tools
-playwright
 pyotp
 pytest
 pytest-playwright

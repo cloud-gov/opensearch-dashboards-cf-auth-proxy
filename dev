@@ -68,9 +68,13 @@ update_requirements() {
   export CUSTOM_COMPILE_COMMAND="./dev update-requirements"
   $python -m piptools compile \
     --quiet \
+    --output-file=local-requirements.txt \
+    pip-tools/local-requirements.in
+  $python -m piptools compile \
+    --quiet \
     --output-file=requirements.txt \
     pip-tools/requirements.in
-   $python -m piptools compile \
+  $python -m piptools compile \
     --quiet \
     --output-file=dev-requirements.txt \
     pip-tools/dev-requirements.in
@@ -91,6 +95,8 @@ set_up_ci_environment () {
 set_up_environment () {
   python -m venv venv
   source venv/bin/activate
+  # make sure we have requirements for local dev, like playwright
+  ${python} -m pip install -r local-requirements.txt
   # do this first to make sure we have piptools
   ${python} -m pip install -r dev-requirements.txt
   # do this again for syncs that might involve deletions
@@ -103,10 +109,11 @@ upgrade_requirements() {
     if [[ $# -ge 2 ]]; then
       echo "can't update more than one package at a time"
     fi
+    ${python} -m piptools compile --upgrade-package "$1" --output-file local-requirements.txt pip-tools/local-requirements.in
     ${python} -m piptools compile --upgrade-package "$1" --output-file requirements.txt pip-tools/requirements.in
     ${python} -m piptools compile --upgrade-package "$1" --output-file dev-requirements.txt pip-tools/dev-requirements.in
-
   else
+    ${python} -m piptools compile --output-file local-requirements.txt pip-tools/local-requirements.in
     ${python} -m piptools compile --upgrade --output-file requirements.txt pip-tools/requirements.in
     ${python} -m piptools compile --upgrade --output-file dev-requirements.txt pip-tools/dev-requirements.in
   fi
