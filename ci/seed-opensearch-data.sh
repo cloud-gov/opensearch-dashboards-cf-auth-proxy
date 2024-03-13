@@ -285,21 +285,32 @@ curl --fail-with-body --silent --show-error --cookie-jar ${cookie_jar} -b ${cook
     -d '{"tenant":"","username":"'"${OPENSEARCH_USER}"'"}'
 
 echo "Creating index pattern"
-INDEX_PATTERN_GUID=$(curl --cookie-jar ${cookie_jar} -b ${cookie_jar} \
+OUTPUT_FILE=$(mktemp)
+HTTP_CODE=$(curl --silent \
+    --write-out "%{http_code}" \
+    --cookie-jar "${cookie_jar}" -b "${cookie_jar}" \
+    --output "$OUTPUT_FILE" \
     -X POST \
     -H "content-type: application/json" \
     -H "x-proxy-roles: admin" \
     -H "x-proxy-user: admin" \
     -H 'x-forwarded-for: 127.0.0.1' \
     -H "osd-xsrf: true" \
-    http://localhost:5601/api/saved_objects/index-pattern \
     -d '
     {
         "attributes": {
             "title": "logs-app-*",
             "timeFieldName": "@timestamp"
         }
-    }' | jq -r '.id')
+    }' \
+    http://localhost:5601/api/saved_objects/index-pattern)
+if [[ $HTTP_CODE != 200 ]]; then
+    >&2 jq < "$OUTPUT_FILE"
+    exit 22
+fi
+jq < "$OUTPUT_FILE"
+INDEX_PATTERN_GUID=$(jq -r '.id' < "$OUTPUT_FILE")
+rm "$OUTPUT_FILE"
 
 echo "Setting default index"
 curl --fail-with-body --silent --show-error --cookie-jar ${cookie_jar} -b ${cookie_jar} \
