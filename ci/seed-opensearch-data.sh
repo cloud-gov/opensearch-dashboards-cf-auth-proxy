@@ -27,6 +27,37 @@ for var in "${required_env_vars[@]}"; do
     fi
 done
 
+function curl_and_handle_output() {
+    handle_response=$1
+    shift
+    OUTPUT_FILE=$(mktemp)
+    HTTP_CODE=$(curl --silent \
+        --output "$OUTPUT_FILE" \
+        --write-out "%{http_code}" \
+        "$@")
+    SUCCESS=$($handle_response "$HTTP_CODE")
+    echo $SUCCESS
+    if [ "$SUCCESS" -ne "0" ]; then
+        echo "success"
+        cat "$OUTPUT_FILE"
+        rm "$OUTPUT_FILE"
+    else
+        echo "fail"
+        >&2 jq < "$OUTPUT_FILE"
+        exit 22
+    fi
+    # return $?
+}
+
+function accept_200_404_response() {
+    if [[ $1 != 200 && $1 != 404 ]]; then
+        # >&2 jq < "$OUTPUT_FILE"
+        # exit 22
+        return 1
+    fi
+    return 0
+}
+
 # we have to create index and component templates
 # to work around the baked-in stream templates
 echo "creating component template"
@@ -73,20 +104,29 @@ curl --fail-with-body --silent --show-error -u "${OPENSEARCH_USER}":"${OPENSEARC
 
 # Delete index if it already exists
 echo "Deleting index (if it already exists)"
-OUTPUT_FILE=$(mktemp)
-HTTP_CODE=$(curl --silent \
-    --output "$OUTPUT_FILE" \
-    --write-out "%{http_code}" \
-    -k \
+# OUTPUT_FILE=$(mktemp)
+# HTTP_CODE=$(curl --silent \
+#     --output "$OUTPUT_FILE" \
+#     --write-out "%{http_code}" \
+#     -k \
+#     -u "${OPENSEARCH_USER}":"${OPENSEARCH_PASSWORD}" \
+#     -X DELETE \
+#     https://localhost:9200/logs-app-now)
+# if [[ $HTTP_CODE != 200 && $HTTP_CODE != 404 ]]; then
+#     >&2 jq < "$OUTPUT_FILE"
+#     exit 22
+# fi
+# jq < "$OUTPUT_FILE"
+# rm "$OUTPUT_FILE"
+
+curl_and_handle_output accept_200_404_response -k \
     -u "${OPENSEARCH_USER}":"${OPENSEARCH_PASSWORD}" \
     -X DELETE \
-    https://localhost:9200/logs-app-now)
-if [[ $HTTP_CODE != 200 && $HTTP_CODE != 404 ]]; then
-    >&2 jq < "$OUTPUT_FILE"
-    exit 22
-fi
-jq < "$OUTPUT_FILE"
-rm "$OUTPUT_FILE"
+    https://localhost:9200/logs-app-no
+    
+# if [ ! $? -eq 0 ]; then
+#     exit $?
+# fi
 
 echo "Creating index"
 curl --fail-with-body --silent --show-error -u "${OPENSEARCH_USER}":"${OPENSEARCH_PASSWORD}" -k \
@@ -283,6 +323,7 @@ curl --fail-with-body --silent --show-error --cookie-jar ${cookie_jar} -b ${cook
     -H "osd-xsrf: true" \
     http://localhost:5601/api/v1/multitenancy/tenant \
     -d '{"tenant":"","username":"'"${OPENSEARCH_USER}"'"}'
+
 
 echo "Creating index pattern"
 OUTPUT_FILE=$(mktemp)
