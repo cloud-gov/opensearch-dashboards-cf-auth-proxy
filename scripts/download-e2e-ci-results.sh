@@ -7,7 +7,7 @@ if [[ -z "$BUILD_NUMBER" ]]; then
   exit 1
 fi
 
-CI_TASK_TARGET="fly -t ci intercept -j opensearch-dashboards-cf-auth-proxy/e2e -s e2e-tests -b $BUILD_NUMBER"
+CI_TASK_TARGET="fly -t ${FLY_TARGET:=ci} intercept -j opensearch-dashboards-cf-auth-proxy/e2e -s e2e-tests -b $BUILD_NUMBER"
 TEST_RESULTS_DIR="src/test-results"
 LOCAL_TARGET_DIR="ci-test-results"
 
