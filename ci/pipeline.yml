@@ -57,6 +57,10 @@ jobs:
         trigger: true
         passed: [test]
       - get: general-task
+      - get: dev-opensearch-image
+        trigger: true
+      - get: dev-opensearch-dashboards-image
+        trigger: true
 
     - put: cf-dev
       params:
