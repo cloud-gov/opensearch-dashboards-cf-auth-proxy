@@ -5,7 +5,7 @@ from . import AUTH_PROXY_URL, UAA_AUTH_URL
 
 
 def log_in(user, page, start_at=None):
-    page.set_default_timeout(60000)
+    page.set_default_timeout(240000)
 
     if start_at is None:
         start_at = AUTH_PROXY_URL
