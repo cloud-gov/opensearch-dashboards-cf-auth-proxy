@@ -55,19 +55,19 @@ jobs:
       - get: src
         params: {depth: 1}
         trigger: true
-        passed: [test, build-test-images]
+        passed: [test]
       - get: general-task
     
     - put: cf-dev
       params:
-        manifest: src/cf/opensearch-manifest.yml
+        manifest: src/cf/opensearch-manager-manifest.yml
         vars:
           opensearch_manager_app_name: ((dev-test-opensearch-manager-app-name))
           opensearch_password: ((opensearch-admin-password))
 
     - put: cf-dev
       params:
-        manifest: src/cf/opensearch-manifest.yml
+        manifest: src/cf/opensearch-node-manifest.yml
         vars:
           opensearch_node_app_name: ((dev-test-opensearch-node-app-name))
           opensearch_password: ((opensearch-admin-password))
