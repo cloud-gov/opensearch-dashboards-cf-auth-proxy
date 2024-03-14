@@ -28,10 +28,12 @@ jobs:
 
 - name: build-test-images
   plan:
-    - get: src
-      params: {depth: 1}
-      trigger: true
-      passed: [test]
+    - in_parallel:
+      - get: src-docker
+        params: {depth: 1}
+        trigger: true
+      - get: src
+        passed: [test]
 
     - put: dev-opensearch-image
       params:
@@ -53,14 +55,18 @@ jobs:
       - get: src
         params: {depth: 1}
         trigger: true
-        passed: [build-test-images]
+        passed: [test]
       - get: general-task
-    
+      - get: dev-opensearch-image
+        trigger: true
+      - get: dev-opensearch-dashboards-image
+        trigger: true
+
     - put: cf-dev
       params:
-        manifest: src/cf/opensearch-manifest.yml
+        manifest: src/cf/opensearch-node-manifest.yml
         vars:
-          opensearch_app_name: ((dev-test-opensearch-app-name))
+          opensearch_node_app_name: ((dev-test-opensearch-node-app-name))
           opensearch_password: ((opensearch-admin-password))
 
     - put: cf-dev
@@ -101,7 +107,7 @@ jobs:
         CF_PASSWORD: ((dev-cf-password))
         CF_ORGANIZATION: ((dev-cf-organization))
         CF_SPACE: ((dev-cf-space))
-        OPENSEARCH_APP_NAME: ((dev-test-opensearch-app-name))
+        OPENSEARCH_NODE_APP_NAME: ((dev-test-opensearch-node-app-name))
         DASHBOARDS_APP_NAME: ((dev-test-opensearch-dashboards-app-name))
         PROXY_APP_NAME: ((dev-test-auth-proxy-app-name))
 
@@ -213,6 +219,17 @@ resources:
     uri: https://github.com/cloud-gov/opensearch-dashboards-cf-auth-proxy
     branch: fix-e2e-tests
     commit_verification_keys: ((cloud-gov-pgp-keys))
+
+- name: src-docker
+  type: git
+  icon: github-circle
+  check_every: 10s
+  source:
+    uri: https://github.com/cloud-gov/opensearch-dashboards-cf-auth-proxy
+    branch: fix-e2e-tests
+    commit_verification_keys: ((cloud-gov-pgp-keys))
+    paths:
+      - docker
 
 - name: dev-opensearch-image
   type: docker-image

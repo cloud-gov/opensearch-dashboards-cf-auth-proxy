@@ -8,14 +8,13 @@
 version: 1
 applications:
 - name: ((dashboards_app_name))
-  memory: 2G
+  memory: 4G
   instances: 1
   disk_quota: 2G
   docker:
     image: cloudgovoperations/test-opensearch-dashboards:latest
   env:
-      "ELASTICSEARCH_URL": https://opensearch-test.apps.internal:9200
-      "OPENSEARCH_HOSTS": https://0.opensearch-test.apps.internal:9200
+      "OPENSEARCH_HOSTS": https://0.test-opensearch-node.apps.internal:9200
       "opensearch.requestHeadersAllowlist": "securitytenant,Authorization,x-forwarded-for,x-proxy-user,x-proxy-roles"
       "opensearch_security.auth_type": "proxy"
       "opensearch_security.proxycache.user_header": "x-proxy-user"

@@ -13,7 +13,7 @@ cf auth
 cf t -o "${CF_ORGANIZATION}" -s "${CF_SPACE}"
 
 echo "Creating SSH tunnel"
-cf ssh -L 9200:opensearch-test.apps.internal:9200 -L 5601:dashboard-test.apps.internal:5601 "${DASHBOARDS_APP_NAME}" -N &
+cf ssh -L 9200:test-opensearch-node.apps.internal:9200 -L 5601:dashboard-test.apps.internal:5601 "${DASHBOARDS_APP_NAME}" -N &
 ssh_pid=$!
 
 echo "Waiting for tunnel to come up ..."
