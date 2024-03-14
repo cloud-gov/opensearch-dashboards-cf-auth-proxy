@@ -57,13 +57,6 @@ jobs:
         trigger: true
         passed: [test]
       - get: general-task
-    
-    # - put: cf-dev
-    #   params:
-    #     manifest: src/cf/opensearch-manager-manifest.yml
-    #     vars:
-    #       opensearch_manager_app_name: ((dev-test-opensearch-manager-app-name))
-    #       opensearch_password: ((opensearch-admin-password))
 
     - put: cf-dev
       params:
@@ -110,7 +103,6 @@ jobs:
         CF_PASSWORD: ((dev-cf-password))
         CF_ORGANIZATION: ((dev-cf-organization))
         CF_SPACE: ((dev-cf-space))
-        OPENSEARCH_MANAGER_APP_NAME: ((dev-test-opensearch-manager-app-name))
         OPENSEARCH_NODE_APP_NAME: ((dev-test-opensearch-node-app-name))
         DASHBOARDS_APP_NAME: ((dev-test-opensearch-dashboards-app-name))
         PROXY_APP_NAME: ((dev-test-auth-proxy-app-name))
