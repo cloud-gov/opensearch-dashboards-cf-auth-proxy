@@ -62,7 +62,14 @@ jobs:
       params:
         manifest: src/cf/opensearch-manifest.yml
         vars:
-          opensearch_app_name: ((dev-test-opensearch-app-name))
+          opensearch_manager_app_name: ((dev-test-opensearch-manager-app-name))
+          opensearch_password: ((opensearch-admin-password))
+
+    - put: cf-dev
+      params:
+        manifest: src/cf/opensearch-manifest.yml
+        vars:
+          opensearch_node_app_name: ((dev-test-opensearch-node-app-name))
           opensearch_password: ((opensearch-admin-password))
 
     - put: cf-dev
