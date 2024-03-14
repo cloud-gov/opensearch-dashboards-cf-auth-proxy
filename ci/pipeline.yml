@@ -103,7 +103,8 @@ jobs:
         CF_PASSWORD: ((dev-cf-password))
         CF_ORGANIZATION: ((dev-cf-organization))
         CF_SPACE: ((dev-cf-space))
-        OPENSEARCH_APP_NAME: ((dev-test-opensearch-app-name))
+        OPENSEARCH_MANAGER_APP_NAME: ((dev-test-opensearch-manager-app-name))
+        OPENSEARCH_NODE_APP_NAME: ((dev-test-opensearch-node-app-name))
         DASHBOARDS_APP_NAME: ((dev-test-opensearch-dashboards-app-name))
         PROXY_APP_NAME: ((dev-test-auth-proxy-app-name))
 
