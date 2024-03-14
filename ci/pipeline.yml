@@ -28,9 +28,12 @@ jobs:
 
 - name: build-test-images
   plan:
-    - get: src-docker
-      params: {depth: 1}
-      trigger: true
+    - in_parallel:
+      - get: src-docker
+        params: {depth: 1}
+        trigger: true
+      - get: src
+        passed: [reconfigure]
 
     - put: dev-opensearch-image
       params:
@@ -221,7 +224,8 @@ resources:
     uri: https://github.com/cloud-gov/opensearch-dashboards-cf-auth-proxy
     branch: fix-e2e-tests
     commit_verification_keys: ((cloud-gov-pgp-keys))
-    paths: docker
+    paths:
+      - docker
 
 - name: dev-opensearch-image
   type: docker-image
