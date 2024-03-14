@@ -33,7 +33,7 @@ jobs:
         params: {depth: 1}
         trigger: true
       - get: src
-        passed: [reconfigure]
+        passed: [test]
 
     - put: dev-opensearch-image
       params:
@@ -59,10 +59,8 @@ jobs:
       - get: general-task
       - get: dev-opensearch-image
         trigger: true
-        passed: [test]
       - get: dev-opensearch-dashboards-image
         trigger: true
-        passed: [test]
 
     - put: cf-dev
       params:
