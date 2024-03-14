@@ -58,12 +58,12 @@ jobs:
         passed: [test]
       - get: general-task
     
-    - put: cf-dev
-      params:
-        manifest: src/cf/opensearch-manager-manifest.yml
-        vars:
-          opensearch_manager_app_name: ((dev-test-opensearch-manager-app-name))
-          opensearch_password: ((opensearch-admin-password))
+    # - put: cf-dev
+    #   params:
+    #     manifest: src/cf/opensearch-manager-manifest.yml
+    #     vars:
+    #       opensearch_manager_app_name: ((dev-test-opensearch-manager-app-name))
+    #       opensearch_password: ((opensearch-admin-password))
 
     - put: cf-dev
       params:
