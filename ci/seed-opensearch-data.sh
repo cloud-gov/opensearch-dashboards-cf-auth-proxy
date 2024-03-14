@@ -35,24 +35,26 @@ function curl_and_handle_output() {
         --output "$OUTPUT_FILE" \
         --write-out "%{http_code}" \
         "$@")
-    SUCCESS=$($handle_response "$HTTP_CODE")
-    echo $SUCCESS
-    if [ "$SUCCESS" -ne "0" ]; then
-        echo "success"
+    if $handle_response "$HTTP_CODE"; then
         cat "$OUTPUT_FILE"
         rm "$OUTPUT_FILE"
     else
-        echo "fail"
-        >&2 jq < "$OUTPUT_FILE"
+        >&2 echo "failing HTTP code: $HTTP_CODE"
+        cat "$OUTPUT_FILE"
+        rm "$OUTPUT_FILE"
         exit 22
     fi
-    # return $?
 }
 
 function accept_200_404_response() {
-    if [[ $1 != 200 && $1 != 404 ]]; then
-        # >&2 jq < "$OUTPUT_FILE"
-        # exit 22
+    if [[ $1 != "200" && $1 != "404" ]]; then
+        return 1
+    fi
+    return 0
+}
+
+function accept_200_response() {
+    if [[ $1 != "200" ]]; then
         return 1
     fi
     return 0
@@ -104,29 +106,10 @@ curl --fail-with-body --silent --show-error -u "${OPENSEARCH_USER}":"${OPENSEARC
 
 # Delete index if it already exists
 echo "Deleting index (if it already exists)"
-# OUTPUT_FILE=$(mktemp)
-# HTTP_CODE=$(curl --silent \
-#     --output "$OUTPUT_FILE" \
-#     --write-out "%{http_code}" \
-#     -k \
-#     -u "${OPENSEARCH_USER}":"${OPENSEARCH_PASSWORD}" \
-#     -X DELETE \
-#     https://localhost:9200/logs-app-now)
-# if [[ $HTTP_CODE != 200 && $HTTP_CODE != 404 ]]; then
-#     >&2 jq < "$OUTPUT_FILE"
-#     exit 22
-# fi
-# jq < "$OUTPUT_FILE"
-# rm "$OUTPUT_FILE"
-
 curl_and_handle_output accept_200_404_response -k \
     -u "${OPENSEARCH_USER}":"${OPENSEARCH_PASSWORD}" \
     -X DELETE \
-    https://localhost:9200/logs-app-no
-    
-# if [ ! $? -eq 0 ]; then
-#     exit $?
-# fi
+    https://localhost:9200/logs-app-now | jq
 
 echo "Creating index"
 curl --fail-with-body --silent --show-error -u "${OPENSEARCH_USER}":"${OPENSEARCH_PASSWORD}" -k \
@@ -326,11 +309,8 @@ curl --fail-with-body --silent --show-error --cookie-jar ${cookie_jar} -b ${cook
 
 
 echo "Creating index pattern"
-OUTPUT_FILE=$(mktemp)
-HTTP_CODE=$(curl --silent \
-    --write-out "%{http_code}" \
+OUTPUT=$(curl_and_handle_output accept_200_response \
     --cookie-jar "${cookie_jar}" -b "${cookie_jar}" \
-    --output "$OUTPUT_FILE" \
     -X POST \
     -H "content-type: application/json" \
     -H "x-proxy-roles: admin" \
@@ -345,13 +325,8 @@ HTTP_CODE=$(curl --silent \
         }
     }' \
     http://localhost:5601/api/saved_objects/index-pattern)
-if [[ $HTTP_CODE != 200 ]]; then
-    >&2 jq < "$OUTPUT_FILE"
-    exit 22
-fi
-jq < "$OUTPUT_FILE"
-INDEX_PATTERN_GUID=$(jq -r '.id' < "$OUTPUT_FILE")
-rm "$OUTPUT_FILE"
+echo "$OUTPUT" | jq
+INDEX_PATTERN_GUID=$(echo "$OUTPUT" | jq -r '.id')
 
 echo "Setting default index"
 curl --fail-with-body --silent --show-error --cookie-jar ${cookie_jar} -b ${cookie_jar} \
