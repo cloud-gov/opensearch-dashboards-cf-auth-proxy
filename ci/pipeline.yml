@@ -121,6 +121,7 @@ jobs:
         trigger: true
         passed: [deploy-test-apps]
       - get: general-task
+      - get: harden-playwright
     - task: provision-cf-access
       image: general-task
       config:
@@ -182,7 +183,7 @@ jobs:
         DASHBOARDS_APP_NAME: ((dev-test-opensearch-dashboards-app-name))
         
     - task: e2e-tests
-      image: general-task
+      image: harden-playwright
       config:
         inputs:
           - name: src
@@ -266,6 +267,15 @@ resources:
     aws_access_key_id: ((ecr_aws_key))
     aws_secret_access_key: ((ecr_aws_secret))
     repository: general-task
+    aws_region: us-gov-west-1
+    tag: latest
+
+- name: harden-playwright
+  type: registry-image
+  source:
+    aws_access_key_id: ((ecr_aws_key))
+    aws_secret_access_key: ((ecr_aws_secret))
+    repository: harden-playwright
     aws_region: us-gov-west-1
     tag: latest
 
