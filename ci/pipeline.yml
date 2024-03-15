@@ -8,6 +8,8 @@ jobs:
     trigger: true
   - set_pipeline: self
     file: src/ci/pipeline.yml
+    var_files:
+      - src/ci/config.yml
 
 - name: test
   plan:
@@ -216,8 +218,8 @@ resources:
   icon: github-circle
   check_every: 10s
   source:
-    uri: https://github.com/cloud-gov/opensearch-dashboards-cf-auth-proxy
-    branch: fix-e2e-tests
+    uri: ((proxy-src-code-uri))
+    branch: ((proxy-src-code-branch))
     commit_verification_keys: ((cloud-gov-pgp-keys))
 
 - name: src-docker
@@ -225,8 +227,8 @@ resources:
   icon: github-circle
   check_every: 10s
   source:
-    uri: https://github.com/cloud-gov/opensearch-dashboards-cf-auth-proxy
-    branch: fix-e2e-tests
+    uri: ((proxy-src-code-uri))
+    branch: ((proxy-src-code-branch))
     commit_verification_keys: ((cloud-gov-pgp-keys))
     paths:
       - docker
