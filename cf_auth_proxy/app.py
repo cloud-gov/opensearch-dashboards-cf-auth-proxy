@@ -131,6 +131,7 @@ def create_app():
     def handle_request(path):
         def redirect_to_auth():
             session["state"] = urlsafe_b64encode(os.urandom(24)).decode("utf-8")
+            logger.debug("set session state: %s", session["state"])
             if len(path):
                 session["original-request"] = f"/{path}"
             else:
