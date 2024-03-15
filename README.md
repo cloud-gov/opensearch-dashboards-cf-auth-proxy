@@ -47,13 +47,13 @@ The following are optional:
 After starting up the auth-proxy using the above steps, run:
 
 ```shell
-./dev e2e
+./dev e2e-local
 ```
 
 To debug the e2e tests (see <https://playwright.dev/python/docs/debug>):
 
 ```shell
-PWDEBUG=1 ./dev e2e
+PWDEBUG=1 ./dev e2e-local
 ```
 
 You can specify [any `pytest` flags](https://docs.pytest.org/en/7.1.x/reference/reference.html#command-line-flags) or [Playwright CLI flags](https://playwright.dev/python/docs/test-runners#cli-arguments) for `e2e`.
@@ -62,21 +62,21 @@ To target specific e2e test(s):
 
 ```shell
 # run the test_see_correct_logs_in_discover_user_1 test
-./dev e2e -k 'test_see_correct_logs_in_discover_user_1'
+./dev e2e-local -k 'test_see_correct_logs_in_discover_user_1'
 # run all the test_see_correct_logs_in_discover_user* tests
-./dev e2e -k 'test_see_correct_logs_in_discover_user'
+./dev e2e-local -k 'test_see_correct_logs_in_discover_user'
 ```
 
 To retain video records of failed tests:
 
 ```shell
-./dev e2e --video retain-on-failure
+./dev e2e-local --video retain-on-failure
 ```
 
 To retain a [trace](https://playwright.dev/python/docs/trace-viewer-intro) of failed tests:
 
 ```shell
-./dev e2e --tracing retain-on-failure
+./dev e2e-local --tracing retain-on-failure
 ```
 
 ### Running the e2e tests against other proxy instances

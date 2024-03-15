@@ -6,7 +6,7 @@ shopt -s inherit_errexit 2>/dev/null || true
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 python=${dir}/venv/bin/python
 
-ENVIRONMENT=${ENVIRONMENT:-local}
+ENVIRONMENT=${ENVIRONMENT:-}
 
 usage() {
   local me
@@ -152,7 +152,7 @@ source_env_vars() {
         source "dev.env"
         ;;
 
-      *)
+      local)
         source ".env"
         ;;
     esac
@@ -205,6 +205,10 @@ seed_opensearch_data() {
 
 provision_cf_access() {
   bash ./ci/provision-cf-access.sh
+}
+
+run_e2e_tests() {
+  ${python} -m pytest e2e --browser firefox "$@"
 }
 
 main() {
@@ -277,14 +281,19 @@ main() {
     watch-test|watch-tests)
       watch_tests "$@"
       ;;
-    e2e)
+    e2e-local)
+      export ENVIRONMENT=local
       source_env_vars
-      if [[ "$ENVIRONMENT" == "local" ]]; then
-        set_cf_default_vars
-        set_cf_env_vars
-        seed_opensearch_data
+      set_cf_default_vars
+      set_cf_env_vars
+      seed_opensearch_data
+      run_e2e_tests "$@"
+      ;;
+    e2e)
+      if [[ -n "$ENVIRONMENT" ]]; then
+        source_env_vars
       fi
-      ${python} -m pytest e2e --browser firefox "$@"
+      run_e2e_tests "$@"
       ;;
     format)
       ${python} -m black .
