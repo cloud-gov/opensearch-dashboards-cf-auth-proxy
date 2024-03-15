@@ -1,5 +1,4 @@
 import re
-import time
 
 from . import AUTH_PROXY_URL, UAA_AUTH_URL
 

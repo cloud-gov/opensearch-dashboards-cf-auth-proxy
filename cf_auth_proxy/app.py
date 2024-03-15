@@ -1,7 +1,8 @@
-from base64 import b64encode, b64decode, urlsafe_b64encode, urlsafe_b64decode
+from base64 import urlsafe_b64encode
 import urllib.parse
 import os
 import datetime
+import logging
 
 from flask import Flask, request, session, url_for, redirect
 import jwt
@@ -17,6 +18,9 @@ from cf_auth_proxy import uaa
 def create_app():
     app = Flask(__name__)
     app.config.from_object(config)
+
+    logger = logging.getLogger()
+    logger.setLevel(level=os.getenv("LOG_LEVEL", "INFO").upper())
 
     @app.before_request
     def refresh_session():
@@ -66,6 +70,7 @@ def create_app():
         sess_csrf = session.pop("state")
 
         if sess_csrf != req_csrf:
+            logger.debug("expected CSRF: %s, got: %s", sess_csrf, req_csrf)
             # TODO: make a view for this
             return "bad request", 403
 

@@ -26,4 +26,5 @@ applications:
     SECRET_KEY: ((secret_key))
     SESSION_LIFETIME: ((session_lifetime))
     DEBUG: true
+    LOG_LEVEL: debug
   memory: 1G
