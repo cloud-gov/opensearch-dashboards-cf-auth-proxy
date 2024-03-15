@@ -5,6 +5,9 @@ shopt -s inherit_errexit 2>/dev/null || true
 
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 python=${dir}/venv/bin/python
+
+ENVIRONMENT=${ENVIRONMENT:-local}
+
 usage() {
   local me
   me=$(basename "$0")
@@ -138,15 +141,17 @@ cf_network() {
 
 source_env_vars() {
   set -o allexport
-
-  ENVIRONMENT=${ENVIRONMENT:-}
   
   pushd "${dir}"
     case $ENVIRONMENT in
       prod|production)
         source "prod.env"
         ;;
-      
+
+      dev)
+        source "dev.env"
+        ;;
+
       *)
         source ".env"
         ;;
@@ -273,13 +278,12 @@ main() {
       watch_tests "$@"
       ;;
     e2e)
-      ${python} -m pytest e2e --browser firefox "$@"
-      ;;
-    e2e-local)
       source_env_vars
-      set_cf_default_vars
-      set_cf_env_vars
-      seed_opensearch_data
+      if [[ "$ENVIRONMENT" == "local" ]]; then
+        set_cf_default_vars
+        set_cf_env_vars
+        seed_opensearch_data
+      fi
       ${python} -m pytest e2e --browser firefox "$@"
       ;;
     format)
