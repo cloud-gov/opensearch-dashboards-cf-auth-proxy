@@ -15,7 +15,7 @@ applications:
   routes:
     - route: ((public_route))
   env:
-    FLASK_ENV: local
+    FLASK_ENV: production
     DASHBOARD_URL: ((dashboard_url))
     CF_ADMIN_GROUP_NAME: "cloud_controller.admin"
     CF_API_URL: ((cf_url))
