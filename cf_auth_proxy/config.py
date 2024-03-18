@@ -104,4 +104,6 @@ class AppConfig(Config):
         self.DASHBOARD_CERTIFICATE_KEY = self.env_parser.str(
             "DASHBOARD_CERTIFICATE_KEY", None
         )
-        self.DASHBOARD_CERTIFICATE_CA = self.env_parser.str("DASHBOARD_CERTIFICATE_CA", None)
+        self.DASHBOARD_CERTIFICATE_CA = self.env_parser.str(
+            "DASHBOARD_CERTIFICATE_CA", None
+        )
