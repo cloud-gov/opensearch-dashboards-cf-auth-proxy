@@ -341,6 +341,11 @@ resources:
     aws_region: us-gov-west-1
     tag: latest
 
+- name: slack
+  type: slack-notification
+  source:
+    url: ((slack-webhook-url))
+
 ############################
 #  RESOURCE TYPES
 
