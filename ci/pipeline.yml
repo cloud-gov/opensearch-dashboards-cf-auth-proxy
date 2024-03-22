@@ -51,67 +51,67 @@ jobs:
         tag_as_latest: true
         cache: true
 
-# - name: deploy-test-apps
-#   plan:
-#     - in_parallel:
-#       - get: src
-#         params: {depth: 1}
-#         trigger: true
-#         passed: [test]
-#       - get: general-task
-#       - get: dev-opensearch-image
-#         trigger: true
-#       - get: dev-opensearch-dashboards-image
-#         trigger: true
+- name: deploy-test-apps
+  plan:
+    - in_parallel:
+      - get: src
+        params: {depth: 1}
+        trigger: true
+        passed: [test]
+      - get: general-task
+      - get: dev-opensearch-image
+        trigger: true
+      - get: dev-opensearch-dashboards-image
+        trigger: true
 
-#     - put: cf-dev
-#       params:
-#         manifest: src/cf/opensearch-node-manifest.yml
-#         vars:
-#           opensearch_node_app_name: ((dev-test-opensearch-node-app-name))
-#           opensearch_password: ((opensearch-admin-password))
+    - put: cf-dev
+      params:
+        manifest: src/cf/opensearch-node-manifest.yml
+        vars:
+          opensearch_node_app_name: ((dev-test-opensearch-node-app-name))
+          opensearch_password: ((opensearch-admin-password))
 
-#     - put: cf-dev
-#       params:
-#         manifest: src/cf/opensearch-dashboards-manifest.yml
-#         vars:
-#           dashboards_app_name: ((dev-test-opensearch-dashboards-app-name))
-#           opensearch_password: ((opensearch-admin-password))
+    - put: cf-dev
+      params:
+        manifest: src/cf/opensearch-dashboards-manifest.yml
+        vars:
+          dashboards_app_name: ((dev-test-opensearch-dashboards-app-name))
+          opensearch_password: ((opensearch-admin-password))
     
-#     - put: cf-dev
-#       params:
-#         path: src
-#         manifest: src/cf/proxy-manifest.yml
-#         vars:
-#           cf_url: ((dev-cf-api-url))
-#           uaa_auth_url: ((dev-uaa-auth-url))
-#           uaa_base_url: ((dev-uaa-base-url))
-#           uaa_client_id: ((dev-uaa-test-client-id))
-#           uaa_client_secret: ((dev-uaa-test-client-secret))
-#           secret_key: ((dev-secret-key))
-#           session_lifetime: "3600"
-#           public_route: ((dev-test-public-url))
-#           dashboard_url: ((dev-test-dashboard-url))
-#           auth_proxy_app_name: ((dev-test-auth-proxy-app-name))
-#           auth_proxy_num_instances: ((dev-test-auth-proxy-num-instances))
+    - put: cf-dev
+      params:
+        path: src
+        manifest: src/cf/proxy-manifest.yml
+        vars:
+          cf_url: ((dev-cf-api-url))
+          uaa_auth_url: ((dev-uaa-auth-url))
+          uaa_base_url: ((dev-uaa-base-url))
+          uaa_client_id: ((dev-uaa-test-client-id))
+          uaa_client_secret: ((dev-uaa-test-client-secret))
+          secret_key: ((dev-secret-key))
+          session_lifetime: "3600"
+          public_route: ((dev-test-public-url))
+          dashboard_url: ((dev-test-dashboard-url))
+          auth_proxy_app_name: ((dev-test-auth-proxy-app-name))
+          auth_proxy_num_instances: ((dev-test-auth-proxy-num-instances))
 
-#     - task: update-networking
-#       image: general-task
-#       config:
-#         platform: linux
-#         inputs:
-#         - name: src
-#         run:
-#           path: src/ci/update-networking.sh
-#       params: &dev-cf-auth-params
-#         CF_API_URL: ((dev-cf-api-url))
-#         CF_USERNAME: ((dev-cf-username))
-#         CF_PASSWORD: ((dev-cf-password))
-#         CF_ORGANIZATION: ((dev-cf-organization))
-#         CF_SPACE: ((dev-cf-space))
-#         OPENSEARCH_NODE_APP_NAME: ((dev-test-opensearch-node-app-name))
-#         DASHBOARDS_APP_NAME: ((dev-test-opensearch-dashboards-app-name))
-#         PROXY_APP_NAME: ((dev-test-auth-proxy-app-name))
+    - task: update-networking
+      image: general-task
+      config:
+        platform: linux
+        inputs:
+        - name: src
+        run:
+          path: src/ci/update-networking.sh
+      params: &dev-cf-auth-params
+        CF_API_URL: ((dev-cf-api-url))
+        CF_USERNAME: ((dev-cf-username))
+        CF_PASSWORD: ((dev-cf-password))
+        CF_ORGANIZATION: ((dev-cf-organization))
+        CF_SPACE: ((dev-cf-space))
+        OPENSEARCH_NODE_APP_NAME: ((dev-test-opensearch-node-app-name))
+        DASHBOARDS_APP_NAME: ((dev-test-opensearch-dashboards-app-name))
+        PROXY_APP_NAME: ((dev-test-auth-proxy-app-name))
 
 - name: e2e
   plan:
