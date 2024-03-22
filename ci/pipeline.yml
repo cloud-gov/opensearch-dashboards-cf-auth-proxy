@@ -10,6 +10,15 @@ jobs:
     file: src/ci/pipeline.yml
     var_files:
       - src/ci/config.yml
+  on_failure:
+    put: slack
+    params: &slack-failure-params
+      text: |
+        :x: Failed to reconfigure pipeline
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel-failure))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
 
 - name: test
   plan:
@@ -27,6 +36,21 @@ jobs:
         platform: linux
         run:
           path: src/ci/test.sh
+  on_failure:
+    put: slack
+    params:
+      <<: *&slack-failure-params
+      text: |
+        :x: Tests FAILED on opensearch-dashboards-cf-auth-proxy
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+  on_success:
+    put: slack
+    params: &slack-success-params
+      <<: *slack-failure-params
+      channel: ((slack-channel-success))
+      text: |
+        :white_check_mark: Tests PASSED onopensearch-dashboards-cf-auth-proxy
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: build-test-images
   plan:
@@ -50,6 +74,13 @@ jobs:
         dockerfile: src/docker/opensearch_dashboards/dockerfile
         tag_as_latest: true
         cache: true
+  on_failure:
+    put: slack
+    params:
+      <<: *&slack-failure-params
+      text: |
+        :x: FAILED to build test images
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: deploy-test-apps
   plan:
@@ -112,6 +143,20 @@ jobs:
         OPENSEARCH_NODE_APP_NAME: ((dev-test-opensearch-node-app-name))
         DASHBOARDS_APP_NAME: ((dev-test-opensearch-dashboards-app-name))
         PROXY_APP_NAME: ((dev-test-auth-proxy-app-name))
+  on_failure:
+    put: slack
+    params:
+      <<: *slack-failure-params
+      text: |
+        :x: FAILED to deploy apps
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+  on_success:
+    put: slack
+    params:
+      <<: *slack-success-params
+      text: |
+        :white_check_mark: Successfully deployed apps
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: e2e
   plan:
@@ -209,6 +254,21 @@ jobs:
           TEST_USER_4_USERNAME: ((dev-test-user-4-username))
           TEST_USER_4_PASSWORD: ((dev-test-user-4-password))
           TEST_USER_4_TOTP_SEED: ((dev-test-user-4-totp-seed))
+  on_failure:
+    put: slack
+    params:
+      <<: *slack-failure-params
+      text: |
+        :x: e2e tests FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+  on_success:
+    put: slack
+    params:
+      <<: *slack-success-params
+      text: |
+        :white_check_mark: e2e tests SUCCEEDED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+
 
 ##########################
 #  RESOURCES
