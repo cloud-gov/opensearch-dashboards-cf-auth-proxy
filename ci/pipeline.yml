@@ -192,6 +192,8 @@ jobs:
           path: src/ci/e2e.sh
         params:
           AUTH_PROXY_URL: ((auth-proxy-url))
+          UAA_AUTH_URL: ((dev-uaa-auth-url))
+
           TEST_USER_1_USERNAME: ((dev-test-user-1-username))
           TEST_USER_1_PASSWORD: ((dev-test-user-1-password))
           TEST_USER_1_TOTP_SEED: ((dev-test-user-1-totp-seed))
