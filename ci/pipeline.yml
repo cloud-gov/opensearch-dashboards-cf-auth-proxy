@@ -77,7 +77,7 @@ jobs:
   on_failure:
     put: slack
     params:
-      <<: *&slack-failure-params
+      <<: *slack-failure-params
       text: |
         :x: FAILED to build test images
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
