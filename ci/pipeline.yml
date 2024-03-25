@@ -54,12 +54,9 @@ jobs:
 
 - name: build-test-images
   plan:
-    - in_parallel:
-      - get: src-docker
-        params: {depth: 1}
-        trigger: true
-      - get: src
-        passed: [test]
+    - get: src-docker
+      params: {depth: 1}
+      trigger: true
       
     - put: dev-opensearch-image
       params:
