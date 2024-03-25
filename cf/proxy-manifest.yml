@@ -25,4 +25,4 @@ applications:
     UAA_CLIENT_SECRET: ((uaa_client_secret))
     SECRET_KEY: ((secret_key))
     SESSION_LIFETIME: ((session_lifetime))
-  memory: 1G
+  memory: 2G
