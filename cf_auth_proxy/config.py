@@ -37,10 +37,10 @@ class UnitConfig(Config):
         self.CF_API_URL = "http://mock.cf/"
         self.UAA_AUTH_URL = "http://mock.uaa/authorize"
         self.UAA_BASE_URL = "http://mock.uaa/"
-        self.UAA_TOKEN_URL = "http://mock.uaa/token" # nosec
+        self.UAA_TOKEN_URL = "http://mock.uaa/token"  # nosec
         self.UAA_CLIENT_ID = "EXAMPLE"
-        self.UAA_CLIENT_SECRET = "example" # nosec
-        self.SECRET_KEY = "CHANGEME" # nosec
+        self.UAA_CLIENT_SECRET = "example"  # nosec
+        self.SECRET_KEY = "CHANGEME"  # nosec
         self.PERMANENT_SESSION_LIFETIME = 120
         self.SESSION_REFRESH_EACH_REQUEST = False
         self.CF_ADMIN_GROUP_NAME = "cloud_controller.admin"
@@ -100,8 +100,10 @@ class AppConfig(Config):
         self.SECRET_KEY = self.env_parser.str("SECRET_KEY")
         self.PERMANENT_SESSION_LIFETIME = self.env_parser.int("SESSION_LIFETIME")
         self.CF_ADMIN_GROUP_NAME = self.env_parser.str("CF_ADMIN_GROUP_NAME")
-        self.DASHBOARD_CERTIFICATE = self.env_parser.str("DASHBOARD_CERTIFICATE")
+        self.DASHBOARD_CERTIFICATE = self.env_parser.str("DASHBOARD_CERTIFICATE", None)
         self.DASHBOARD_CERTIFICATE_KEY = self.env_parser.str(
-            "DASHBOARD_CERTIFICATE_KEY"
+            "DASHBOARD_CERTIFICATE_KEY", None
         )
-        self.DASHBOARD_CERTIFICATE_CA = self.env_parser.str("DASHBOARD_CERTIFICATE_CA")
+        self.DASHBOARD_CERTIFICATE_CA = self.env_parser.str(
+            "DASHBOARD_CERTIFICATE_CA", None
+        )

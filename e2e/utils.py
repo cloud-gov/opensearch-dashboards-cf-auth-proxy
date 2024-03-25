@@ -1,6 +1,4 @@
-import math
 import re
-import time
 
 from . import AUTH_PROXY_URL, UAA_AUTH_URL
 
@@ -54,31 +52,10 @@ def log_in(user, page, start_at=None):
         authorize_button.click()
 
 
-def handle_welcome_message(page):
-    total_wait_period_secs = 10
-    wait_between_retry_secs = 0.25
-    num_retries = math.floor(total_wait_period_secs / wait_between_retry_secs)
-
-    # this welcome page can appear anywhere in the dashboard loading process,
-    # so we're waiting to see if it appears and handling it
-    for i in range(1, num_retries):
-        welcome_heading = page.get_by_role(
-            "heading", name="Welcome to OpenSearch Dashboards"
-        )
-        if welcome_heading.is_visible():
-            explore_button = page.get_by_text("Explore on my own")
-            explore_button.wait_for()
-            explore_button.click()
-
-        time.sleep(wait_between_retry_secs)
-
-
 def switch_tenants(page, tenant="Global"):
     """
     switch to the specified tenant.
     """
-
-    handle_welcome_message(page)
 
     tenant_option = page.get_by_text(re.compile(f"^{tenant}.*$"))
     tenant_option.wait_for()
@@ -101,9 +78,7 @@ def switch_tenants(page, tenant="Global"):
 
 def go_to_discover_page(page):
     # open the hamburger menu
-    hamburger_button = page.locator(
-        f"css=div.euiHeaderSectionItem.euiHeaderSectionItem--borderRight.header__toggleNavButtonSection"
-    )
+    hamburger_button = page.locator('button[aria-label="Toggle primary navigation"]')
     hamburger_button.wait_for()
     hamburger_button.click()
 
@@ -115,7 +90,3 @@ def go_to_discover_page(page):
     # wait for the refresh button, signifying the discover page has loaded
     refresh_button = page.get_by_text("Refresh")
     refresh_button.wait_for()
-
-    # the box the results are in
-    content_box = page.locator("css=div.dscWrapper__content")
-    content_box.wait_for()

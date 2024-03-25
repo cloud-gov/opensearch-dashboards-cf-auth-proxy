@@ -39,7 +39,7 @@ The following are optional:
 ## Running the auth-proxy locally
 
 1. Copy `.env-sample` to `.env` and update the configuration values
-1. From the `docker` directory, run `docker-compose up`
+1. Run `./dev start-cluster` to start up the Docker containers for OpenSearch and OpenSearch Dashboards
 1. Run `./dev serve` (note: you must be on the VPN/using Zscaler because you will be redirected to the CF dev environment to login)
 
 ### Running the e2e tests locally
@@ -56,10 +56,15 @@ To debug the e2e tests (see <https://playwright.dev/python/docs/debug>):
 PWDEBUG=1 ./dev e2e-local
 ```
 
-To target specific e2e test(s), you can supply an `E2E_TEST_FILTER` environment variable:
+You can specify [any `pytest` flags](https://docs.pytest.org/en/7.1.x/reference/reference.html#command-line-flags) or [Playwright CLI flags](https://playwright.dev/python/docs/test-runners#cli-arguments) for `e2e`.
+
+To target specific e2e test(s):
 
 ```shell
-E2E_TEST_FILTER="discover_user" ./dev e2e-local
+# run the test_see_correct_logs_in_discover_user_1 test
+./dev e2e-local -k 'test_see_correct_logs_in_discover_user_1'
+# run all the test_see_correct_logs_in_discover_user* tests
+./dev e2e-local -k 'test_see_correct_logs_in_discover_user'
 ```
 
 To retain video records of failed tests:
@@ -72,6 +77,22 @@ To retain a [trace](https://playwright.dev/python/docs/trace-viewer-intro) of fa
 
 ```shell
 ./dev e2e-local --tracing retain-on-failure
+```
+
+### Running the e2e tests against other proxy instances
+
+Create an `.env` file for the environment you want to test. For example, to test the `dev` environment, create a `dev.env` file.
+
+Copy the contents of `.env` to your environment specific file (e.g. `dev.env`) and update these values as necessary:
+
+- `AUTH_PROXY_URL`
+- `UAA_AUTH_URL`
+- All the variables starting with `TEST_USER` with correct values for the given environment
+
+Then, run the tests while specifying the environment you want to test as `ENVIRONMENT`:
+
+```shell
+ENVIRONMENT=dev ./dev e2e
 ```
 
 ### Adding client

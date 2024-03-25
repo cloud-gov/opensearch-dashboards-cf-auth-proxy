@@ -5,6 +5,9 @@ shopt -s inherit_errexit 2>/dev/null || true
 
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 python=${dir}/venv/bin/python
+
+ENVIRONMENT=${ENVIRONMENT:-}
+
 usage() {
   local me
   me=$(basename "$0")
@@ -126,28 +129,30 @@ cf_push() {
 
 cf_network() {
   if [[ $# -lt 3 ]]; then
-    echo "Three arguments required: opensearch app name, dashboards app name, and proxy app name"
+    echo "Three arguments required: opensearch manager app name, opensearch node app name, dashboards app name, and proxy app name"
     exit 1
   fi
-  OPENSEARCH_APP_NAME="$1"
+  OPENSEARCH_NODE_APP_NAME="$1"
   DASHBOARDS_APP_NAME="$2"
   PROXY_APP_NAME="$3"
-  cf add-network-policy "$DASHBOARDS_APP_NAME" "$OPENSEARCH_APP_NAME" --protocol tcp --port 9200
+  cf add-network-policy "$DASHBOARDS_APP_NAME" "$OPENSEARCH_NODE_APP_NAME" --protocol tcp --port 9200
   cf add-network-policy "$PROXY_APP_NAME" "$DASHBOARDS_APP_NAME" --protocol tcp --port 5601
 }
 
 source_env_vars() {
   set -o allexport
-
-  ENVIRONMENT=${ENVIRONMENT:-}
   
   pushd "${dir}"
     case $ENVIRONMENT in
       prod|production)
         source "prod.env"
         ;;
-      
-      *)
+
+      dev)
+        source "dev.env"
+        ;;
+
+      local)
         source ".env"
         ;;
     esac
@@ -194,12 +199,16 @@ set_cf_env_vars() {
   export CF_ORG_2_BOTH_ORGS_SPACE_ID
 }
 
-seed_es_data() {
-  bash ./ci/seed-es-data.sh
+seed_opensearch_data() {
+  bash ./ci/seed-opensearch-data.sh
 }
 
 provision_cf_access() {
   bash ./ci/provision-cf-access.sh
+}
+
+run_e2e_tests() {
+  ${python} -m pytest e2e --browser firefox "$@"
 }
 
 main() {
@@ -226,6 +235,9 @@ main() {
     bandit)
       ${python} -m bandit -r cf_auth_proxy
       ;;
+    black)
+      ${python} -m black . "$@"
+      ;;
     test|tests)
       export FLASK_ENV=unit
       ${python} -m piptools sync requirements.txt dev-requirements.txt
@@ -239,14 +251,20 @@ main() {
     serve)
       source_env_vars
       export FLASK_APP="cf_auth_proxy.app:create_app()"
-      ${python} -m flask run -p "${PORT}"
+      ${python} -m gunicorn \
+        --access-logfile - \
+        --error-logfile - \
+        --log-level info \
+        --timeout 300 \
+        --workers 4 \
+         -b "0.0.0.0:$PORT" \
+        --worker-class eventlet "$FLASK_APP"
       ;;
-    cluster)
-      
+    start-cluster)
+      source_env_vars
       pushd docker
-        docker-compose up --force-recreate --build -d
+        docker-compose up --force-recreate --build "$@"
       popd
-
       ;;
     destroy-cluster)
       pushd docker
@@ -263,23 +281,33 @@ main() {
     watch-test|watch-tests)
       watch_tests "$@"
       ;;
-    e2e)
-      ${python} -m pytest e2e --browser firefox "$@"
-      ;;
     e2e-local)
+      export ENVIRONMENT=local
       source_env_vars
       set_cf_default_vars
       set_cf_env_vars
-      seed_es_data
-      ${python} -m pytest e2e --browser firefox "$@"
+      seed_opensearch_data
+      run_e2e_tests "$@"
+      ;;
+    e2e)
+      if [[ -n "$ENVIRONMENT" ]]; then
+        source_env_vars
+      fi
+      run_e2e_tests "$@"
       ;;
     format)
       ${python} -m black .
       ;;
-    seed-es-data)
+    seed-opensearch-data-local)
+      source_env_vars
       set_cf_default_vars
       set_cf_env_vars
-      seed_es_data
+      seed_opensearch_data
+      ;;
+    seed-opensearch-data)
+      set_cf_default_vars
+      set_cf_env_vars
+      seed_opensearch_data
       ;;
     *)
       usage

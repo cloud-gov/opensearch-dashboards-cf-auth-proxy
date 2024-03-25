@@ -14,7 +14,7 @@ def proxy_request(url, headers, data, cookies, method):
         cookies=cookies,
         allow_redirects=False,
         cert=(config.DASHBOARD_CERTIFICATE, config.DASHBOARD_CERTIFICATE_KEY),
-        verify=config.DASHBOARD_CERTIFICATE_CA
+        verify=config.DASHBOARD_CERTIFICATE_CA,
     )
 
     excluded_headers = [

@@ -1,7 +1,8 @@
-from base64 import b64encode, b64decode, urlsafe_b64encode, urlsafe_b64decode
+from base64 import urlsafe_b64encode
 import urllib.parse
 import os
 import datetime
+import logging
 
 from flask import Flask, request, session, url_for, redirect
 import jwt
@@ -18,6 +19,9 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(config)
 
+    logger = logging.getLogger()
+    logger.setLevel(level=os.getenv("LOG_LEVEL", "INFO").upper())
+
     @app.before_request
     def refresh_session():
         access_token_expiration = session.get("access_token_expiration")
@@ -33,7 +37,7 @@ def create_app():
                         "token_format": "opaque",
                         "refresh_token": session["refresh_token"],
                     },
-                    timeout=config.REQUEST_TIMEOUT
+                    timeout=config.REQUEST_TIMEOUT,
                 )
                 try:
                     r.raise_for_status()
@@ -66,6 +70,7 @@ def create_app():
         sess_csrf = session.pop("state")
 
         if sess_csrf != req_csrf:
+            logger.debug("expected CSRF: %s, got: %s", sess_csrf, req_csrf)
             # TODO: make a view for this
             return "bad request", 403
 
@@ -81,7 +86,7 @@ def create_app():
             auth=requests.auth.HTTPBasicAuth(
                 config.UAA_CLIENT_ID, config.UAA_CLIENT_SECRET
             ),
-            timeout=config.REQUEST_TIMEOUT
+            timeout=config.REQUEST_TIMEOUT,
         )
         try:
             r.raise_for_status()
@@ -126,6 +131,7 @@ def create_app():
     def handle_request(path):
         def redirect_to_auth():
             session["state"] = urlsafe_b64encode(os.urandom(24)).decode("utf-8")
+            logger.debug("set session state: %s", session["state"])
             if len(path):
                 session["original-request"] = f"/{path}"
             else:

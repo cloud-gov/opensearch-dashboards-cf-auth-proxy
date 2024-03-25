@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -euo pipefail
-shopt -s inherit_errexit || true
+shopt -s inherit_errexit 2>/dev/null || true
 
 function cleanup() {
   rm "${cookie_jar}"
@@ -11,8 +11,8 @@ trap cleanup exit
 cookie_jar=$(mktemp)
 
 required_env_vars=(
-    ES_USER
-    ES_PASSWORD
+    OPENSEARCH_USER
+    OPENSEARCH_PASSWORD
     CF_ORG_1_ID
     CF_ORG_1_SPACE_1_ID
     CF_ORG_1_BOTH_ORGS_SPACE_ID
@@ -27,10 +27,43 @@ for var in "${required_env_vars[@]}"; do
     fi
 done
 
+function curl_and_handle_output() {
+    handle_response=$1
+    shift
+    OUTPUT_FILE=$(mktemp)
+    HTTP_CODE=$(curl --silent \
+        --output "$OUTPUT_FILE" \
+        --write-out "%{http_code}" \
+        "$@")
+    if $handle_response "$HTTP_CODE"; then
+        cat "$OUTPUT_FILE"
+        rm "$OUTPUT_FILE"
+    else
+        >&2 echo "failing HTTP code: $HTTP_CODE"
+        cat "$OUTPUT_FILE"
+        rm "$OUTPUT_FILE"
+        exit 22
+    fi
+}
+
+function accept_200_404_response() {
+    if [[ $1 != "200" && $1 != "404" ]]; then
+        return 1
+    fi
+    return 0
+}
+
+function accept_200_response() {
+    if [[ $1 != "200" ]]; then
+        return 1
+    fi
+    return 0
+}
+
 # we have to create index and component templates
 # to work around the baked-in stream templates
 echo "creating component template"
-curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
+curl --fail-with-body --silent --show-error -u "${OPENSEARCH_USER}":"${OPENSEARCH_PASSWORD}" -k \
     -X PUT \
     -H "content-type: application/json" \
     https://localhost:9200/_component_template/ct_apps \
@@ -61,7 +94,7 @@ curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
 }' | jq
 
 echo "Creating index template"
-curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
+curl --fail-with-body --silent --show-error -u "${OPENSEARCH_USER}":"${OPENSEARCH_PASSWORD}" -k \
     -X PUT \
     -H "content-type: application/json" \
     https://localhost:9200/_index_template/it_apps \
@@ -71,8 +104,15 @@ curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
           "composed_of": ["ct_apps"]
         }' | jq
 
+# Delete index if it already exists
+echo "Deleting index (if it already exists)"
+curl_and_handle_output accept_200_404_response -k \
+    -u "${OPENSEARCH_USER}":"${OPENSEARCH_PASSWORD}" \
+    -X DELETE \
+    https://localhost:9200/logs-app-now | jq
+
 echo "Creating index"
-curl --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
+curl --fail-with-body --silent --show-error -u "${OPENSEARCH_USER}":"${OPENSEARCH_PASSWORD}" -k \
     -X PUT \
     -H "content-type: application/json" \
     https://localhost:9200/logs-app-now \
@@ -81,16 +121,15 @@ curl --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
         "properties": {
             "@cf": {
                 "dynamic": true,
+                "type": "object",
                 "properties": {
-                    "@cf": {
-                        "space_id": {
-                            "type": "keyword",
-                            "index": true
-                        },
-                        "org_id": {
-                            "type": "keyword",
-                            "index": true
-                        }
+                    "space_id": {
+                        "type": "keyword",
+                        "index": true
+                    },
+                    "org_id": {
+                        "type": "keyword",
+                        "index": true
                     }
                 }
             }
@@ -138,7 +177,7 @@ echo "creating test document 1/7"
 # It doesn't seem to make the docs available otherwise
 # We could probably just do this on the last doc we index, but doing
 # it on all of them makes it easier to modify the script
-curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
+curl --fail-with-body --silent --show-error -u "${OPENSEARCH_USER}":"${OPENSEARCH_PASSWORD}" -k \
     -X POST \
     -H "content-type: application/json" \
     https://localhost:9200/logs-app-now/_doc?refresh=true \
@@ -156,7 +195,7 @@ curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
 # user 3 should be able to see this log
 # user 4 should not be able to see it
 echo "creating test document 2/7"
-curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
+curl --fail-with-body --silent --show-error -u "${OPENSEARCH_USER}":"${OPENSEARCH_PASSWORD}" -k \
     -X POST \
     -H "content-type: application/json" \
     https://localhost:9200/logs-app-now/_doc?refresh=true \
@@ -171,7 +210,7 @@ curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
 
 # none of the users should be able to see this log
 echo "creating test document 3/7"
-curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
+curl --fail-with-body --silent --show-error -u "${OPENSEARCH_USER}":"${OPENSEARCH_PASSWORD}" -k \
     -X POST \
     -H "content-type: application/json" \
     https://localhost:9200/logs-app-now/_doc?refresh=true \
@@ -180,12 +219,12 @@ curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
         "message": "no_space_id"
         }' | jq
 
-# user 1 should be able to see this log
+# user 1 should not be able to see this log
 # user 2 should not be able to see it
 # user 3 should be able to see this log
 # user 4 should not be able to see it
 echo "creating test document 4/7"
-curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
+curl --fail-with-body --silent --show-error -u "${OPENSEARCH_USER}":"${OPENSEARCH_PASSWORD}" -k \
     -X POST \
     -H "content-type: application/json" \
     https://localhost:9200/logs-app-now/_doc?refresh=true \
@@ -200,7 +239,7 @@ curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
 # user 3 should be able to see this log
 # user 4 should not be able to see it
 echo "creating test document 5/7"
-curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
+curl --fail-with-body --silent --show-error -u "${OPENSEARCH_USER}":"${OPENSEARCH_PASSWORD}" -k \
     -X POST \
     -H "content-type: application/json" \
     https://localhost:9200/logs-app-now/_doc?refresh=true \
@@ -215,7 +254,7 @@ curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
 # user 3 should not be able to see it
 # user 4 should be able to see this log
 echo "creating test document 6/7"
-curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
+curl --fail-with-body --silent --show-error -u "${OPENSEARCH_USER}":"${OPENSEARCH_PASSWORD}" -k \
     -X POST \
     -H "content-type: application/json" \
     https://localhost:9200/logs-app-now/_doc?refresh=true \
@@ -233,7 +272,7 @@ curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
 # user 3 should not be able to see it
 # user 4 should not be able to see it
 echo "creating test document 7/7"
-curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
+curl --fail-with-body --silent --show-error -u "${OPENSEARCH_USER}":"${OPENSEARCH_PASSWORD}" -k \
     -X POST \
     -H "content-type: application/json" \
     https://localhost:9200/logs-app-now/_doc?refresh=true \
@@ -249,7 +288,7 @@ curl --fail --silent --show-error -u "${ES_USER}":"${ES_PASSWORD}" -k \
 # for the opensearch dashboards stuff, we need cookies just to deal with the multitenancy
 echo "Setting up opensearch dashboards http session"
 # this curl is just to get a cookie ready
-curl --fail --silent --show-error --cookie-jar ${cookie_jar} -b ${cookie_jar} \
+curl --fail-with-body --silent --show-error --cookie-jar ${cookie_jar} -b ${cookie_jar} \
     -X GET \
     -H "x-proxy-roles: admin" \
     -H "x-proxy-user: admin" \
@@ -258,7 +297,7 @@ curl --fail --silent --show-error --cookie-jar ${cookie_jar} -b ${cookie_jar} \
     http://localhost:5601/api/v1/configuration/account | jq
 
 echo "Switching to default tenant"
-curl --fail --silent --show-error --cookie-jar ${cookie_jar} -b ${cookie_jar} \
+curl --fail-with-body --silent --show-error --cookie-jar ${cookie_jar} -b ${cookie_jar} \
     -X POST \
     -H "content-type: application/json" \
     -H "x-proxy-roles: admin" \
@@ -266,27 +305,31 @@ curl --fail --silent --show-error --cookie-jar ${cookie_jar} -b ${cookie_jar} \
     -H 'x-forwarded-for: 127.0.0.1' \
     -H "osd-xsrf: true" \
     http://localhost:5601/api/v1/multitenancy/tenant \
-    -d '{"tenant":"","username":"'"${ES_USER}"'"}'
+    -d '{"tenant":"","username":"'"${OPENSEARCH_USER}"'"}'
+
 
 echo "Creating index pattern"
-curl --fail --silent --show-error --cookie-jar ${cookie_jar} -b ${cookie_jar} \
+OUTPUT=$(curl_and_handle_output accept_200_response \
+    --cookie-jar "${cookie_jar}" -b "${cookie_jar}" \
     -X POST \
     -H "content-type: application/json" \
     -H "x-proxy-roles: admin" \
     -H "x-proxy-user: admin" \
     -H 'x-forwarded-for: 127.0.0.1' \
     -H "osd-xsrf: true" \
-    http://localhost:5601/api/saved_objects/index-pattern \
     -d '
     {
         "attributes": {
             "title": "logs-app-*",
             "timeFieldName": "@timestamp"
         }
-    }' | jq
+    }' \
+    http://localhost:5601/api/saved_objects/index-pattern)
+echo "$OUTPUT" | jq
+INDEX_PATTERN_GUID=$(echo "$OUTPUT" | jq -r '.id')
 
 echo "Setting default index"
-curl --fail --silent --show-error --cookie-jar ${cookie_jar} -b ${cookie_jar} \
+curl --fail-with-body --silent --show-error --cookie-jar ${cookie_jar} -b ${cookie_jar} \
     -X POST \
     -H "content-type: application/json" \
     -H "x-proxy-roles: admin" \
@@ -294,4 +337,4 @@ curl --fail --silent --show-error --cookie-jar ${cookie_jar} -b ${cookie_jar} \
     -H 'x-forwarded-for: 127.0.0.1' \
     -H "osd-xsrf: true" \
     http://localhost:5601/api/opensearch-dashboards/settings \
-    -d '{"changes":{"defaultIndex":"logs-app-*"}}' | jq
+    -d "{\"changes\":{\"defaultIndex\":\"$INDEX_PATTERN_GUID\"}}" | jq

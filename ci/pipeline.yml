@@ -8,6 +8,17 @@ jobs:
     trigger: true
   - set_pipeline: self
     file: src/ci/pipeline.yml
+    var_files:
+      - src/ci/config.yml
+  on_failure:
+    put: slack
+    params: &slack-failure-params
+      text: |
+        :x: Failed to reconfigure pipeline
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel-failure))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
 
 - name: test
   plan:
@@ -25,13 +36,30 @@ jobs:
         platform: linux
         run:
           path: src/ci/test.sh
+  on_failure:
+    put: slack
+    params:
+      <<: *slack-failure-params
+      text: |
+        :x: Tests FAILED on opensearch-dashboards-cf-auth-proxy
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+  on_success:
+    put: slack
+    params: &slack-success-params
+      <<: *slack-failure-params
+      channel: ((slack-channel-success))
+      text: |
+        :white_check_mark: Tests PASSED onopensearch-dashboards-cf-auth-proxy
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: build-test-images
   plan:
-    - get: src
-      params: {depth: 1}
-      trigger: true
-      passed: [test]
+    - in_parallel:
+      - get: src-docker
+        params: {depth: 1}
+        trigger: true
+      - get: src
+        passed: [test]
 
     - put: dev-opensearch-image
       params:
@@ -46,6 +74,13 @@ jobs:
         dockerfile: src/docker/opensearch_dashboards/dockerfile
         tag_as_latest: true
         cache: true
+  on_failure:
+    put: slack
+    params:
+      <<: *slack-failure-params
+      text: |
+        :x: FAILED to build test images
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: deploy-test-apps
   plan:
@@ -53,20 +88,26 @@ jobs:
       - get: src
         params: {depth: 1}
         trigger: true
-        passed: [build-test-images]
+        passed: [test]
       - get: general-task
-    
+      - get: dev-opensearch-image
+        trigger: true
+      - get: dev-opensearch-dashboards-image
+        trigger: true
+
     - put: cf-dev
       params:
-        manifest: src/cf/opensearch-manifest.yml
+        manifest: src/cf/opensearch-node-manifest.yml
         vars:
-          opensearch_app_name: ((dev-test-opensearch-app-name))
+          opensearch_node_app_name: ((dev-test-opensearch-node-app-name))
+          opensearch_password: ((opensearch-admin-password))
 
     - put: cf-dev
       params:
         manifest: src/cf/opensearch-dashboards-manifest.yml
         vars:
           dashboards_app_name: ((dev-test-opensearch-dashboards-app-name))
+          opensearch_password: ((opensearch-admin-password))
     
     - put: cf-dev
       params:
@@ -99,9 +140,23 @@ jobs:
         CF_PASSWORD: ((dev-cf-password))
         CF_ORGANIZATION: ((dev-cf-organization))
         CF_SPACE: ((dev-cf-space))
-        OPENSEARCH_APP_NAME: ((dev-test-opensearch-app-name))
+        OPENSEARCH_NODE_APP_NAME: ((dev-test-opensearch-node-app-name))
         DASHBOARDS_APP_NAME: ((dev-test-opensearch-dashboards-app-name))
         PROXY_APP_NAME: ((dev-test-auth-proxy-app-name))
+  on_failure:
+    put: slack
+    params:
+      <<: *slack-failure-params
+      text: |
+        :x: FAILED to deploy apps
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+  on_success:
+    put: slack
+    params:
+      <<: *slack-success-params
+      text: |
+        :white_check_mark: Successfully deployed apps
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: e2e
   plan:
@@ -111,6 +166,7 @@ jobs:
         trigger: true
         passed: [deploy-test-apps]
       - get: general-task
+      - get: playwright-python
     - task: provision-cf-access
       image: general-task
       config:
@@ -158,8 +214,8 @@ jobs:
       params:
         <<: *dev-cf-auth-params
 
-        ES_USER: ((es-admin-username))
-        ES_PASSWORD: ((es-admin-password))
+        OPENSEARCH_USER: ((opensearch-admin-username))
+        OPENSEARCH_PASSWORD: ((opensearch-admin-password))
 
         CF_ORG_1_NAME: ((dev-test-org-1-name))
         CF_ORG_2_NAME: ((dev-test-org-2-name))
@@ -172,19 +228,17 @@ jobs:
         DASHBOARDS_APP_NAME: ((dev-test-opensearch-dashboards-app-name))
         
     - task: e2e-tests
+      image: playwright-python
       config:
         inputs:
           - name: src
         platform: linux
-        image_resource:
-          type: docker-image
-          source:
-            repository: mcr.microsoft.com/playwright
-            tag: jammy
         run:
           path: src/ci/e2e.sh
         params:
           AUTH_PROXY_URL: ((auth-proxy-url))
+          UAA_AUTH_URL: ((dev-uaa-auth-url))
+
           TEST_USER_1_USERNAME: ((dev-test-user-1-username))
           TEST_USER_1_PASSWORD: ((dev-test-user-1-password))
           TEST_USER_1_TOTP_SEED: ((dev-test-user-1-totp-seed))
@@ -200,6 +254,21 @@ jobs:
           TEST_USER_4_USERNAME: ((dev-test-user-4-username))
           TEST_USER_4_PASSWORD: ((dev-test-user-4-password))
           TEST_USER_4_TOTP_SEED: ((dev-test-user-4-totp-seed))
+  on_failure:
+    put: slack
+    params:
+      <<: *slack-failure-params
+      text: |
+        :x: e2e tests FAILED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+  on_success:
+    put: slack
+    params:
+      <<: *slack-success-params
+      text: |
+        :white_check_mark: e2e tests SUCCEEDED
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+
 
 ##########################
 #  RESOURCES
@@ -211,9 +280,20 @@ resources:
   icon: github-circle
   check_every: 10s
   source:
-    uri: https://github.com/cloud-gov/opensearch-dashboards-cf-auth-proxy
-    branch: main
+    uri: ((proxy-src-code-uri))
+    branch: ((proxy-src-code-branch))
     commit_verification_keys: ((cloud-gov-pgp-keys))
+
+- name: src-docker
+  type: git
+  icon: github-circle
+  check_every: 10s
+  source:
+    uri: ((proxy-src-code-uri))
+    branch: ((proxy-src-code-branch))
+    commit_verification_keys: ((cloud-gov-pgp-keys))
+    paths:
+      - docker
 
 - name: dev-opensearch-image
   type: docker-image
@@ -252,6 +332,20 @@ resources:
     aws_region: us-gov-west-1
     tag: latest
 
+- name: playwright-python
+  type: registry-image
+  source:
+    aws_access_key_id: ((ecr_aws_key))
+    aws_secret_access_key: ((ecr_aws_secret))
+    repository: playwright-python
+    aws_region: us-gov-west-1
+    tag: latest
+
+- name: slack
+  type: slack-notification
+  source:
+    url: ((slack-webhook-url))
+
 ############################
 #  RESOURCE TYPES
 
@@ -289,5 +383,14 @@ resource_types:
     aws_access_key_id: ((ecr_aws_key))
     aws_secret_access_key: ((ecr_aws_secret))
     repository: cf-resource
+    aws_region: us-gov-west-1
+    tag: latest
+
+- name: slack-notification
+  type: registry-image
+  source:
+    aws_access_key_id: ((ecr_aws_key))
+    aws_secret_access_key: ((ecr_aws_secret))
+    repository: slack-notification-resource
     aws_region: us-gov-west-1
     tag: latest
