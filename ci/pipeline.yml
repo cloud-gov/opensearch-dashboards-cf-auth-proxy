@@ -60,18 +60,18 @@ jobs:
         trigger: true
       - get: src
         passed: [test]
-
+      
     - put: dev-opensearch-image
       params:
-        build: src/docker/opensearch
-        dockerfile: src/docker/opensearch/dockerfile
+        build: src-docker/docker/opensearch
+        dockerfile: src-docker/docker/opensearch/dockerfile
         tag_as_latest: true
         cache: true
 
     - put: dev-opensearch-dashboards-image
       params:
-        build: src/docker/opensearch_dashboards
-        dockerfile: src/docker/opensearch_dashboards/dockerfile
+        build: src-docker/docker/opensearch_dashboards
+        dockerfile: src-docker/docker/opensearch_dashboards/dockerfile
         tag_as_latest: true
         cache: true
   on_failure:
