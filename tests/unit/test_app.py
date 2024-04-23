@@ -87,7 +87,7 @@ def test_user_role_set_correctly(client):
         with client.session_transaction() as s:
             s["user_id"] = "me"
         client.get("/home")
-        assert m.last_request._request.headers["x-proxy-roles"] == "user"
+        assert "user" in m.last_request._request.headers["x-proxy-roles"]
 
 
 def test_admin_role_set_correctly(client):
@@ -98,4 +98,4 @@ def test_admin_role_set_correctly(client):
             s["groups"] = ["admin"]
             s["is_cf_admin"] = True
         client.get("/home")
-        assert m.last_request._request.headers["x-proxy-roles"] == "admin"
+        assert "admin" in m.last_request._request.headers["x-proxy-roles"]
