@@ -178,7 +178,7 @@ def create_app():
                 + ","
                 + str(session.get("orgs", []))
             ]
-            headers["x-proxy-roles"] = list_to_ext_header(roles)
+            headers["x-proxy-roles"] = ["user", "sandbox-gsa"]
 
         # TODO: add x-forwarded-for functionality
         headers["x-forwarded-for"] = "127.0.0.1"
