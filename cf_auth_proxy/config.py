@@ -20,7 +20,8 @@ class Config:
             ["space_developer", "space_manager", "space_auditor"],
         )
         self.PERMITTED_ORG_ROLES = self.env_parser.list(
-            "PERMITTED_ORG_ROLES", ["organization_manager", "organization_auditor"]
+            "PERMITTED_ORG_ROLES",
+            ["organization_manager", "organization_auditor", "organization_user"],
         )
         self.SESSION_COOKIE_NAME = "cfsession"
         # see https://requests.readthedocs.io/en/latest/user/advanced/#timeouts

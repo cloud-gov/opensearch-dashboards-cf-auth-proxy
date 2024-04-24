@@ -176,7 +176,7 @@ def create_app():
             roles = [
                 ("admin" if session.get("is_cf_admin") else "user")
                 + ","
-                + str(session.get("orgs", []))
+                + list_to_ext_header(session.get("orgs", [])).replace('"', "")
             ]
             headers["x-proxy-roles"] = roles
 
