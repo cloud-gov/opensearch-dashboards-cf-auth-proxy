@@ -62,7 +62,8 @@ def test_orgs_set_correctly(client):
             request_headers={"x-proxy-ext-orgids": r'"org-id-1", "org-id-2"'},
         )
         with client.session_transaction() as s:
-            s["user_id"] = "me"  # set user id so we don't get authed
+            s["user_id"] = "me2"  # set user id so we don't get authed
+            s["email"] = "me"
             s["orgs"] = ["org-id-1", "org-id-2"]
         client.get("/home")
 
@@ -74,7 +75,8 @@ def test_spaces_set_correctly(client):
             request_headers={"x-proxy-ext-spaceids": r'"space-id-1", "space-id-2"'},
         )
         with client.session_transaction() as s:
-            s["user_id"] = "me"
+            s["user_id"] = "me2"
+            s["email"] = "me"
             s["spaces"] = ["space-id-1", "space-id-2"]
         client.get("/home")
 
@@ -85,7 +87,8 @@ def test_user_role_set_correctly(client):
             "http://mock.dashboard/home",
         )
         with client.session_transaction() as s:
-            s["user_id"] = "me"
+            s["user_id"] = "me2"
+            s["email"] = "me"
         client.get("/home")
         assert "user" in m.last_request._request.headers["x-proxy-roles"]
 
@@ -94,7 +97,8 @@ def test_admin_role_set_correctly(client):
     with requests_mock.Mocker() as m:
         m.get("http://mock.dashboard/home")
         with client.session_transaction() as s:
-            s["user_id"] = "me"
+            s["user_id"] = "me2"
+            s["email"] = "me"
             s["groups"] = ["admin"]
             s["is_cf_admin"] = True
         client.get("/home")

@@ -98,6 +98,7 @@ def test_callback_happy_path(
         assert s.get("state") is None
         # make sure we're logged in
         assert s.get("user_id") is not None
+        assert s.get("email") is not None
         assert s.get("access_token") is not None
         assert s.get("refresh_token") is not None
         assert s.get("access_token_expiration") is not None
@@ -145,6 +146,7 @@ def test_callback_bad_csrf(client):
         assert s.get("state") is None
         # make sure we're not logged in
         assert s.get("user_id") is None
+        assert s.get("email") is None
     assert resp.status_code == 403
 
 
@@ -172,6 +174,7 @@ def test_callback_no_csrf(client):
         assert s.get("state") is None
         # make sure we're logged in
         assert s.get("user_id") is None
+        assert s.get("email") is None
     assert resp.status_code == 403
 
 
@@ -191,7 +194,8 @@ def test_uaa_token_refreshed(client):
 
     with client.session_transaction() as s:
         # set up user session
-        s["user_id"] = "1234"
+        s["user_id"] = "12345"
+        s["email"] = "1234"
         s["access_token"] = make_random_token()
         s["refresh_token"] = refresh_token
         s["access_token_expiration"] = token_expiration.timestamp()

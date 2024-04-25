@@ -42,6 +42,7 @@ def client():
 def authenticated_client(client):
     with client.session_transaction() as s:
         s["user_id"] = "me"
+        s["email"] = "me"
     yield client
 
 
