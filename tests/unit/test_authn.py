@@ -15,7 +15,7 @@ from cf_auth_proxy.extensions import config
 
 def make_jwt_token(claims=None):
     # todo, clean this up
-    claims = claims or {"user_id": "test_user","email":"test_user@user.com"}
+    claims = claims or {"user_id": "test_user", "email": "test_user@user.com"}
     token = jwt.encode(claims, "", "HS256")
     return token
 
