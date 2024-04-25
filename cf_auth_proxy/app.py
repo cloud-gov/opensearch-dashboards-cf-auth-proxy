@@ -103,6 +103,7 @@ def create_app():
         )
 
         session["user_id"] = token["user_id"]
+        session["email"] = token["email"]
         session["access_token"] = response["access_token"]
         session["refresh_token"] = response["refresh_token"]
         expiration = now_utc + datetime.timedelta(seconds=response["expires_in"])
@@ -172,7 +173,7 @@ def create_app():
         # we need to check the user_id again because we could be unauthenticated, hitting an
         # allowed path
         if session.get("user_id"):
-            headers["x-proxy-user"] = session["user_id"]
+            headers["x-proxy-user"] = session["email"]
             roles = (
                 ("admin" if session.get("is_cf_admin") else "user")
                 + ","
