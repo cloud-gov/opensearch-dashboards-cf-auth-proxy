@@ -50,7 +50,7 @@ def get_all_orgs_for_user(user_id, token):
         s.headers["Authorization"] = f"Bearer {token}"
         params = {
             "user_guids": user_id,
-            "types": ",".join(config.ORG_ROLES),
+            "types": ",".join(config.ORG_ROLE),
         }
         url = urljoin(config.CF_API_URL, "v3/roles")
         first_response = s.get(url, params=params)

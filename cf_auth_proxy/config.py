@@ -23,9 +23,9 @@ class Config:
             "PERMITTED_ORG_ROLES",
             ["organization_manager", "organization_auditor"],
         )
-        self.ORG_ROLES = self.env_parser.list(
-            "ORG_ROLES",
-            ["organization_manager", "organization_auditor", "organization_user"],
+        self.ORG_ROLE = self.env_parser.list(
+            "ORG_ROLE",
+            ["organization_user"],
         )
         self.SESSION_COOKIE_NAME = "cfsession"
         # see https://requests.readthedocs.io/en/latest/user/advanced/#timeouts
