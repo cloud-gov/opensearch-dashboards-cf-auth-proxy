@@ -151,6 +151,7 @@ def simple_org_response():
       ]
     } """
 
+
 @pytest.fixture()
 def simple_org_user_response():
     return """
