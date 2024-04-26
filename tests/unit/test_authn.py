@@ -115,7 +115,7 @@ def test_callback_happy_path(
 
     is_valid_auth_code_token_request(m.request_history[0])
 
-    client_creds_token_request = m.request_history[3]
+    client_creds_token_request = m.request_history[4]
     data = client_creds_token_request.text
     data = parse.parse_qs(data)
     assert data["grant_type"][0] == "client_credentials"
