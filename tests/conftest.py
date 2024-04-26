@@ -151,6 +151,58 @@ def simple_org_response():
       ]
     } """
 
+@pytest.fixture()
+def simple_org_user_response():
+    return """
+  {
+   "pagination": {
+      "total_results": 1,
+      "total_pages": 1,
+      "first": {
+         "href": "http://mock.cf/v3/roles?order_by=%2Bcreated_at&page=1&per_page=1&types=org_manager&user_guids=a-user-guid"
+      },
+      "last": {
+         "href": "http://mock.cf/v3/roles?order_by=%2Bcreated_at&page=2&per_page=1&types=org_manager&user_guids=a-user-guid"
+      },
+      "next": null,
+      "previous": null
+   },
+   "resources": [
+      {
+         "guid": "role-guid-1",
+         "created_at": "2019-12-12T18:59:12Z",
+         "updated_at": "2019-12-12T18:59:13Z",
+         "type": "space_developer",
+         "relationships": {
+            "user": {
+               "data": {
+                  "guid": "a-user-guid"
+               }
+            },
+            "space": {
+               "data": null
+            },
+            "organization": {
+               "data": {
+                  "guid": "org-guid-1"
+               }
+            }
+         },
+         "links": {
+            "self": {
+               "href": "http://mock.cf/v3/roles/role-guid-1"
+            },
+            "user": {
+               "href": "http://mock.cf/v3/users/a-user-guid"
+            },
+            "organization": {
+               "href": "http://mock.cf/v3/spaces/org-guid-1"
+            }
+         }
+        }
+      ]
+    } """
+
 
 @pytest.fixture()
 def uaa_user_is_admin_response():

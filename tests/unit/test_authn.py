@@ -42,6 +42,7 @@ def is_client_credentials_token_request(request):
 
 def test_callback_happy_path(
     client,
+    simple_org_user_response,
     simple_org_response,
     simple_space_response,
     uaa_user_is_admin_response,
@@ -90,6 +91,10 @@ def test_callback_happy_path(
         m.get(
             "http://mock.cf/v3/roles?user_guids=test_user&types=organization_manager,organization_auditor",
             text=simple_org_response,
+        )
+        m.get(
+            "http://mock.cf/v3/roles?user_guids=test_user&types=organization_user",
+            text=simple_org_user_response,
         )
         resp = client.get(f"/cb?code=1234&state={csrf}")
         assert m.called
