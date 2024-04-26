@@ -1,6 +1,7 @@
 """
 Tests for the callback endpoint (where users are sent by UAA after logging in)
 """
+
 import json
 import jwt
 import datetime
@@ -110,6 +111,7 @@ def test_callback_happy_path(
         assert s.get("id_token") is not None
         assert s.get("spaces") == ["space-guid-1"]
         assert s.get("orgs") == ["org-guid-1"]
+        assert s.get("user_orgs") == ["user-org-guid-1"]
         assert s.get("client_credentials_token") is not None
         assert s.get("is_cf_admin") is True
 
