@@ -31,10 +31,27 @@ def get_spaces_for_user(user_id, token):
     return spaces
 
 
-def get_orgs_for_user(user_id, token):
+def get_permitted_orgs_for_user(user_id, token):
     with requests.Session() as s:
         s.headers["Authorization"] = f"Bearer {token}"
-        params = {"user_guids": user_id, "types": ",".join(config.PERMITTED_ORG_ROLES)}
+        params = {
+            "user_guids": user_id,
+            "types": ",".join(config.PERMITTED_ORG_ROLES),
+        }
+        url = urljoin(config.CF_API_URL, "v3/roles")
+        first_response = s.get(url, params=params)
+        resources = iterate_cf_resource(s, first_response)
+    orgs = [r["relationships"]["organization"]["data"]["guid"] for r in resources]
+    return orgs
+
+
+def get_all_orgs_for_user(user_id, token):
+    with requests.Session() as s:
+        s.headers["Authorization"] = f"Bearer {token}"
+        params = {
+            "user_guids": user_id,
+            "types": ",".join(config.ORG_ROLE),
+        }
         url = urljoin(config.CF_API_URL, "v3/roles")
         first_response = s.get(url, params=params)
         resources = iterate_cf_resource(s, first_response)

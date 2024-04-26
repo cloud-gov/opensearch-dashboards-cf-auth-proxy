@@ -1,6 +1,7 @@
 """
 Tests for the callback endpoint (where users are sent by UAA after logging in)
 """
+
 import json
 import jwt
 import datetime
@@ -15,7 +16,7 @@ from cf_auth_proxy.extensions import config
 
 def make_jwt_token(claims=None):
     # todo, clean this up
-    claims = claims or {"user_id": "test_user"}
+    claims = claims or {"user_id": "test_user", "email": "test_user@user.com"}
     token = jwt.encode(claims, "", "HS256")
     return token
 
@@ -42,6 +43,7 @@ def is_client_credentials_token_request(request):
 
 def test_callback_happy_path(
     client,
+    simple_org_user_response,
     simple_org_response,
     simple_space_response,
     uaa_user_is_admin_response,
@@ -91,6 +93,10 @@ def test_callback_happy_path(
             "http://mock.cf/v3/roles?user_guids=test_user&types=organization_manager,organization_auditor",
             text=simple_org_response,
         )
+        m.get(
+            "http://mock.cf/v3/roles?user_guids=test_user&types=organization_user",
+            text=simple_org_user_response,
+        )
         resp = client.get(f"/cb?code=1234&state={csrf}")
         assert m.called
     with client.session_transaction() as s:
@@ -98,18 +104,20 @@ def test_callback_happy_path(
         assert s.get("state") is None
         # make sure we're logged in
         assert s.get("user_id") is not None
+        assert s.get("email") is not None
         assert s.get("access_token") is not None
         assert s.get("refresh_token") is not None
         assert s.get("access_token_expiration") is not None
         assert s.get("id_token") is not None
         assert s.get("spaces") == ["space-guid-1"]
         assert s.get("orgs") == ["org-guid-1"]
+        assert s.get("user_orgs") == ["user-org-guid-1"]
         assert s.get("client_credentials_token") is not None
         assert s.get("is_cf_admin") is True
 
     is_valid_auth_code_token_request(m.request_history[0])
 
-    client_creds_token_request = m.request_history[3]
+    client_creds_token_request = m.request_history[4]
     data = client_creds_token_request.text
     data = parse.parse_qs(data)
     assert data["grant_type"][0] == "client_credentials"
@@ -145,6 +153,7 @@ def test_callback_bad_csrf(client):
         assert s.get("state") is None
         # make sure we're not logged in
         assert s.get("user_id") is None
+        assert s.get("email") is None
     assert resp.status_code == 403
 
 
@@ -172,6 +181,7 @@ def test_callback_no_csrf(client):
         assert s.get("state") is None
         # make sure we're logged in
         assert s.get("user_id") is None
+        assert s.get("email") is None
     assert resp.status_code == 403
 
 
@@ -191,7 +201,8 @@ def test_uaa_token_refreshed(client):
 
     with client.session_transaction() as s:
         # set up user session
-        s["user_id"] = "1234"
+        s["user_id"] = "12345"
+        s["email"] = "1234"
         s["access_token"] = make_random_token()
         s["refresh_token"] = refresh_token
         s["access_token_expiration"] = token_expiration.timestamp()

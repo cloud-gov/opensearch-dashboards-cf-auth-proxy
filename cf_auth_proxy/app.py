@@ -103,6 +103,7 @@ def create_app():
         )
 
         session["user_id"] = token["user_id"]
+        session["email"] = token["email"]
         session["access_token"] = response["access_token"]
         session["refresh_token"] = response["refresh_token"]
         expiration = now_utc + datetime.timedelta(seconds=response["expires_in"])
@@ -111,10 +112,12 @@ def create_app():
         session["spaces"] = cf.get_spaces_for_user(
             session["user_id"], session["access_token"]
         )
-        session["orgs"] = cf.get_orgs_for_user(
+        session["orgs"] = cf.get_permitted_orgs_for_user(
             session["user_id"], session["access_token"]
         )
-
+        session["user_orgs"] = cf.get_all_orgs_for_user(
+            session["user_id"], session["access_token"]
+        )
         if session.get("client_credentials_token") is None:
             session["client_credentials_token"] = uaa.get_client_credentials_token()
 
@@ -172,8 +175,12 @@ def create_app():
         # we need to check the user_id again because we could be unauthenticated, hitting an
         # allowed path
         if session.get("user_id"):
-            headers["x-proxy-user"] = session["user_id"]
-            headers["x-proxy-roles"] = "admin" if session.get("is_cf_admin") else "user"
+            headers["x-proxy-user"] = session["email"]
+            roles = sorted(
+                [("admin" if session.get("is_cf_admin") else "user")]
+                + session.get("user_orgs", [])
+            )
+            headers["x-proxy-roles"] = list_to_ext_header(roles)
 
         # TODO: add x-forwarded-for functionality
         headers["x-forwarded-for"] = "127.0.0.1"
