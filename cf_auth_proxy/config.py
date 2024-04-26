@@ -21,6 +21,10 @@ class Config:
         )
         self.PERMITTED_ORG_ROLES = self.env_parser.list(
             "PERMITTED_ORG_ROLES",
+            ["organization_manager", "organization_auditor"],
+        )
+        self.ORG_ROLES = self.env_parser.list(
+            "ORG_ROLES",
             ["organization_manager", "organization_auditor", "organization_user"],
         )
         self.SESSION_COOKIE_NAME = "cfsession"

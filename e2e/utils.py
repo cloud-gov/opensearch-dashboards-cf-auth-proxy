@@ -52,7 +52,7 @@ def log_in(user, page, start_at=None):
         authorize_button.click()
 
 
-def switch_tenants(page, tenant="Private"):
+def switch_tenants(page, tenant="Global"):
     """
     switch to the specified tenant.
     """

@@ -23,6 +23,10 @@ def test_config_loads(monkeypatch):
     assert config.PERMITTED_ORG_ROLES == [
         "organization_manager",
         "organization_auditor",
+    ]
+    assert config.ORG_ROLES == [
+        "organization_manager",
+        "organization_auditor",
         "organization_user",
     ]
     assert config.CF_ADMIN_GROUP_NAME == "cloud_controller.admin"
@@ -101,6 +105,10 @@ def test_prod_config(monkeypatch, dashboard_url):
         "space_auditor",
     ]
     assert config.PERMITTED_ORG_ROLES == [
+        "organization_manager",
+        "organization_auditor",
+    ]
+    assert config.ORG_ROLES == [
         "organization_manager",
         "organization_auditor",
         "organization_user",
