@@ -235,7 +235,7 @@ def test_gets_cf_user_permitted_orgs():
             "http://mock.cf/v3/roles?order_by=%2Bcreated_at&page=2&per_page=1&types=organization_manager,organization_auditor&user_guids=a-user-guid",
             text=response_2,
         )
-        assert sorted(cf.get_orgs_for_user("a-user-id", "a_token")) == sorted(
+        assert sorted(cf.get_permitted_orgs_for_user("a-user-id", "a_token")) == sorted(
             ["org-guid-1", "org-guid-2"]
         )
 

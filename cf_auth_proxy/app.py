@@ -112,7 +112,7 @@ def create_app():
         session["spaces"] = cf.get_spaces_for_user(
             session["user_id"], session["access_token"]
         )
-        session["orgs"] = cf.get_orgs_for_user(
+        session["orgs"] = cf.get_permitted_orgs_for_user(
             session["user_id"], session["access_token"]
         )
         session["user_orgs"] = cf.get_all_orgs_for_user(
