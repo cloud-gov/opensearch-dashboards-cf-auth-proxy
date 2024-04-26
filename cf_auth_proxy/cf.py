@@ -31,7 +31,7 @@ def get_spaces_for_user(user_id, token):
     return spaces
 
 
-def get_orgs_for_user(user_id, token):
+def get_permitted_orgs_for_user(user_id, token):
     with requests.Session() as s:
         s.headers["Authorization"] = f"Bearer {token}"
         params = {

@@ -185,7 +185,7 @@ def simple_org_user_response():
             },
             "organization": {
                "data": {
-                  "guid": "org-guid-1"
+                  "guid": "user-org-guid-1"
                }
             }
          },

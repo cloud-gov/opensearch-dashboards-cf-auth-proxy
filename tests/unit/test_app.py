@@ -103,3 +103,17 @@ def test_admin_role_set_correctly(client):
             s["is_cf_admin"] = True
         client.get("/home")
         assert "admin" in m.last_request._request.headers["x-proxy-roles"]
+
+
+def test_user_org_roles_set_correctly(client):
+    with requests_mock.Mocker() as m:
+        m.get("http://mock.dashboard/home")
+        with client.session_transaction() as s:
+            s["user_id"] = "me2"
+            s["email"] = "me"
+            s["user_orgs"] = ["org-1", "org-2"]
+        client.get("/home")
+        assert (
+            m.last_request._request.headers["x-proxy-roles"]
+            == '"org-1", "org-2", "user"'
+        )
