@@ -176,11 +176,12 @@ def create_app():
         # allowed path
         if session.get("user_id"):
             headers["x-proxy-user"] = session["email"]
-            roles = sorted(
-                [("admin" if session.get("is_cf_admin") else "user")]
-                + session.get("user_orgs", [])
+            roles = (
+                ("admin" if session.get("is_cf_admin") else "user")
+                + ","
+                + list_to_ext_header(session.get("user_orgs", [])).replace('"', "")
             )
-            headers["x-proxy-roles"] = list_to_ext_header(roles)
+            headers["x-proxy-roles"] = roles
 
         # TODO: add x-forwarded-for functionality
         headers["x-forwarded-for"] = "127.0.0.1"
