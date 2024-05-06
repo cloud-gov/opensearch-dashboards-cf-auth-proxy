@@ -115,5 +115,5 @@ def test_user_org_roles_set_correctly(client):
         client.get("/home")
         assert (
             m.last_request._request.headers["x-proxy-roles"]
-            == '"org-1", "org-2", "user"'
+            == "user", "org-1", "org-2"
         )
