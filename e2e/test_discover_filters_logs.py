@@ -9,6 +9,7 @@ def test_see_correct_logs_in_discover_user_1(user_1, page):
 
     go_to_discover_page(page)
 
+    expect(page.get_by_text(user_1.username)).to_be_visible()
     expect(page.get_by_text("1 hit")).to_be_visible()
     expect(page.get_by_text("org_id_1")).not_to_be_visible()
     expect(page.get_by_text("org_id_2")).not_to_be_visible()
@@ -25,6 +26,7 @@ def test_see_correct_logs_in_discover_user_2(user_2, page):
 
     go_to_discover_page(page)
 
+    expect(page.get_by_text(user_2.username)).to_be_visible()
     expect(page.get_by_text("3 hits")).to_be_visible()
     expect(page.get_by_text("org_id_1")).not_to_be_visible()
     expect(page.get_by_text("org_id_2")).to_be_visible()
@@ -41,6 +43,7 @@ def test_see_correct_logs_in_discover_user_3(user_3, page):
 
     go_to_discover_page(page)
 
+    expect(page.get_by_text(user_3.username)).to_be_visible()
     expect(page.get_by_text("2 hits")).to_be_visible()
     expect(page.get_by_text("org_id_1")).not_to_be_visible()
     expect(page.get_by_text("org_id_2")).not_to_be_visible()
@@ -57,6 +60,7 @@ def test_see_correct_logs_in_discover_user_4(user_4, page):
 
     go_to_discover_page(page)
 
+    expect(page.get_by_text(user_4.username)).to_be_visible()
     expect(page.get_by_text("1 hit")).to_be_visible()
     expect(page.get_by_text("org_id_1")).not_to_be_visible()
     expect(page.get_by_text("org_id_2")).not_to_be_visible()
