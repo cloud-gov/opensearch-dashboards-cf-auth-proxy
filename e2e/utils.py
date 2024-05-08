@@ -90,3 +90,8 @@ def go_to_discover_page(page):
     # wait for the refresh button, signifying the discover page has loaded
     refresh_button = page.get_by_text("Refresh")
     refresh_button.wait_for()
+
+def get_user_menu(user, page):
+    user_menu = page.locator(f'button[aria-label="{user.username}"]')
+    user_menu.wait_for()
+    user_menu.click()
