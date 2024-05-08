@@ -39,6 +39,7 @@ def test_see_correct_logs_in_discover_user_2(user_2, page):
     get_user_menu(user=user_2, page=page)
     expect(page.get_by_text(user_2.username)).to_be_visible()
 
+
 def test_see_correct_logs_in_discover_user_3(user_3, page):
     log_in(user=user_3, page=page)
 
@@ -56,6 +57,7 @@ def test_see_correct_logs_in_discover_user_3(user_3, page):
 
     get_user_menu(user=user_3, page=page)
     expect(page.get_by_text(user_3.username)).to_be_visible()
+
 
 def test_see_correct_logs_in_discover_user_4(user_4, page):
     log_in(user=user_4, page=page)
