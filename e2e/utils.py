@@ -93,6 +93,6 @@ def go_to_discover_page(page):
 
 
 def get_user_menu(user, page):
-    user_menu = page.locator(f'button[aria-label="{user.username}"]')
+    user_menu = page.locator(f'button[id="user-icon-btn"]')
     user_menu.wait_for()
     user_menu.click()
