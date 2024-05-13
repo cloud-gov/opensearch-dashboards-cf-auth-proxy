@@ -18,7 +18,7 @@ dnspython==2.6.1
     # via eventlet
 environs==9.5.0
     # via -r pip-tools/requirements.in
-eventlet==0.35.1
+eventlet==0.35.2
     # via -r pip-tools/requirements.in
 flask==3.0.0
     # via -r pip-tools/requirements.in

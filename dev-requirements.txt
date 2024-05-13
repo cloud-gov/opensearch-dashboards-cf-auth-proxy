@@ -42,7 +42,7 @@ docopt==0.6.2
     # via pytest-watch
 environs==9.5.0
     # via -r pip-tools/../requirements.txt
-eventlet==0.35.1
+eventlet==0.35.2
     # via -r pip-tools/../requirements.txt
 exceptiongroup==1.2.0
     # via pytest
