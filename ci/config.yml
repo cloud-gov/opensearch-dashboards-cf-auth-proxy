@@ -1,2 +1,2 @@
 proxy-src-code-uri: https://github.com/cloud-gov/opensearch-dashboards-cf-auth-proxy
-proxy-src-code-branch: main
+proxy-src-code-branch: fix-roles
