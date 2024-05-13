@@ -152,7 +152,7 @@ source_env_vars() {
         source "dev.env"
         ;;
 
-      local)
+      *)
         source ".env"
         ;;
     esac
