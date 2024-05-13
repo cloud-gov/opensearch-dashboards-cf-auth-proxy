@@ -92,7 +92,7 @@ set_up_ci_environment () {
 }
 
 set_up_environment () {
-  python3 -m venv venv
+  python -m venv venv
   source venv/bin/activate
   # do this first to make sure we have piptools
   ${python} -m pip install --trusted-host pypi.org -r dev-requirements.txt
