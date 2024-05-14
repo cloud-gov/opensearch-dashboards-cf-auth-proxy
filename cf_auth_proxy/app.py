@@ -95,10 +95,10 @@ def create_app():
 
         response = r.json()
 
-        # TODO: validate jwt token
         token = jwt.decode(
             response.get("id_token"),
             algorithms=["RS256", "ES256"],
+            # we don't need to verify because we're getting the JWT from the authority over tls
             options=dict(verify_signature=False),
         )
 
