@@ -6,12 +6,12 @@ shopt -s inherit_errexit 2>/dev/null || true
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 python=${dir}/venv/bin/python
 
-ENVIRONMENT=${ENVIRONMENT:-local}
+ENVIRONMENT=${ENVIRONMENT:-}
 
 usage() {
   local me
   me=$(basename "$0")
-  
+
   cat <<-EOF
 
   USAGE: ${me} COMMAND
@@ -95,7 +95,7 @@ set_up_environment () {
   python -m venv venv
   source venv/bin/activate
   # do this first to make sure we have piptools
-  ${python} -m pip install -r dev-requirements.txt
+  ${python} -m pip install --trusted-host pypi.org -r dev-requirements.txt
   # do this again for syncs that might involve deletions
   ${python} -m piptools sync requirements.txt dev-requirements.txt
   ${python} -m playwright install firefox
@@ -141,7 +141,7 @@ cf_network() {
 
 source_env_vars() {
   set -o allexport
-  
+
   pushd "${dir}"
     case $ENVIRONMENT in
       prod|production)
@@ -152,7 +152,7 @@ source_env_vars() {
         source "dev.env"
         ;;
 
-      local)
+      *)
         source ".env"
         ;;
     esac
@@ -171,7 +171,7 @@ set_cf_default_vars() {
   CF_ORG_1_SPACE_1_NAME=${CF_ORG_1_SPACE_1_NAME:-test-kibana-space-1}
   CF_ORG_2_SPACE_2_NAME=${CF_ORG_2_SPACE_2_NAME:-test-kibana-space-2}
   BOTH_ORGS_SPACE_NAME=${BOTH_ORGS_SPACE_NAME:-both-orgs-space}
-  
+
   export CF_ORG_1_SPACE_1_NAME
   export CF_ORG_2_SPACE_2_NAME
   export BOTH_ORGS_SPACE_NAME
@@ -180,21 +180,21 @@ set_cf_default_vars() {
 set_cf_env_vars() {
   CF_ORG_1_ID=$(cf org "$CF_ORG_1_NAME" --guid)
   CF_ORG_2_ID=$(cf org "$CF_ORG_2_NAME" --guid)
-  
+
   export CF_ORG_1_ID
   export CF_ORG_2_ID
 
   cf target -o "$CF_ORG_1_NAME"
   CF_ORG_1_SPACE_1_ID=$(cf space "$CF_ORG_1_SPACE_1_NAME" --guid)
   CF_ORG_1_BOTH_ORGS_SPACE_ID=$(cf space "$BOTH_ORGS_SPACE_NAME" --guid)
-  
+
   export CF_ORG_1_SPACE_1_ID
   export CF_ORG_1_BOTH_ORGS_SPACE_ID
 
   cf target -o "$CF_ORG_2_NAME"
   CF_ORG_2_SPACE_2_ID=$(cf space "$CF_ORG_2_SPACE_2_NAME" --guid)
   CF_ORG_2_BOTH_ORGS_SPACE_ID=$(cf space "$BOTH_ORGS_SPACE_NAME" --guid)
-  
+
   export CF_ORG_2_SPACE_2_ID
   export CF_ORG_2_BOTH_ORGS_SPACE_ID
 }
