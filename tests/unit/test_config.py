@@ -2,6 +2,7 @@ import pytest
 from cf_auth_proxy.config import config_from_env
 
 
+
 def test_config_loads(monkeypatch):
     monkeypatch.setenv("FLASK_ENV", "unit")
     config = config_from_env()
@@ -34,7 +35,7 @@ def test_config_loads(monkeypatch):
 @pytest.mark.parametrize(
     "dashboard_url", ["https://dashboard.example.com", "https://dashboard.example.com/"]
 )
-def test_local_config(monkeypatch, dashboard_url):
+def test_local_config(monkeypatch, dashboard_url, token_keys):
     monkeypatch.setenv("FLASK_ENV", "local")
     monkeypatch.setenv("PORT", "8888")
     monkeypatch.setenv("DASHBOARD_URL", dashboard_url)
@@ -46,6 +47,7 @@ def test_local_config(monkeypatch, dashboard_url):
     monkeypatch.setenv("SECRET_KEY", "changeme")
     monkeypatch.setenv("SESSION_LIFETIME", "3600")
     monkeypatch.setenv("CF_ADMIN_GROUP_NAME", "random-group")
+    monkeypatch.setenv("UAA_PUBLIC_KEYS", token_keys)
     config = config_from_env()
     assert config.PORT == 8888
     assert config.DASHBOARD_URL == "https://dashboard.example.com/"
@@ -56,6 +58,9 @@ def test_local_config(monkeypatch, dashboard_url):
     assert config.UAA_TOKEN_URL == "https://uaa.example.com/oauth/token"
     assert config.UAA_CLIENT_ID == "feedabee"
     assert config.UAA_CLIENT_SECRET == "CHANGEME"
+    assert len(config.UAA_PUBLIC_KEYS) == 2
+    assert "BEGIN PUBLIC KEY" in config.UAA_PUBLIC_KEYS[0].get("value")
+    assert "BEGIN PUBLIC KEY" in config.UAA_PUBLIC_KEYS[1].get("value")
     assert config.CF_API_URL == "https://api.example.com/"
     assert config.SECRET_KEY == "changeme"
     assert config.PERMANENT_SESSION_LIFETIME == 3600
@@ -69,7 +74,7 @@ def test_local_config(monkeypatch, dashboard_url):
 @pytest.mark.parametrize(
     "dashboard_url", ["https://dashboard.example.com", "https://dashboard.example.com/"]
 )
-def test_prod_config(monkeypatch, dashboard_url):
+def test_prod_config(monkeypatch, dashboard_url, token_keys):
     monkeypatch.setenv("FLASK_ENV", "production")
     monkeypatch.setenv("PORT", "8888")
     monkeypatch.setenv("DASHBOARD_URL", dashboard_url)
@@ -84,6 +89,7 @@ def test_prod_config(monkeypatch, dashboard_url):
     monkeypatch.setenv("DASHBOARD_CERTIFICATE", "fake-cert")
     monkeypatch.setenv("DASHBOARD_CERTIFICATE_KEY", "fake-key")
     monkeypatch.setenv("DASHBOARD_CERTIFICATE_CA", "fake-ca")
+    monkeypatch.setenv("UAA_PUBLIC_KEYS", token_keys)
     config = config_from_env()
     assert config.PORT == 8888
     assert config.DASHBOARD_URL == "https://dashboard.example.com/"
@@ -114,3 +120,6 @@ def test_prod_config(monkeypatch, dashboard_url):
     assert config.DASHBOARD_CERTIFICATE_KEY == "fake-key"
     assert config.DASHBOARD_CERTIFICATE_CA == "fake-ca"
     assert config.REQUEST_TIMEOUT == 30
+    assert len(config.UAA_PUBLIC_KEYS) == 2
+    assert "BEGIN PUBLIC KEY" in config.UAA_PUBLIC_KEYS[0].get("value")
+    assert "BEGIN PUBLIC KEY" in config.UAA_PUBLIC_KEYS[1].get("value")

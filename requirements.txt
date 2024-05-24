@@ -10,10 +10,14 @@ blinker==1.7.0
     # via flask
 certifi==2023.11.17
     # via requests
+cffi==1.16.0
+    # via cryptography
 charset-normalizer==3.3.2
     # via requests
 click==8.1.7
     # via flask
+cryptography==42.0.7
+    # via -r pip-tools/requirements.in
 dnspython==2.6.1
     # via eventlet
 environs==9.5.0
@@ -42,6 +46,8 @@ packaging==23.2
     # via
     #   gunicorn
     #   marshmallow
+pycparser==2.22
+    # via cffi
 pyjwt==2.8.0
     # via -r pip-tools/requirements.in
 python-dotenv==1.0.0

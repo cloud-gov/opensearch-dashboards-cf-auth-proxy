@@ -1,6 +1,7 @@
 -r ../requirements.txt
 bandit
 black
+jwcrypto
 pip-tools
 playwright
 pyotp

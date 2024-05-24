@@ -81,6 +81,8 @@ class LocalConfig(Config):
         self.DASHBOARD_CERTIFICATE = None
         self.DASHBOARD_CERTIFICATE_KEY = None
         self.DASHBOARD_CERTIFICATE_CA = None
+        keys_dict = self.env_parser.json("UAA_PUBLIC_KEYS")
+        self.UAA_PUBLIC_KEYS = keys_dict["keys"]
 
 
 class AppConfig(Config):
@@ -112,3 +114,5 @@ class AppConfig(Config):
         self.DASHBOARD_CERTIFICATE_CA = self.env_parser.str(
             "DASHBOARD_CERTIFICATE_CA", None
         )
+        keys_dict = self.env_parser.json("UAA_PUBLIC_KEYS")
+        self.UAA_PUBLIC_KEYS = keys_dict["keys"]
