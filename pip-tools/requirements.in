@@ -1,8 +1,9 @@
-cryptography
+#cryptography
 environs
 flask
 gunicorn
-pyjwt
+pyjwt[crypto]
 redis
 requests
 eventlet
+jwcrypto

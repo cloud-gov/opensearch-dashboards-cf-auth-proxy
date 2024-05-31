@@ -15,9 +15,26 @@ from cf_auth_proxy.extensions import config
 
 
 def make_jwt_token(claims=None):
-    # todo, clean this up
-    claims = claims or {"user_id": "test_user", "email": "test_user@user.com"}
-    token = jwt.encode(claims, "", "HS256")
+    default_claims = dict(
+        iss="https://uaa.example.com",
+        sub="24400320",  # borrowed from the spec
+        # exp & iat are both set to be thousands of years in the future
+        # it might be preferable to set these to a time relative to the test run
+        exp=100000000000,
+        iat=100000000000,
+        # auth_time is set to one second after the unix epoch.
+        # it would probably be more realistic to set this relative to the test run
+        auth_time=1,
+        aud="s6BhdRkqt3",  # borrowed from the spec
+        user_id="test_user",
+        email="test_user@example.com",
+    )
+    claims = claims or default_claims
+    token = jwt.encode(
+        claims,
+        config.LOCAL_KEYPAIR[0].export_to_pem(private_key=True, password=None),
+        "RS256",
+    )
     return token
 
 
