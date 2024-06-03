@@ -107,17 +107,14 @@ def test_prod_has_secure_settings(monkeypatch, base_local_config):
     # TODO: double-check this - is it temporary until we figure out shared sessions?
     assert config.SESSION_TYPE == "null"
     assert config.SESSION_COOKIE_SECURE
-    assert not config.SESSION_REFRESH_EACH_REQUEST
 
 
 def test_local_has_test_friendly_settings(monkeypatch, base_local_config):
     monkeypatch.setenv("FLASK_ENV", "local")
     config = config_from_env()
 
-    # TODO: double-check this - is it temporary until we figure out shared sessions?
     assert config.SESSION_TYPE == "filesystem"
     assert not config.SESSION_COOKIE_SECURE
-    assert config.SESSION_REFRESH_EACH_REQUEST
 
 
 def test_config_sets_port(monkeypatch, base_local_config):

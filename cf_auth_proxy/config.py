@@ -51,7 +51,6 @@ class UnitConfig(Config):
         self.UAA_CLIENT_SECRET = "example"  # nosec
         self.SECRET_KEY = "CHANGEME"  # nosec
         self.PERMANENT_SESSION_LIFETIME = 120
-        self.SESSION_REFRESH_EACH_REQUEST = False
         self.CF_ADMIN_GROUP_NAME = "cloud_controller.admin"
         self.DASHBOARD_CERTIFICATE = "fake-cert"
         self.DASHBOARD_CERTIFICATE_KEY = "fake-key"
@@ -88,7 +87,6 @@ class AppConfig(Config):
             self.DASHBOARD_URL = f"{self.DASHBOARD_URL}/"
         self.SESSION_TYPE = "null"
         self.SESSION_COOKIE_SECURE = True
-        self.SESSION_REFRESH_EACH_REQUEST = False
         self.PERMANENT_SESSION_LIFETIME = self.env_parser.int("SESSION_LIFETIME")
 
         self.CF_API_URL = self.env_parser("CF_API_URL")
@@ -119,4 +117,3 @@ class LocalConfig(AppConfig):
         self.DEBUG = True
         self.SESSION_TYPE = "filesystem"
         self.SESSION_COOKIE_SECURE = False
-        self.SESSION_REFRESH_EACH_REQUEST = True
