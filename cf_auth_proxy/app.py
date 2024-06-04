@@ -11,8 +11,9 @@ import requests
 from cf_auth_proxy.extensions import config
 from cf_auth_proxy.proxy import proxy_request
 from cf_auth_proxy import cf
-from cf_auth_proxy.headers import list_to_ext_header
 from cf_auth_proxy import uaa
+from cf_auth_proxy.headers import list_to_ext_header
+from cf_auth_proxy.token import decode_id_token_for_claims
 
 
 def create_app():
@@ -95,15 +96,12 @@ def create_app():
 
         response = r.json()
 
-        # TODO: validate jwt token
-        token = jwt.decode(
-            response.get("id_token"),
-            algorithms=["RS256", "ES256"],
-            options=dict(verify_signature=False),
+        decoded_claims = decode_id_token_for_claims(
+            response.get("id_token"), config.UAA_JWKS
         )
 
-        session["user_id"] = token["user_id"]
-        session["email"] = token["email"]
+        session["user_id"] = decoded_claims.user_id
+        session["email"] = decoded_claims.email
         session["access_token"] = response["access_token"]
         session["refresh_token"] = response["refresh_token"]
         expiration = now_utc + datetime.timedelta(seconds=response["expires_in"])
