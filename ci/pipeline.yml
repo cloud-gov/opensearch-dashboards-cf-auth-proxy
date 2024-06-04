@@ -57,7 +57,7 @@ jobs:
     - get: src-docker
       params: {depth: 1}
       trigger: true
-      
+
     - put: dev-opensearch-image
       params:
         build: src-docker/docker/opensearch
@@ -105,7 +105,7 @@ jobs:
         vars:
           dashboards_app_name: ((dev-test-opensearch-dashboards-app-name))
           opensearch_password: ((opensearch-admin-password))
-    
+
     - put: cf-dev
       params:
         path: src
@@ -116,6 +116,7 @@ jobs:
           uaa_base_url: ((dev-uaa-base-url))
           uaa_client_id: ((dev-uaa-test-client-id))
           uaa_client_secret: ((dev-uaa-test-client-secret))
+          uaa_jwks: ((dev-uaa-jwks))
           secret_key: ((dev-secret-key))
           session_lifetime: "3600"
           public_route: ((dev-test-public-url))
@@ -182,7 +183,7 @@ jobs:
         CF_ORG_2_SPACE_2_NAME: ((dev-test-org-2-space-2-name))
 
         BOTH_ORGS_SPACE_NAME: ((dev-test-both-orgs-space-name))
-        
+
         TEST_USER_1_USERNAME: ((dev-test-user-1-username))
         TEST_USER_1_PASSWORD: ((dev-test-user-1-password))
         TEST_USER_1_TOTP_SEED: ((dev-test-user-1-totp-seed))
@@ -223,7 +224,7 @@ jobs:
         BOTH_ORGS_SPACE_NAME: ((dev-test-both-orgs-space-name))
 
         DASHBOARDS_APP_NAME: ((dev-test-opensearch-dashboards-app-name))
-        
+
     - task: e2e-tests
       image: playwright-python
       config:
@@ -239,7 +240,7 @@ jobs:
           TEST_USER_1_USERNAME: ((dev-test-user-1-username))
           TEST_USER_1_PASSWORD: ((dev-test-user-1-password))
           TEST_USER_1_TOTP_SEED: ((dev-test-user-1-totp-seed))
-  
+
           TEST_USER_2_USERNAME: ((dev-test-user-2-username))
           TEST_USER_2_PASSWORD: ((dev-test-user-2-password))
           TEST_USER_2_TOTP_SEED: ((dev-test-user-2-totp-seed))
@@ -247,7 +248,7 @@ jobs:
           TEST_USER_3_USERNAME: ((dev-test-user-3-username))
           TEST_USER_3_PASSWORD: ((dev-test-user-3-password))
           TEST_USER_3_TOTP_SEED: ((dev-test-user-3-totp-seed))
-  
+
           TEST_USER_4_USERNAME: ((dev-test-user-4-username))
           TEST_USER_4_PASSWORD: ((dev-test-user-4-password))
           TEST_USER_4_TOTP_SEED: ((dev-test-user-4-totp-seed))
