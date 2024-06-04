@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 import json
 from typing import Optional
+import inspect
 
 from jwcrypto.jwt import JWT, JWKSet
 
@@ -41,9 +42,16 @@ class Claims:
     family_name: Optional[str] = None
     phone_number: Optional[str] = None
 
+    @classmethod
+    def from_dict(cls, d):
+        return cls(**{
+            k: v for k, v in d.items()
+            if k in inspect.signature(cls).parameters
+        })
+
 
 def decode_id_token_for_claims(id_token: str, jwks: JWKSet) -> Claims:
     """Given a JWT and a JWK set, decode the JWT and validate it"""
     token = JWT(jwt=id_token, key=jwks)
-    token_claims = Claims(**json.loads(token.claims))
+    token_claims = Claims.from_dict(json.loads(token.claims))
     return token_claims

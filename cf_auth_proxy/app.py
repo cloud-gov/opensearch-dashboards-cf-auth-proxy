@@ -176,7 +176,7 @@ def create_app():
             headers["x-proxy-user"] = session["email"]
             roles = [("admin" if session.get("is_cf_admin") else "user")]
             roles += session.get("user_orgs", [])
-            headers["x-proxy-roles"] = list_to_ext_header(roles)
+            headers["x-proxy-roles"] = ",".join(roles)
 
         # TODO: add x-forwarded-for functionality
         headers["x-forwarded-for"] = "127.0.0.1"

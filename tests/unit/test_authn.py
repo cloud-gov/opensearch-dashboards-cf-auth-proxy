@@ -28,6 +28,8 @@ def make_jwt_token(claims=None):
         aud="s6BhdRkqt3",  # borrowed from the spec
         user_id="test_user",
         email="test_user@example.com",
+        # make sure we respond OK if we get extra claims
+        extra="foo"
     )
     claims = claims or default_claims
     token = jwt.encode(
