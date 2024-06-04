@@ -23,7 +23,7 @@ applications:
     UAA_BASE_URL: ((uaa_base_url))
     UAA_CLIENT_ID: ((uaa_client_id))
     UAA_CLIENT_SECRET: ((uaa_client_secret))
-    UAA_JWKS: ((uaa_jwks))
+    UAA_JWKS: "((uaa_jwks))"
     SECRET_KEY: ((secret_key))
     SESSION_LIFETIME: ((session_lifetime))
   memory: 2G
