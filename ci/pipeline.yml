@@ -116,6 +116,8 @@ jobs:
           uaa_base_url: ((dev-uaa-base-url))
           uaa_client_id: ((dev-uaa-test-client-id))
           uaa_client_secret: ((dev-uaa-test-client-secret))
+          # note: when setting this in credhub, be sure to include extra single quotes, e.g.
+          # credhub set -t value -n /path/to/dev-uaa-jwks -v "'"'{"keys":[]}'"'"
           uaa_jwks: ((dev-uaa-jwks))
           secret_key: ((dev-secret-key))
           session_lifetime: "3600"
