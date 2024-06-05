@@ -44,10 +44,9 @@ class Claims:
 
     @classmethod
     def from_dict(cls, d):
-        return cls(**{
-            k: v for k, v in d.items()
-            if k in inspect.signature(cls).parameters
-        })
+        return cls(
+            **{k: v for k, v in d.items() if k in inspect.signature(cls).parameters}
+        )
 
 
 def decode_id_token_for_claims(id_token: str, jwks: JWKSet) -> Claims:
