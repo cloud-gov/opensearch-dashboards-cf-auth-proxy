@@ -72,9 +72,9 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     ports:
-      - 8080:8080
+      - 3000:3000
     expose:
-      - "8080"
+      - "3000"
     networks:
       - opensearch-net
 
