@@ -39,8 +39,12 @@ The following are optional:
 ## Running the auth-proxy locally
 
 1. Copy `.env-sample` to `.env` and update the configuration values
-1. Run `./dev start-cluster` to start up the Docker containers for OpenSearch and OpenSearch Dashboards
-1. Run `./dev serve` (note: you must be on the VPN/using Zscaler because you will be redirected to the CF dev environment to login)
+1. Run `./dev start-cluster` to start up the Docker containers for:
+   - OpenSearch
+   - OpenSearch Dashboards
+   - A lightweight Nginx proxy (running on port `3000` by default)
+1. Run `./dev serve` to start this auth-proxy (running on port `8080` by default)
+   - **Note:** you must be on the VPN/using Zscaler because you will be redirected to the CF dev environment to login
 
 ### Running the e2e tests locally
 
