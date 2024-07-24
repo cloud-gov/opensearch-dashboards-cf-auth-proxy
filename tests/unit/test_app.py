@@ -126,7 +126,7 @@ def test_adds_xff_when_it_is_not_set(client):
         assert m.last_request._request.headers["X-Forwarded-For"]
 
 
-def test_does_not_modify_existing_xff(client):
+def test_does_not_modify_existing_xff_uppercase(client):
     with requests_mock.Mocker() as m:
         m.get("http://mock.dashboard/home")
         with client.session_transaction() as s:
@@ -134,3 +134,13 @@ def test_does_not_modify_existing_xff(client):
             s["email"] = "me"
         client.get("/home", headers={"X-Forwarded-For": "x.x.x.x"})
         assert m.last_request._request.headers["X-Forwarded-For"] == "x.x.x.x"
+
+
+def test_does_not_modify_existing_xff_lowercase(client):
+    with requests_mock.Mocker() as m:
+        m.get("http://mock.dashboard/home")
+        with client.session_transaction() as s:
+            s["user_id"] = "me2"
+            s["email"] = "me"
+        client.get("/home", headers={"x-forwarded-for": "y.y.y.y"})
+        assert m.last_request._request.headers["X-Forwarded-For"] == "y.y.y.y"
