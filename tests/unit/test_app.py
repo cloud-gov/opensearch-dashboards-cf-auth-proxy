@@ -123,7 +123,7 @@ def test_adds_xff_when_it_is_not_set(client):
             s["user_id"] = "me2"
             s["email"] = "me"
         client.get("/home")
-        assert m.last_request._request.headers["x-forwarded-for"]
+        assert m.last_request._request.headers["X-Forwarded-For"]
 
 
 def test_does_not_modify_existing_xff(client):
@@ -133,4 +133,4 @@ def test_does_not_modify_existing_xff(client):
             s["user_id"] = "me2"
             s["email"] = "me"
         client.get("/home", headers={"X-Forwarded-For": "x.x.x.x"})
-        assert m.last_request._request.headers["x-forwarded-for"] == "x.x.x.x"
+        assert m.last_request._request.headers["X-Forwarded-For"] == "x.x.x.x"

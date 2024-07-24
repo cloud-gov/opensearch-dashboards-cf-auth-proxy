@@ -178,8 +178,8 @@ def create_app():
             roles += session.get("user_orgs", [])
             headers["x-proxy-roles"] = ",".join(roles)
 
-        xff_header_name = "x-forwarded-for"
-        if xff_header_name not in [k.lower() for k in headers.keys()]:
+        xff_header_name = "X-Forwarded-For"
+        if xff_header_name.lower() not in [k.lower() for k in headers.keys()]:
             if xff := request.headers.get(xff_header_name):
                 headers[xff_header_name] = xff + "," + request.remote_addr
             else:
