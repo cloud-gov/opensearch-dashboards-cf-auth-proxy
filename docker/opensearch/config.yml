@@ -8,7 +8,8 @@ config:
     http:
       xff:
         enabled: true
-        internalProxies: ".*"
+        # internalProxies: '127.0.0.1'
+        internalProxies: '172\.19\.0.*'
         remoteIpHeader: "x-forwarded-for"
     authc:
       basic_internal_auth_domain:
