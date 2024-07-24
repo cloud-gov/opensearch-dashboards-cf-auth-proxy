@@ -33,6 +33,7 @@ services:
       - ./opensearch/config.yml:/usr/share/opensearch/config/opensearch-security/config.yml
       - ./opensearch/roles.yml:/usr/share/opensearch/config/opensearch-security/roles.yml
       - ./opensearch/roles_mapping.yml:/usr/share/opensearch/config/opensearch-security/roles_mapping.yml
+      - ./opensearch/log4j2.properties:/usr/share/opensearch/config/log4j2.properties
     ports:
       - 9200:9200
   opensearch-node2:
@@ -46,6 +47,7 @@ services:
       - ./opensearch/config.yml:/usr/share/opensearch/config/opensearch-security/config.yml
       - ./opensearch/roles.yml:/usr/share/opensearch/config/opensearch-security/roles.yml
       - ./opensearch/roles_mapping.yml:/usr/share/opensearch/config/opensearch-security/roles_mapping.yml
+      - ./opensearch/log4j2.properties:/usr/share/opensearch/config/log4j2.properties
   opensearch-dashboards:
     build: ./opensearch_dashboards
     container_name: opensearch-dashboards
