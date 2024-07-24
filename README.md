@@ -46,6 +46,23 @@ The following are optional:
 1. Run `./dev serve` to start this auth-proxy (running on port `8080` by default)
    - **Note:** you must be on the VPN/using Zscaler because you will be redirected to the CF dev environment to login
 
+### Reload the OpenSearch security configuration
+
+1. Open a shell inside the OpenSearch node container: `docker exec -it opensearch-node1 /bin/bash`
+2. Run this command:
+
+      ```shell
+      ./plugins/opensearch-security/tools/securityadmin.sh -cacert /usr/share/opensearch/config/root-ca.pem -cert /usr/share/opensearch/config/kirk.pem -key /usr/share/opensearch/config/kirk-key.pem -cd /usr/share/opensearch/config/opensearch-security
+      ```
+
+### Reload the Nginx proxy configuration
+
+To reload the Nginx proxy configuration without restarting the container:
+
+```shell
+docker exec proxy nginx -s reload
+```
+
 ### Running the e2e tests locally
 
 After starting up the auth-proxy using the above steps, run:
