@@ -8,7 +8,8 @@ config:
     http:
       xff:
         enabled: true
-        internalProxies: ".*"
+        # trust IP addresses from Docker network
+        internalProxies: '172\.19\.0.*'
         remoteIpHeader: "x-forwarded-for"
     authc:
       basic_internal_auth_domain:

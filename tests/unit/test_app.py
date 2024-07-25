@@ -114,3 +114,33 @@ def test_user_org_roles_set_correctly(client):
             s["user_orgs"] = ["org-1", "org-2"]
         client.get("/home")
         assert m.last_request._request.headers["x-proxy-roles"] == "user,org-1,org-2"
+
+
+def test_adds_xff_when_it_is_not_set(client):
+    with requests_mock.Mocker() as m:
+        m.get("http://mock.dashboard/home")
+        with client.session_transaction() as s:
+            s["user_id"] = "me2"
+            s["email"] = "me"
+        client.get("/home")
+        assert m.last_request._request.headers["X-Forwarded-For"]
+
+
+def test_does_not_modify_existing_xff_uppercase(client):
+    with requests_mock.Mocker() as m:
+        m.get("http://mock.dashboard/home")
+        with client.session_transaction() as s:
+            s["user_id"] = "me2"
+            s["email"] = "me"
+        client.get("/home", headers={"X-Forwarded-For": "x.x.x.x"})
+        assert m.last_request._request.headers["X-Forwarded-For"] == "x.x.x.x"
+
+
+def test_does_not_modify_existing_xff_lowercase(client):
+    with requests_mock.Mocker() as m:
+        m.get("http://mock.dashboard/home")
+        with client.session_transaction() as s:
+            s["user_id"] = "me2"
+            s["email"] = "me"
+        client.get("/home", headers={"x-forwarded-for": "y.y.y.y"})
+        assert m.last_request._request.headers["X-Forwarded-For"] == "y.y.y.y"
