@@ -1,3 +1,5 @@
+ARG base_image
+
 FROM opensearchproject/opensearch:2.12.0 as opensearch
 
 # ok, this is a little weird.
@@ -5,8 +7,8 @@ FROM opensearchproject/opensearch:2.12.0 as opensearch
 # only have one port exposed. The upstream exposes more than one,
 # and docker doesn't provide a direct method to override it.
 # so, we're using the opensearch image as a "builder" and then copying
-# everything into scratch, which is a blank image ¯\_(ツ)_/¯
-FROM scratch
+# everything into the base hardened image ¯\_(ツ)_/¯
+FROM ${base_image}
 
 COPY --from=opensearch / /
 
