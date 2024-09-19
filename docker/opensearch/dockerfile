@@ -10,6 +10,8 @@ FROM opensearchproject/opensearch:2.12.0 as opensearch
 # everything into the base hardened image ¯\_(ツ)_/¯
 FROM ${base_image}
 
+WORKDIR /usr
+
 COPY --from=opensearch /usr/share/opensearch /usr/share/opensearch/
 
 ARG UID=1000
