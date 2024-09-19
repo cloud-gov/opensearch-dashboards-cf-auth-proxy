@@ -256,17 +256,6 @@ resources:
     branch: ((proxy-src-code-branch))
     commit_verification_keys: ((cloud-gov-pgp-keys))
 
-- name: src-docker
-  type: git
-  icon: github-circle
-  check_every: 10s
-  source:
-    uri: ((proxy-src-code-uri))
-    branch: ((proxy-src-code-branch))
-    commit_verification_keys: ((cloud-gov-pgp-keys))
-    paths:
-      - docker
-
 - name: dev-opensearch-image
   type: registry-image
   source:
