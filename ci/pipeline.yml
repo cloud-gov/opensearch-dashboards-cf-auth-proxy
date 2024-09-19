@@ -52,39 +52,11 @@ jobs:
         :white_check_mark: Tests PASSED onopensearch-dashboards-cf-auth-proxy
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
-- name: build-test-images
-  plan:
-    - get: src-docker
-      params: {depth: 1}
-      trigger: true
-
-    - put: dev-opensearch-image
-      params:
-        build: src-docker/docker/opensearch
-        dockerfile: src-docker/docker/opensearch/dockerfile
-        tag_as_latest: true
-        cache: true
-
-    - put: dev-opensearch-dashboards-image
-      params:
-        build: src-docker/docker/opensearch_dashboards
-        dockerfile: src-docker/docker/opensearch_dashboards/dockerfile
-        tag_as_latest: true
-        cache: true
-  on_failure:
-    put: slack
-    params:
-      <<: *slack-failure-params
-      text: |
-        :x: FAILED to build test images
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-
 - name: deploy-test-apps
   plan:
     - in_parallel:
       - get: src
         params: {depth: 1}
-        trigger: true
         passed: [test]
       - get: general-task
       - get: dev-opensearch-image
@@ -296,22 +268,22 @@ resources:
       - docker
 
 - name: dev-opensearch-image
-  type: docker-image
-  icon: docker
+  type: registry-image
   source:
-    email: ((docker-email))
-    username: ((docker-username))
-    password: ((docker-password))
-    repository: cloudgovoperations/test-opensearch
+    aws_access_key_id: ((ecr_aws_key))
+    aws_secret_access_key: ((ecr_aws_secret))
+    repository: opensearch-testing
+    aws_region: us-gov-west-1
+    tag: latest
 
 - name: dev-opensearch-dashboards-image
-  type: docker-image
-  icon: docker
+  type: registry-image
   source:
-    email: ((docker-email))
-    username: ((docker-username))
-    password: ((docker-password))
-    repository: cloudgovoperations/test-opensearch-dashboards
+    aws_access_key_id: ((ecr_aws_key))
+    aws_secret_access_key: ((ecr_aws_secret))
+    repository: opensearch-dashboards-testing
+    aws_region: us-gov-west-1
+    tag: latest
 
 - name: cf-dev
   type: cf
