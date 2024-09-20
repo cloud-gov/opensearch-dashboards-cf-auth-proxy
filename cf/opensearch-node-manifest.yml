@@ -14,7 +14,7 @@ applications:
   routes:
     - route: test-opensearch-node.apps.internal
   docker:
-    image: cloudgovoperations/test-opensearch:latest
+    image: ((repo))/opensearch-testing:latest
   env:
     # discovery.seed_hosts: '["https://0.test-opensearch-manager.apps.internal:9200","https://0.test-opensearch-node.apps.internal:9200"]'
     # cluster.initial_cluster_manager_nodes: "opensearch-manager"
