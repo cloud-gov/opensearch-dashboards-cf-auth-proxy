@@ -67,16 +67,22 @@ jobs:
     - put: cf-dev
       params:
         manifest: src/cf/opensearch-node-manifest.yml
+        docker_username: ((ecr_aws_key))
+        docker_password: ((ecr_aws_secret))
         vars:
           opensearch_node_app_name: ((dev-test-opensearch-node-app-name))
           opensearch_password: ((opensearch-admin-password))
+          repo: ((ecr_aws_repo))
 
     - put: cf-dev
       params:
         manifest: src/cf/opensearch-dashboards-manifest.yml
+        docker_username: ((ecr_aws_key))
+        docker_password: ((ecr_aws_secret))
         vars:
           dashboards_app_name: ((dev-test-opensearch-dashboards-app-name))
           opensearch_password: ((opensearch-admin-password))
+          repo: ((ecr_aws_repo))
 
     - put: cf-dev
       params:
