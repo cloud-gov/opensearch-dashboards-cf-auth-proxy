@@ -73,6 +73,7 @@ jobs:
           opensearch_node_app_name: ((dev-test-opensearch-node-app-name))
           opensearch_password: ((opensearch-admin-password))
           repo: ((ecr_aws_repo))
+          docker_username: ((ecr_aws_key))
 
     - put: cf-dev
       params:
@@ -83,6 +84,7 @@ jobs:
           dashboards_app_name: ((dev-test-opensearch-dashboards-app-name))
           opensearch_password: ((opensearch-admin-password))
           repo: ((ecr_aws_repo))
+          docker_username: ((ecr_aws_key))
 
     - put: cf-dev
       params:
