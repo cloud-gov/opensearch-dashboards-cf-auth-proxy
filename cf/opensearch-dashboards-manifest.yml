@@ -13,6 +13,7 @@ applications:
   disk_quota: 2G
   docker:
     image: ((repo))/opensearch-dashboards-testing:latest
+    username: ((docker_username))
   env:
       "OPENSEARCH_HOSTS": https://0.test-opensearch-node.apps.internal:9200
       "opensearch.requestHeadersAllowlist": "securitytenant,Authorization,x-forwarded-for,x-proxy-user,x-proxy-roles"
