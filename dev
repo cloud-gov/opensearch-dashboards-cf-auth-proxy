@@ -264,12 +264,12 @@ main() {
     start-cluster)
       source_env_vars
       pushd docker
-        docker-compose up --force-recreate --build "$@"
+        docker compose up --force-recreate --build "$@"
       popd
       ;;
     destroy-cluster)
       pushd docker
-        docker-compose down
+        docker compose down
       popd
       ;;
     cf-push)
