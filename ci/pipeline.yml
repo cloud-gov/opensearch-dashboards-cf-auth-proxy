@@ -17,7 +17,7 @@ jobs:
         - name: master-bosh-root-cert
       platform: linux
       run:
-        path: src/ci/update-test-user-credentials.sh
+        path: src/ci/update-test-user-passwords.sh
       params:
         BOSH_DIRECTOR_NAME: development
         UAA_API_URL: ((uaa-url-development))
