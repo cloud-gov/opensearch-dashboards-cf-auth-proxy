@@ -45,8 +45,6 @@ jobs:
     trigger: true
   - set_pipeline: self
     file: src/ci/pipeline.yml
-    var_files:
-      - src/ci/config.yml
   on_failure:
     put: slack
     params:
@@ -271,8 +269,8 @@ resources:
   icon: github-circle
   check_every: 10s
   source:
-    uri: ((proxy-src-code-uri))
-    branch: ((proxy-src-code-branch))
+    uri: https://github.com/cloud-gov/opensearch-dashboards-cf-auth-proxy
+    branch: main
     commit_verification_keys: ((cloud-gov-pgp-keys))
 
 - name: dev-opensearch-image
