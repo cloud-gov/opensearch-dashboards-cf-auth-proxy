@@ -15,7 +15,7 @@ for credential_name in $TEST_USER_CREDENTIAL_NAMES; do
   credhub regenerate -n "/concourse/main/opensearch-dashboards-cf-auth-proxy/$credential_name"
 
   # Get the UAA username for the corresponding Credhub credential
-  USERNAME=$(echo "$TEST_USERS_CREDENTIAL_USERNAME_MAP" | jq --arg credential_name "$credential_name" '.[$credential_name]')
+  USERNAME=$(echo "$TEST_USERS_CREDENTIAL_USERNAME_MAP" | jq -r --arg credential_name "$credential_name" '.[$credential_name]')
 
   echo "updating UAA password for $USERNAME"
 
