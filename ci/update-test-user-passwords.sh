@@ -7,6 +7,8 @@ uaac token client get "$UAA_CLIENT_ID" -s "$UAA_CLIENT_SECRET"
 TEST_USER_CREDENTIAL_NAMES=$(echo "$TEST_USERS_CREDENTIAL_USERNAME_MAP" | jq '. | keys | join(" ")')
 
 for credential_name in $TEST_USER_CREDENTIAL_NAMES; do
+  credential_name=$(echo "$credential_name" | tr -d '"')
+  
   echo "updating password credential for $credential_name"
 
   # Generate a new password for the credential
