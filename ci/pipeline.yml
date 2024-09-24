@@ -335,10 +335,10 @@ resources:
 - name: weekly
   type: time
   source:
-    interval: 1w
     start: 12:00 AM
     stop: 1:00 AM
     location: America/New_York
+    days: [Wednesday]
 
 
 ############################
