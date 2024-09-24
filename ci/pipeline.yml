@@ -5,6 +5,7 @@ jobs:
   plan:
   - get: src
     params: {depth: 1}
+  - get: master-bosh-root-cert
   - get: weekly
     trigger: true
   - task: update-test-user-credentials
@@ -12,7 +13,7 @@ jobs:
     config:
       inputs:
         - name: src
-        - name: cg-scripts
+        - name: master-bosh-root-cert
       platform: linux
       run:
         path: src/ci/update-test-user-credentials.sh
