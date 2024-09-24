@@ -6,8 +6,8 @@ jobs:
   - get: src
     params: {depth: 1}
   - get: master-bosh-root-cert
-  - get: weekly
-    trigger: true
+  # - get: weekly
+  #   trigger: true
   - task: update-test-user-credentials
     image: general-task
     config:
