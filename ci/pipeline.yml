@@ -43,14 +43,6 @@ jobs:
       text: |
         :x: Tests FAILED on opensearch-dashboards-cf-auth-proxy
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-  on_success:
-    put: slack
-    params: &slack-success-params
-      <<: *slack-failure-params
-      channel: ((slack-channel-success))
-      text: |
-        :white_check_mark: Tests PASSED onopensearch-dashboards-cf-auth-proxy
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: deploy-test-apps
   plan:
@@ -127,13 +119,6 @@ jobs:
       <<: *slack-failure-params
       text: |
         :x: FAILED to deploy apps
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-  on_success:
-    put: slack
-    params:
-      <<: *slack-success-params
-      text: |
-        :white_check_mark: Successfully deployed apps
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: e2e
@@ -238,13 +223,6 @@ jobs:
       <<: *slack-failure-params
       text: |
         :x: e2e tests FAILED
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-  on_success:
-    put: slack
-    params:
-      <<: *slack-success-params
-      text: |
-        :white_check_mark: e2e tests SUCCEEDED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 
