@@ -270,7 +270,7 @@ resources:
   check_every: 10s
   source:
     uri: https://github.com/cloud-gov/opensearch-dashboards-cf-auth-proxy
-    branch: main
+    branch: update-test-users
     commit_verification_keys: ((cloud-gov-pgp-keys))
 
 - name: dev-opensearch-image
