@@ -332,13 +332,13 @@ resources:
     region_name: ((aws-region))
     versioned_file: ((master-bosh-cert-file))
 
-- name: weekly
-  type: time
-  source:
-    start: 12:00 AM
-    stop: 1:00 AM
-    location: America/New_York
-    days: [Wednesday]
+# - name: weekly
+#   type: time
+#   source:
+#     start: 12:00 AM
+#     stop: 1:00 AM
+#     location: America/New_York
+#     days: [Wednesday]
 
 
 ############################
