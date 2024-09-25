@@ -1,5 +1,44 @@
 jobs:
 
+- name: update-test-users-dev
+  serial: true
+  plan:
+  - get: src
+    params: {depth: 1}
+  - get: master-bosh-root-cert
+  - get: general-task
+  - get: weekly
+    trigger: true
+  - task: update-test-user-credentials
+    image: general-task
+    config:
+      inputs:
+        - name: src
+        - name: master-bosh-root-cert
+      platform: linux
+      run:
+        path: src/ci/update-test-user-passwords.sh
+      params:
+        BOSH_DIRECTOR_NAME: development
+        UAA_API_URL: ((uaa-url-development))
+        UAA_CLIENT_ID: ((uaa-client-id-development))
+        UAA_CLIENT_SECRET: ((uaa-client-secret-development))
+        TEST_USERS_CREDENTIAL_USERNAME_MAP: ((dev-test-users-credential-username-map))
+        CREDHUB_CA_CERT: master-bosh-root-cert/((master-bosh-cert-file))
+        CREDHUB_CLIENT: ((opensearch-proxy-ci-credhub-client-id))
+        CREDHUB_SECRET: ((opensearch-proxy-ci-credhub-client-secret))
+        CREDHUB_SERVER: ((credhub-api-server))
+  on_failure:
+    put: slack
+    params: &slack-failure-params
+      text: |
+        :x: Failed to update test users
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+      channel: ((slack-channel-customer-success))
+      username: ((slack-username))
+      icon_url: ((slack-icon-url))
+
+
 - name: reconfigure
   serial: true
   plan:
@@ -8,17 +47,13 @@ jobs:
     trigger: true
   - set_pipeline: self
     file: src/ci/pipeline.yml
-    var_files:
-      - src/ci/config.yml
   on_failure:
     put: slack
-    params: &slack-failure-params
+    params:
+      <<: *slack-failure-params
       text: |
         :x: Failed to reconfigure pipeline
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-      channel: ((slack-channel-failure))
-      username: ((slack-username))
-      icon_url: ((slack-icon-url))
 
 - name: test
   plan:
@@ -42,14 +77,6 @@ jobs:
       <<: *slack-failure-params
       text: |
         :x: Tests FAILED on opensearch-dashboards-cf-auth-proxy
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-  on_success:
-    put: slack
-    params: &slack-success-params
-      <<: *slack-failure-params
-      channel: ((slack-channel-success))
-      text: |
-        :white_check_mark: Tests PASSED onopensearch-dashboards-cf-auth-proxy
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: deploy-test-apps
@@ -127,13 +154,6 @@ jobs:
       <<: *slack-failure-params
       text: |
         :x: FAILED to deploy apps
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-  on_success:
-    put: slack
-    params:
-      <<: *slack-success-params
-      text: |
-        :white_check_mark: Successfully deployed apps
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: e2e
@@ -239,13 +259,6 @@ jobs:
       text: |
         :x: e2e tests FAILED
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
-  on_success:
-    put: slack
-    params:
-      <<: *slack-success-params
-      text: |
-        :white_check_mark: e2e tests SUCCEEDED
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 
 ##########################
@@ -258,8 +271,8 @@ resources:
   icon: github-circle
   check_every: 10s
   source:
-    uri: ((proxy-src-code-uri))
-    branch: ((proxy-src-code-branch))
+    uri: https://github.com/cloud-gov/opensearch-dashboards-cf-auth-proxy
+    branch: main
     commit_verification_keys: ((cloud-gov-pgp-keys))
 
 - name: dev-opensearch-image
@@ -312,6 +325,22 @@ resources:
   type: slack-notification
   source:
     url: ((slack-webhook-url))
+
+- name: master-bosh-root-cert
+  type: s3-iam
+  source:
+    bucket: ((production-bucket-name))
+    region_name: ((aws-region))
+    versioned_file: ((master-bosh-cert-file))
+
+- name: weekly
+  type: time
+  source:
+    start: 12:00 AM
+    stop: 1:00 AM
+    location: America/New_York
+    days: [Wednesday]
+
 
 ############################
 #  RESOURCE TYPES
