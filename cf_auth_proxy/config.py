@@ -31,7 +31,7 @@ class Config:
             "ORG_ROLE",
             ["organization_user"],
         )
-        self.SESSION_COOKIE_NAME = "cfsession"
+        self.SESSION_COOKIE_NAME = "opensearch_proxy_session"
         # see https://requests.readthedocs.io/en/latest/user/advanced/#timeouts
         self.REQUEST_TIMEOUT = 30
 
