@@ -5,7 +5,6 @@ import datetime
 import logging
 
 from flask import Flask, request, session, url_for, redirect
-import jwt
 import requests
 
 from cf_auth_proxy.extensions import config
