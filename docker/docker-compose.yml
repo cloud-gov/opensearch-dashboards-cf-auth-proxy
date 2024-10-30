@@ -66,6 +66,15 @@ services:
       - opensearch-net
     volumes:
       - ./opensearch_dashboards/opensearch_dashboards.yml:/usr/share/opensearch-dashboards/config/opensearch_dashboards.yml
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - 6379:6379
+    expose:
+      - "6379"
+    networks:
+      - opensearch-net
   proxy:
     image: nginx:latest
     container_name: proxy
