@@ -117,5 +117,4 @@ class LocalConfig(AppConfig):
         super().__init__()
         self.TESTING = True
         self.DEBUG = True
-        # self.SESSION_TYPE = "filesystem"
         self.SESSION_COOKIE_SECURE = False
