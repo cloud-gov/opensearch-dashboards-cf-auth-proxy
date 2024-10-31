@@ -130,6 +130,8 @@ jobs:
           dashboard_url: ((dev-test-dashboard-url))
           auth_proxy_app_name: ((dev-test-auth-proxy-app-name))
           auth_proxy_num_instances: ((dev-test-auth-proxy-num-instances))
+          redis_host: ((dev-redis-host))
+          redis_password: ((dev-redis-password))
 
     - task: update-networking
       image: general-task
