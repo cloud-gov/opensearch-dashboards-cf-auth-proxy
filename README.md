@@ -52,6 +52,7 @@ The following are optional:
 2. Run this command:
 
       ```shell
+      export JAVA_HOME=/usr/share/opensearch/jdk
       ./plugins/opensearch-security/tools/securityadmin.sh -cacert /usr/share/opensearch/config/root-ca.pem -cert /usr/share/opensearch/config/kirk.pem -key /usr/share/opensearch/config/kirk-key.pem -cd /usr/share/opensearch/config/opensearch-security
       ```
 
