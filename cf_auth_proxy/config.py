@@ -87,7 +87,11 @@ class AppConfig(Config):
             self.DASHBOARD_URL = f"{self.DASHBOARD_URL}/"
 
         self.SESSION_TYPE = "redis"
-        self.SESSION_REDIS = Redis(host=self.env_parser.str("REDIS_HOST"), port=6379)
+        self.SESSION_REDIS = Redis(
+            host=self.env_parser.str("REDIS_HOST"),
+            port=6379,
+            password=self.env_parser.str("REDIS_PASSWORD", None),
+        )
         self.SESSION_COOKIE_SECURE = True
         self.PERMANENT_SESSION_LIFETIME = self.env_parser.int("SESSION_LIFETIME")
 
