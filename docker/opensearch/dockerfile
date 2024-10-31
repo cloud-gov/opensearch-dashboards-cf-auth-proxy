@@ -1,6 +1,6 @@
-ARG base_image
+ARG base_image=ubuntu:22.04
 
-FROM opensearchproject/opensearch:2.12.0 as opensearch
+FROM opensearchproject/opensearch:2.12.0 AS opensearch
 
 # ok, this is a little weird.
 # we're building this image to run on Cloud Foundry, where we can
@@ -19,9 +19,9 @@ ARG OPENSEARCH_HOME=/usr/share/opensearch
 ENV PATH $PATH:$OPENSEARCH_HOME/bin
 
 # add the new stuff
-COPY config.yml ${OPENSEARCH_HOME}/config/opensearch-security/config.yml
-COPY roles.yml ${OPENSEARCH_HOME}/config/opensearch-security/roles.yml
-COPY roles_mapping.yml ${OPENSEARCH_HOME}/config/opensearch-security/roles_mapping.yml
+COPY docker/opensearch/config.yml ${OPENSEARCH_HOME}/config/opensearch-security/config.yml
+COPY docker/opensearch/roles.yml ${OPENSEARCH_HOME}/config/opensearch-security/roles.yml
+COPY docker/opensearch/roles_mapping.yml ${OPENSEARCH_HOME}/config/opensearch-security/roles_mapping.yml
 
 WORKDIR $OPENSEARCH_HOME
 
