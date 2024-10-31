@@ -12,7 +12,7 @@ ARG OPENSEARCH_DASHBOARDS_HOME=/usr/share/opensearch-dashboards
 
 ENV PATH=$OPENSEARCH_DASHBOARDS_HOME/bin:$PATH
 
-COPY opensearch_dashboards.yml $OPENSEARCH_DASHBOARDS_HOME/config/opensearch_dashboards.yml
+COPY docker/opensearch_dashboards/opensearch_dashboards.yml $OPENSEARCH_DASHBOARDS_HOME/config/opensearch_dashboards.yml
 WORKDIR $OPENSEARCH_DASHBOARDS_HOME
 
 USER 1000

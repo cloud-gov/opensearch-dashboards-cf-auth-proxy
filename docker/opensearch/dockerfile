@@ -19,9 +19,9 @@ ARG OPENSEARCH_HOME=/usr/share/opensearch
 ENV PATH $PATH:$OPENSEARCH_HOME/bin
 
 # add the new stuff
-COPY config.yml ${OPENSEARCH_HOME}/config/opensearch-security/config.yml
-COPY roles.yml ${OPENSEARCH_HOME}/config/opensearch-security/roles.yml
-COPY roles_mapping.yml ${OPENSEARCH_HOME}/config/opensearch-security/roles_mapping.yml
+COPY docker/opensearch/config.yml ${OPENSEARCH_HOME}/config/opensearch-security/config.yml
+COPY docker/opensearch/roles.yml ${OPENSEARCH_HOME}/config/opensearch-security/roles.yml
+COPY docker/opensearch/roles_mapping.yml ${OPENSEARCH_HOME}/config/opensearch-security/roles_mapping.yml
 
 WORKDIR $OPENSEARCH_HOME
 

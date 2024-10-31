@@ -10,7 +10,9 @@ x-opensearch-node-common-vars: &x-opensearch-node-common-vars
   OPENSEARCH_INITIAL_ADMIN_PASSWORD: ${OPENSEARCH_PASSWORD}
 
 x-opensearch-node: &x-opensearch-node
-  build: ./opensearch
+  build:
+    context: ..
+    dockerfile: ./docker/opensearch/dockerfile
   ulimits:
     memlock:
       soft: -1
@@ -49,7 +51,9 @@ services:
       - ./opensearch/roles_mapping.yml:/usr/share/opensearch/config/opensearch-security/roles_mapping.yml
       - ./opensearch/log4j2.properties:/usr/share/opensearch/config/log4j2.properties
   opensearch-dashboards:
-    build: ./opensearch_dashboards
+    build:
+      context: ..
+      dockerfile: ./docker/opensearch_dashboards/dockerfile
     container_name: opensearch-dashboards
     ports:
       - 5601:5601
