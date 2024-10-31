@@ -9,7 +9,7 @@ config:
       xff:
         enabled: true
         # trust IP addresses from Docker and CF Diego network
-        internalProxies: '\.*'
+        internalProxies: '172\.20\.0.*|10\.255.*'
         remoteIpHeader: "x-forwarded-for"
     authc:
       basic_internal_auth_domain:
