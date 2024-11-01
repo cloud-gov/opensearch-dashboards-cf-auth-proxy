@@ -263,9 +263,7 @@ main() {
       ;;
     start-cluster)
       source_env_vars
-      pushd docker
-        docker compose up --force-recreate --build "$@"
-      popd
+      docker compose -f docker/docker-compose.yml up --force-recreate --build "$@"
       ;;
     destroy-cluster)
       pushd docker

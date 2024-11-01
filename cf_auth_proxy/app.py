@@ -5,7 +5,7 @@ import datetime
 import logging
 
 from flask import Flask, request, session, url_for, redirect
-import jwt
+from flask_session import Session
 import requests
 
 from cf_auth_proxy.extensions import config
@@ -19,6 +19,7 @@ from cf_auth_proxy.token import decode_id_token_for_claims
 def create_app():
     app = Flask(__name__)
     app.config.from_object(config)
+    Session(app)
 
     logger = logging.getLogger()
     logger.setLevel(level=os.getenv("LOG_LEVEL", "INFO").upper())

@@ -26,4 +26,6 @@ applications:
     UAA_JWKS: '((uaa_jwks))'
     SECRET_KEY: ((secret_key))
     SESSION_LIFETIME: ((session_lifetime))
+    REDIS_HOST: '((redis_host))'
+    REDIS_PASSWORD: '((redis_password))'
   memory: 2G
