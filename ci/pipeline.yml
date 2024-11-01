@@ -79,13 +79,47 @@ jobs:
         :x: Tests FAILED on opensearch-dashboards-cf-auth-proxy
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
-- name: deploy-test-apps
+- name: deploy-test-proxy-app
   plan:
     - in_parallel:
       - get: src
         params: {depth: 1}
         passed: [test]
-      - get: general-task
+        trigger: true
+
+    - put: cf-dev
+      params:
+        path: src
+        manifest: src/cf/proxy-manifest.yml
+        vars:
+          cf_url: ((dev-cf-api-url))
+          uaa_auth_url: ((dev-uaa-auth-url))
+          uaa_base_url: ((dev-uaa-base-url))
+          uaa_client_id: ((dev-uaa-test-client-id))
+          uaa_client_secret: ((dev-uaa-test-client-secret))
+          # note: when setting this in credhub, be sure to include extra single quotes, e.g.
+          # credhub set -t value -n /path/to/dev-uaa-jwks -v "'"'{"keys":[]}'"'"
+          uaa_jwks: ((dev-uaa-jwks))
+          secret_key: ((dev-secret-key))
+          session_lifetime: "3600"
+          public_route: ((dev-test-public-url))
+          dashboard_url: ((dev-test-dashboard-url))
+          auth_proxy_app_name: ((dev-test-auth-proxy-app-name))
+          auth_proxy_num_instances: ((dev-test-auth-proxy-num-instances))
+          redis_host: ((dev-redis-host))
+          redis_password: ((dev-redis-password))
+  on_failure:
+    put: slack
+    params:
+      <<: *slack-failure-params
+      text: |
+        :x: FAILED to deploy test proxy app
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+
+
+- name: deploy-opensearch-test-apps
+  plan:
+    - in_parallel:
       - get: dev-opensearch-image
         trigger: true
       - get: dev-opensearch-dashboards-image
@@ -110,29 +144,22 @@ jobs:
           opensearch_password: ((opensearch-admin-password))
           repo: ((ecr_aws_repo))
           docker_username: ((ecr_aws_key))
+  on_failure:
+    put: slack
+    params:
+      <<: *slack-failure-params
+      text: |
+        :x: FAILED to deploy OpenSearch test apps
+        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
-    - put: cf-dev
-      params:
-        path: src
-        manifest: src/cf/proxy-manifest.yml
-        vars:
-          cf_url: ((dev-cf-api-url))
-          uaa_auth_url: ((dev-uaa-auth-url))
-          uaa_base_url: ((dev-uaa-base-url))
-          uaa_client_id: ((dev-uaa-test-client-id))
-          uaa_client_secret: ((dev-uaa-test-client-secret))
-          # note: when setting this in credhub, be sure to include extra single quotes, e.g.
-          # credhub set -t value -n /path/to/dev-uaa-jwks -v "'"'{"keys":[]}'"'"
-          uaa_jwks: ((dev-uaa-jwks))
-          secret_key: ((dev-secret-key))
-          session_lifetime: "3600"
-          public_route: ((dev-test-public-url))
-          dashboard_url: ((dev-test-dashboard-url))
-          auth_proxy_app_name: ((dev-test-auth-proxy-app-name))
-          auth_proxy_num_instances: ((dev-test-auth-proxy-num-instances))
-          redis_host: ((dev-redis-host))
-          redis_password: ((dev-redis-password))
-
+- name: update-test-app-networking
+  plan:
+    - in_parallel:
+      - get: general-task
+      - get: src
+        params: {depth: 1}
+        passed: [deploy-test-proxy-app, deploy-opensearch-test-apps]
+        trigger: true
     - task: update-networking
       image: general-task
       config:
@@ -155,7 +182,7 @@ jobs:
     params:
       <<: *slack-failure-params
       text: |
-        :x: FAILED to deploy apps
+        :x: FAILED to update test app networking
         <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: e2e
