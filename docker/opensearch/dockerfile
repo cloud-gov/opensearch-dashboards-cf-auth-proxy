@@ -1,6 +1,6 @@
 ARG base_image=ubuntu:22.04
 
-FROM opensearchproject/opensearch:2.12.0 AS opensearch
+FROM opensearchproject/opensearch:2.17.0 AS opensearch
 
 # ok, this is a little weird.
 # we're building this image to run on Cloud Foundry, where we can
