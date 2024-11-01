@@ -91,6 +91,7 @@ class AppConfig(Config):
             host=self.env_parser.str("REDIS_HOST"),
             port=6379,
             password=self.env_parser.str("REDIS_PASSWORD", None),
+            ssl=True,
         )
         self.SESSION_COOKIE_SECURE = True
         self.PERMANENT_SESSION_LIFETIME = self.env_parser.int("SESSION_LIFETIME")
@@ -122,3 +123,7 @@ class LocalConfig(AppConfig):
         self.TESTING = True
         self.DEBUG = True
         self.SESSION_COOKIE_SECURE = False
+        self.SESSION_REDIS = Redis(
+            host=self.env_parser.str("REDIS_HOST"),
+            port=6379,
+        )
