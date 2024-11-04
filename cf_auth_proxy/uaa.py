@@ -32,10 +32,7 @@ def is_user_cf_admin(user_id, token):
         s.headers["Authorization"] = f"Bearer {token}"
         url = urljoin(config.UAA_BASE_URL, f"Users/{user_id}")
         response = s.get(url)
-        try:
-            response.raise_for_status()
-        except:
-            return "Unexpected error", 500
+        response.raise_for_status()
         data = response.json()
         user_groups = [group["display"] for group in data.get("groups", [])]
         return config.CF_ADMIN_GROUP_NAME in user_groups
