@@ -175,7 +175,7 @@ def create_app():
         # allowed path
         if session.get("user_id"):
             headers["x-proxy-user"] = session["email"]
-            roles = [("admin" if session.get("is_cf_admin") else "user")]
+            roles = [("admin" if session.get("is_cf_admin") == True else "user")]
             roles += session.get("user_orgs", [])
             headers["x-proxy-roles"] = ",".join(roles)
 
