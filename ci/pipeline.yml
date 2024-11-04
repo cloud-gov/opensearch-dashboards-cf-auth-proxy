@@ -191,7 +191,7 @@ jobs:
       - get: src
         params: {depth: 1}
         trigger: true
-        passed: [deploy-test-apps]
+        passed: [update-test-app-networking]
       - get: general-task
       - get: playwright-python
     - task: provision-cf-access
