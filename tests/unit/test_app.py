@@ -144,3 +144,25 @@ def test_does_not_modify_existing_xff_lowercase(client):
             s["email"] = "me"
         client.get("/home", headers={"x-forwarded-for": "y.y.y.y"})
         assert m.last_request._request.headers["X-Forwarded-For"] == "y.y.y.y"
+
+
+def test_does_not_accept_truthy_is_cf_admin(client):
+    with requests_mock.Mocker() as m:
+        m.get("http://mock.dashboard/home")
+        with client.session_transaction() as s:
+            s["user_id"] = "me2"
+            s["is_cf_admin"] = "truthy"
+            s["email"] = "me"
+        client.get("/home")
+        assert "admin" not in m.last_request._request.headers["x-proxy-roles"]
+
+
+def test_callback_returns_error_on_uaa_token_failure(client):
+    with requests_mock.Mocker() as m:
+        m.post("http://mock.uaa/token", status_code=401)
+        with client.session_transaction() as s:
+            s["user_id"] = "me2"
+            s["email"] = "me"
+            s["state"] = "foo"
+        response = client.get("/cb?code=fakecode&state=foo")
+        assert response.status_code == 500
