@@ -19,11 +19,7 @@ def get_client_credentials_token():
         timeout=config.REQUEST_TIMEOUT,
     )
 
-    try:
-        response.raise_for_status()
-    except:
-        return "Unexpected error", 500
-
+    response.raise_for_status()
     return response.json()["access_token"]
 
 
