@@ -120,6 +120,8 @@ jobs:
 - name: deploy-opensearch-test-apps
   plan:
     - in_parallel:
+      - get: src
+        passed: [test]
       - get: dev-opensearch-image
         trigger: true
       - get: dev-opensearch-dashboards-image
