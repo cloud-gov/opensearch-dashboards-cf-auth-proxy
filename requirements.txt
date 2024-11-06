@@ -4,29 +4,29 @@
 #
 #    pip-compile --output-file=requirements.txt pip-tools/requirements.in
 #
-async-timeout==5.0.0
+async-timeout==5.0.1
     # via redis
 blinker==1.8.2
     # via flask
 cachelib==0.13.0
     # via flask-session
-certifi==2024.7.4
+certifi==2024.8.30
     # via requests
-cffi==1.16.0
+cffi==1.17.1
     # via cryptography
-charset-normalizer==3.3.2
+charset-normalizer==3.4.0
     # via requests
 click==8.1.7
     # via flask
-cryptography==42.0.8
+cryptography==43.0.3
     # via
     #   jwcrypto
     #   pyjwt
-dnspython==2.6.1
+dnspython==2.7.0
     # via eventlet
 environs==11.0.0
     # via -r pip-tools/requirements.in
-eventlet==0.36.1
+eventlet==0.37.0
     # via -r pip-tools/requirements.in
 flask==3.0.3
     # via
@@ -34,11 +34,11 @@ flask==3.0.3
     #   flask-session
 flask-session[redis]==0.8.0
     # via -r pip-tools/requirements.in
-greenlet==3.0.3
+greenlet==3.1.1
     # via eventlet
-gunicorn==22.0.0
+gunicorn==23.0.0
     # via -r pip-tools/requirements.in
-idna==3.7
+idna==3.10
     # via requests
 itsdangerous==2.2.0
     # via flask
@@ -46,11 +46,11 @@ jinja2==3.1.4
     # via flask
 jwcrypto==1.5.6
     # via -r pip-tools/requirements.in
-markupsafe==2.1.5
+markupsafe==3.0.2
     # via
     #   jinja2
     #   werkzeug
-marshmallow==3.21.3
+marshmallow==3.23.1
     # via environs
 msgspec==0.18.6
     # via flask-session
@@ -60,11 +60,11 @@ packaging==24.1
     #   marshmallow
 pycparser==2.22
     # via cffi
-pyjwt[crypto]==2.8.0
+pyjwt[crypto]==2.9.0
     # via -r pip-tools/requirements.in
 python-dotenv==1.0.1
     # via environs
-redis==5.0.7
+redis==5.2.0
     # via
     #   -r pip-tools/requirements.in
     #   flask-session
@@ -72,7 +72,7 @@ requests==2.32.3
     # via -r pip-tools/requirements.in
 typing-extensions==4.12.2
     # via jwcrypto
-urllib3==2.2.2
+urllib3==2.2.3
     # via requests
-werkzeug==3.0.3
+werkzeug==3.1.2
     # via flask
