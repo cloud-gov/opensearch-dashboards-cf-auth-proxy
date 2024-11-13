@@ -15,14 +15,13 @@ from cf_auth_proxy import uaa
 from cf_auth_proxy.headers import list_to_ext_header
 from cf_auth_proxy.token import decode_id_token_for_claims
 
+logger = logging.getLogger(__name__)
+
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(config)
     Session(app)
-
-    logger = logging.getLogger()
-    logger.setLevel(level=os.getenv("LOG_LEVEL", "INFO").upper())
 
     @app.before_request
     def refresh_session():
