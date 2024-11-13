@@ -1,8 +1,11 @@
 from flask import Response
 
+import logging
 import requests
 
 from cf_auth_proxy.extensions import config
+
+logger = logging.getLogger(__name__)
 
 
 def proxy_request(url, headers, data, cookies, method):
@@ -16,6 +19,16 @@ def proxy_request(url, headers, data, cookies, method):
         cert=(config.DASHBOARD_CERTIFICATE, config.DASHBOARD_CERTIFICATE_KEY),
         verify=config.DASHBOARD_CERTIFICATE_CA,
     )
+
+    if not resp.ok:
+        logger.error(
+            "%s %s %d %s, headers: %s",
+            resp.request.method,
+            resp.request.path_url,
+            resp.status_code,
+            resp.text,
+            resp.request.headers,
+        )
 
     excluded_headers = [
         "content-encoding",
