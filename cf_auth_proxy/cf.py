@@ -28,7 +28,7 @@ def get_spaces_for_user(user_id, token):
         first_response = s.get(url, params=params)
         resources = iterate_cf_resource(s, first_response)
     spaces = [r["relationships"]["space"]["data"]["guid"] for r in resources]
-    return spaces
+    return list(set(spaces))
 
 
 def get_permitted_orgs_for_user(user_id, token):
@@ -42,7 +42,7 @@ def get_permitted_orgs_for_user(user_id, token):
         first_response = s.get(url, params=params)
         resources = iterate_cf_resource(s, first_response)
     orgs = [r["relationships"]["organization"]["data"]["guid"] for r in resources]
-    return orgs
+    return list(set(orgs))
 
 
 def get_all_orgs_for_user(user_id, token):
@@ -56,4 +56,4 @@ def get_all_orgs_for_user(user_id, token):
         first_response = s.get(url, params=params)
         resources = iterate_cf_resource(s, first_response)
     orgs = [r["relationships"]["organization"]["data"]["guid"] for r in resources]
-    return orgs
+    return list(set(orgs))
