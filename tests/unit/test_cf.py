@@ -127,7 +127,7 @@ def test_gets_unique_spaces():
         response_1 = """
   {
    "pagination": {
-      "total_results": 2,
+      "total_results": 3,
       "total_pages": 2,
       "first": {
          "href": "http://mock.cf/v3/roles?order_by=%2Bcreated_at&page=1&per_page=1&types=space_developer%2Cspace_manager&user_guids=a-user-guid"
@@ -178,7 +178,7 @@ def test_gets_unique_spaces():
         response_2 = """
   {
    "pagination": {
-      "total_results": 2,
+      "total_results": 3,
       "total_pages": 2,
       "first": {
          "href": "http://mock.cf/v3/roles?order_by=%2Bcreated_at&page=1&per_page=1&types=space_developer%2Cspace_manager%2Cspace_auditor&user_guids=a-user-guid"
