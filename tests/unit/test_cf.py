@@ -275,9 +275,9 @@ def test_gets_unique_spaces():
 def test_gets_cf_user_permitted_orgs():
     with requests_mock.Mocker() as m:
         response_1 = """
-  {
+{
    "pagination": {
-      "total_results": 2,
+      "total_results": 3,
       "total_pages": 2,
       "first": {
          "href": "http://mock.cf/v3/roles?order_by=%2Bcreated_at&page=1&per_page=1&types=organization_manager%2Corganization_auditor&user_guids=a-user-guid"
@@ -322,9 +322,9 @@ def test_gets_cf_user_permitted_orgs():
                "href": "http://mock.cf/v3/organization/org-guid-1"
             }
          }
-        }
-      ]
-    } """
+      }
+   ]
+} """
         response_2 = """
   {
    "pagination": {
@@ -373,9 +373,41 @@ def test_gets_cf_user_permitted_orgs():
                "href": "http://mock.cf/v3/organizations/org-guid-2"
             }
          }
-        }
-      ]
-    }
+      },
+      {
+         "guid": "role-guid-3",
+         "created_at": "2019-12-12T18:59:12Z",
+         "updated_at": "2019-12-12T18:59:13Z",
+         "type": "organization_auditor",
+         "relationships": {
+            "user": {
+               "data": {
+                  "guid": "a-user-guid"
+               }
+            },
+            "organization": {
+               "data": {
+                  "guid": "org-guid-2"
+               }
+            },
+            "space": {
+               "data": null
+            }
+         },
+         "links": {
+            "self": {
+               "href": "http://mock.cf/v3/roles/role-guid-3"
+            },
+            "user": {
+               "href": "http://mock.cf/v3/users/a-user-guid"
+            },
+            "organization": {
+               "href": "http://mock.cf/v3/organizations/org-guid-2"
+            }
+         }
+      }
+   ]
+}
     """
         m.get(
             "http://mock.cf/v3/roles?user_guids=a-user-id&types=organization_manager,organization_auditor",
@@ -395,7 +427,7 @@ def test_gets_cf_user_all_orgs():
         response_1 = """
   {
    "pagination": {
-      "total_results": 2,
+      "total_results": 3,
       "total_pages": 2,
       "first": {
          "href": "http://mock.cf/v3/roles?order_by=%2Bcreated_at&page=1&per_page=1&types=organization_user&user_guids=a-user-guid"
@@ -444,9 +476,9 @@ def test_gets_cf_user_all_orgs():
       ]
     } """
         response_2 = """
-  {
+{
    "pagination": {
-      "total_results": 2,
+      "total_results": 3,
       "total_pages": 2,
       "first": {
          "href": "http://mock.cf/v3/roles?order_by=%2Bcreated_at&page=1&per_page=1&types=organization_user&user_guids=a-user-guid"
@@ -491,9 +523,41 @@ def test_gets_cf_user_all_orgs():
                "href": "http://mock.cf/v3/organizations/org-guid-2"
             }
          }
-        }
-      ]
-    }
+      },
+      {
+         "guid": "role-guid-3",
+         "created_at": "2019-12-12T18:59:12Z",
+         "updated_at": "2019-12-12T18:59:13Z",
+         "type": "org_user",
+         "relationships": {
+            "user": {
+               "data": {
+                  "guid": "a-user-guid"
+               }
+            },
+            "organization": {
+               "data": {
+                  "guid": "org-user-2"
+               }
+            },
+            "space": {
+               "data": null
+            }
+         },
+         "links": {
+            "self": {
+               "href": "http://mock.cf/v3/roles/role-guid-3"
+            },
+            "user": {
+               "href": "http://mock.cf/v3/users/a-user-guid"
+            },
+            "organization": {
+               "href": "http://mock.cf/v3/organizations/org-guid-2"
+            }
+         }
+      }
+   ]
+}
     """
         m.get(
             "http://mock.cf/v3/roles?user_guids=a-user-id&types=organization_user",
