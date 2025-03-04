@@ -140,7 +140,7 @@ Lastly, update your `.env` value to set these values:
 
 ## Downloading test results from CI
 
-When the e2e tests run in CI, artifacts such as video recordings or traces from failed test runs may be created. To download these artifacts, use the provided script:
+When the e2e tests run in CI, traces from failed test runs may be created. To download these traces, use the provided script:
 
 ```shell
 ./scripts/download-e2e-ci-results.sh <BUILD_NUMBER>
