@@ -181,7 +181,7 @@ def create_app():
                     else session.get("user_orgs", [])
                 )
             ]
-            headers["x-proxy-roles"] = ",".join(roles)
+            headers["x-proxy-roles"] = roles
 
         xff_header_name = "X-Forwarded-For"
         if xff_header_name.lower() not in [k.lower() for k in headers.keys()]:
