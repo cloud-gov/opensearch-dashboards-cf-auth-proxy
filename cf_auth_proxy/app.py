@@ -174,14 +174,11 @@ def create_app():
         # allowed path
         if session.get("user_id"):
             headers["x-proxy-user"] = session["email"]
-            roles = [
-                (
-                    "admin"
-                    if session.get("is_cf_admin") == True
-                    else session.get("user_orgs", [])
-                )
-            ]
-            headers["x-proxy-roles"] = roles
+            if session.get("is_cf_admin") == True:
+                roles = "admin"
+            else:
+                roles = session.get("user_orgs", [])
+            headers["x-proxy-roles"] = ",".join(roles)
 
         xff_header_name = "X-Forwarded-For"
         if xff_header_name.lower() not in [k.lower() for k in headers.keys()]:
