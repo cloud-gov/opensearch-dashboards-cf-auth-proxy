@@ -146,13 +146,13 @@ jobs:
           opensearch_password: ((opensearch-admin-password))
           repo: ((ecr_aws_repo))
           docker_username: ((ecr_aws_key))
-  on_failure:
-    put: slack
-    params:
-      <<: *slack-failure-params
-      text: |
-        :x: FAILED to deploy OpenSearch test apps
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+  # on_failure:
+  #   put: slack
+  #   params:
+  #     <<: *slack-failure-params
+  #     text: |
+  #       :x: FAILED to deploy OpenSearch test apps
+  #       <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: update-test-app-networking
   plan:
@@ -179,13 +179,13 @@ jobs:
         OPENSEARCH_NODE_APP_NAME: ((dev-test-opensearch-node-app-name))
         DASHBOARDS_APP_NAME: ((dev-test-opensearch-dashboards-app-name))
         PROXY_APP_NAME: ((dev-test-auth-proxy-app-name))
-  on_failure:
-    put: slack
-    params:
-      <<: *slack-failure-params
-      text: |
-        :x: FAILED to update test app networking
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+  # on_failure:
+  #   put: slack
+  #   params:
+  #     <<: *slack-failure-params
+  #     text: |
+  #       :x: FAILED to update test app networking
+  #       <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 - name: e2e
   plan:
