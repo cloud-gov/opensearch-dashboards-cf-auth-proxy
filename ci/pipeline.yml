@@ -283,13 +283,13 @@ jobs:
           TEST_USER_4_USERNAME: ((dev-test-user-4-username))
           TEST_USER_4_PASSWORD: ((dev-test-user-4-password))
           TEST_USER_4_TOTP_SEED: ((dev-test-user-4-totp-seed))
-  on_failure:
-    put: slack
-    params:
-      <<: *slack-failure-params
-      text: |
-        :x: e2e tests FAILED
-        <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
+  # on_failure:
+  #   put: slack
+  #   params:
+  #     <<: *slack-failure-params
+  #     text: |
+  #       :x: e2e tests FAILED
+  #       <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|View build details>
 
 
 ##########################
