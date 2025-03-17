@@ -8,9 +8,9 @@
 version: 1
 applications:
 - name: ((opensearch_node_app_name))
-  memory: 9G
+  memory: 8G
   instances: 1
-  disk_quota: 3G
+  disk_quota: 2G
   routes:
     - route: test-opensearch-node.apps.internal
   docker:
