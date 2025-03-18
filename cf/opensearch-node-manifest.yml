@@ -8,7 +8,7 @@
 version: 1
 applications:
 - name: ((opensearch_node_app_name))
-  memory: 6G
+  memory: 7G
   instances: 1
   disk_quota: 2G
   routes:
