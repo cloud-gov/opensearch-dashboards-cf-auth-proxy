@@ -209,7 +209,7 @@ provision_cf_access() {
 }
 
 run_e2e_tests() {
-  ${python} -m pytest e2e --browser firefox --headed "$@"
+  ${python} -m pytest e2e --browser firefox "$@"
 }
 
 main() {
