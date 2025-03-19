@@ -161,6 +161,7 @@ def test_config_sets_admin_group(monkeypatch, base_local_config):
     config = config_from_env()
     assert config.CF_ADMIN_GROUP_NAME == "random-group"
 
+
 def test_config_sets_auditor_group(monkeypatch, base_local_config):
     monkeypatch.setenv("CF_AUDITOR_GROUP_NAME", "random-group")
     config = config_from_env()
