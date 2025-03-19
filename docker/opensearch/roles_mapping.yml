@@ -34,4 +34,8 @@ all_access:
   users: []
   and_backend_roles: []
   description: "Administrators with unrestricted access"
+readall:
+  reserved: false
+  backend_roles:
+  - "auditor"
 

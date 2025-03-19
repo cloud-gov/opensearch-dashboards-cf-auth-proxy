@@ -74,6 +74,7 @@ def test_config_loads(monkeypatch):
         "organization_user",
     ]
     assert config.CF_ADMIN_GROUP_NAME == "cloud_controller.admin"
+    assert config.CF_AUDITOR_GROUP_NAME == "cloud_controller.global_auditor"
     assert config.REQUEST_TIMEOUT == 30
 
     assert config.REQUEST_TIMEOUT == 30

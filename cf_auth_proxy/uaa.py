@@ -32,3 +32,14 @@ def is_user_cf_admin(user_id, token):
         data = response.json()
         user_groups = [group["display"] for group in data.get("groups", [])]
         return config.CF_ADMIN_GROUP_NAME in user_groups
+
+
+def is_user_cf_auditor(user_id, token):
+    with requests.Session() as s:
+        s.headers["Authorization"] = f"Bearer {token}"
+        url = urljoin(config.UAA_BASE_URL, f"Users/{user_id}")
+        response = s.get(url)
+        response.raise_for_status()
+        data = response.json()
+        user_groups = [group["display"] for group in data.get("groups", [])]
+        return config.CF_AUDITOR_GROUP_NAME in user_groups
