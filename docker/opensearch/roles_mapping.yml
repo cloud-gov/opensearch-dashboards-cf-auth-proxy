@@ -5,7 +5,8 @@ kibana_user:
   reserved: true
   hidden: false
   backend_roles:
-  - "user"
+  - "67a92b1f-aced-4f20-8317-65b23cd7cf85"
+  - "76705200-9e93-4975-9e7d-01b8eafcc0be"
   hosts: []
   users: []
   and_backend_roles: []
@@ -14,7 +15,8 @@ cf_user:
   reserved: true
   hidden: false
   backend_roles:
-  - "user"
+  - "67a92b1f-aced-4f20-8317-65b23cd7cf85"
+  - "76705200-9e93-4975-9e7d-01b8eafcc0be"
   hosts: []
   users: []
   and_backend_roles: []
@@ -32,4 +34,8 @@ all_access:
   users: []
   and_backend_roles: []
   description: "Administrators with unrestricted access"
+readall:
+  reserved: false
+  backend_roles:
+  - "auditor"
 

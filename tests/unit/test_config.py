@@ -20,6 +20,7 @@ def base_local_config(monkeypatch, token_keys):
     monkeypatch.setenv("UAA_CLIENT_SECRET", "CHANGEME")
     monkeypatch.setenv("UAA_JWKS", '{"keys":[]}')
     monkeypatch.setenv("CF_ADMIN_GROUP_NAME", "wrong-value")
+    monkeypatch.setenv("CF_AUDITOR_GROUP_NAME", "wrong-value")
     monkeypatch.setenv("DASHBOARD_URL", "https://wrong-value.example.com/")
     monkeypatch.setenv("FLASK_ENV", "local")
     monkeypatch.setenv("REDIS_HOST", "fake-redis-host")
@@ -74,6 +75,7 @@ def test_config_loads(monkeypatch):
         "organization_user",
     ]
     assert config.CF_ADMIN_GROUP_NAME == "cloud_controller.admin"
+    assert config.CF_AUDITOR_GROUP_NAME == "cloud_controller.global_auditor"
     assert config.REQUEST_TIMEOUT == 30
 
     assert config.REQUEST_TIMEOUT == 30
@@ -158,6 +160,12 @@ def test_config_sets_admin_group(monkeypatch, base_local_config):
     monkeypatch.setenv("CF_ADMIN_GROUP_NAME", "random-group")
     config = config_from_env()
     assert config.CF_ADMIN_GROUP_NAME == "random-group"
+
+
+def test_config_sets_auditor_group(monkeypatch, base_local_config):
+    monkeypatch.setenv("CF_AUDITOR_GROUP_NAME", "random-group")
+    config = config_from_env()
+    assert config.CF_AUDITOR_GROUP_NAME == "random-group"
 
 
 def test_config_sets_uaa_jwks(monkeypatch, base_local_config, token_keys):

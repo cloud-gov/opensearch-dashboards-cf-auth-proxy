@@ -220,6 +220,20 @@ def uaa_user_is_admin_response():
 
 
 @pytest.fixture()
+def uaa_user_is_auditor_response():
+    return """
+   {
+      "groups": [
+         {
+            "value": "1234-abcd-5678-efgh-9z9d",
+            "display": "cloud_controller.global_auditor",
+            "type": "DIRECT"
+         }
+      ]
+   }"""
+
+
+@pytest.fixture()
 def uaa_user_is_not_admin_response():
     return """
    {

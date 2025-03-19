@@ -18,6 +18,7 @@ applications:
     FLASK_ENV: production
     DASHBOARD_URL: ((dashboard_url))
     CF_ADMIN_GROUP_NAME: "cloud_controller.admin"
+    CF_AUDITOR_GROUP_NAME: "cloud_controller.global_auditor"
     CF_API_URL: ((cf_url))
     UAA_AUTH_URL: ((uaa_auth_url))
     UAA_BASE_URL: ((uaa_base_url))

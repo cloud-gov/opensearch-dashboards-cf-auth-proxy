@@ -123,6 +123,10 @@ def create_app():
             session["user_id"], session["client_credentials_token"]
         )
 
+        session["is_cf_auditor"] = uaa.is_user_cf_auditor(
+            session["user_id"], session["client_credentials_token"]
+        )
+
         return redirect(session.pop("original-request", "/app/home"))
 
     @app.route("/", defaults={"path": ""})
@@ -174,9 +178,13 @@ def create_app():
         # allowed path
         if session.get("user_id"):
             headers["x-proxy-user"] = session["email"]
-            roles = [("admin" if session.get("is_cf_admin") == True else "user")]
-            roles += session.get("user_orgs", [])
-            headers["x-proxy-roles"] = ",".join(roles)
+            if session.get("is_cf_admin") == True:
+                roles = "admin"
+            elif session.get("is_cf_auditor") == True:
+                roles = "auditor"
+            else:
+                roles = ",".join(session.get("user_orgs", []))
+            headers["x-proxy-roles"] = roles
 
         xff_header_name = "X-Forwarded-For"
         if xff_header_name.lower() not in [k.lower() for k in headers.keys()]:
