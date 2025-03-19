@@ -106,7 +106,7 @@ class AppConfig(Config):
         self.UAA_CLIENT_ID = self.env_parser.str("UAA_CLIENT_ID")
         self.UAA_CLIENT_SECRET = self.env_parser.str("UAA_CLIENT_SECRET")
         self.SECRET_KEY = self.env_parser.str("SECRET_KEY")
-        self.CF_ADMIN_GROUP_NAME = self.env_parser.str("CF_AUDITOR_GROUP_NAME")
+        self.CF_ADMIN_GROUP_NAME = self.env_parser.str("CF_ADMIN_GROUP_NAME")
         self.CF_AUDITOR_GROUP_NAME = self.env_parser.str("CF_AUDITOR_GROUP_NAME")
         self.DASHBOARD_CERTIFICATE = self.env_parser.str("DASHBOARD_CERTIFICATE", None)
         self.DASHBOARD_CERTIFICATE_KEY = self.env_parser.str(
