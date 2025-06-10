@@ -68,7 +68,7 @@ redis==5.2.0
     # via
     #   -r pip-tools/requirements.in
     #   flask-session
-requests==2.32.3
+requests==2.32.4
     # via -r pip-tools/requirements.in
 typing-extensions==4.12.2
     # via jwcrypto
