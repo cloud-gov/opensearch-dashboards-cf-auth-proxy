@@ -4,6 +4,7 @@ import os
 import datetime
 import logging
 
+
 from flask import Flask, request, session, url_for, redirect
 from flask_session import Session
 import requests
@@ -12,6 +13,7 @@ from cf_auth_proxy.extensions import config
 from cf_auth_proxy.proxy import proxy_request
 from cf_auth_proxy import cf
 from cf_auth_proxy import uaa
+from cf_auth_proxy import roles
 from cf_auth_proxy.headers import list_to_ext_header
 from cf_auth_proxy.token import decode_id_token_for_claims
 
@@ -171,8 +173,8 @@ def create_app():
             for k, v in request.headers.items()
             if k.lower() not in forbidden_headers
         }
-        headers["x-proxy-ext-spaceids"] = list_to_ext_header(session.get("spaces", []))
-        headers["x-proxy-ext-orgids"] = list_to_ext_header(session.get("orgs", []))
+        space_ids = list_to_ext_header(session.get("spaces", []))
+        org_ids = list_to_ext_header(session.get("orgs", []))
 
         # we need to check the user_id again because we could be unauthenticated, hitting an
         # allowed path
@@ -192,6 +194,17 @@ def create_app():
                 headers[xff_header_name] = xff + "," + request.remote_addr
             else:
                 headers[xff_header_name] = request.remote_addr
+
+        #find the sha for user
+        combined_cf_access = f"{space_ids}{org_ids}"
+        combined_cf_sha = roles.sha256_hash(combined_cf_access)
+
+        #Send a role check to opensearch
+        exists = roles.check_role_exists(combined_cf_sha)
+
+        if not exists:
+            definition = roles.build_dls(space_ids,org_ids)
+            roles.create_role(combined_cf_sha,definition)
 
         return proxy_request(
             url, headers, request.get_data(), request.cookies, request.method
