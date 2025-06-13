@@ -13,8 +13,11 @@ class RoleManager:
 
     def check_role_exists(self,role_name) -> bool:
         url = f'{self.opensearch_url}/_plugins/_security/api/roles/{role_name}'
-        response = requests.get(url,cert=(config.OPENSEARCH_CERTIFICATE, config.OPENSEARCH_CERTIFICATE_KEY),
-        verify=config.OPENSEARCH_CERTIFICATE_CA)
+        response = requests.get(
+            url,
+            cert=(config.OPENSEARCH_CERTIFICATE, config.OPENSEARCH_CERTIFICATE_KEY),
+            verify=config.OPENSEARCH_CERTIFICATE_CA
+        )
         if response.status_code == 200:
             return True
         elif response.status_code == 404:
@@ -24,8 +27,12 @@ class RoleManager:
 
     def create_role(self,role_name: str, role_definition:dict):
         url = f"{self.opensearch_url}/_plugins/_security/api/roles/{role_name}"
-        response = requests.put(url, json=role_definition,cert=(config.OPENSEARCH_CERTIFICATE, config.OPENSEARCH_CERTIFICATE_KEY),
-        verify=config.OPENSEARCH_CERTIFICATE_CA)
+        response = requests.put(
+            url,
+            json=role_definition,
+            cert=(config.OPENSEARCH_CERTIFICATE, config.OPENSEARCH_CERTIFICATE_KEY),
+            verify=config.OPENSEARCH_CERTIFICATE_CA
+        )
         if response.status_code not in [200,201]:
             response.raise_for_status()
         return response.json()
