@@ -24,6 +24,7 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(config)
     Session(app)
+    rolemanager = RoleManager()
 
     @app.before_request
     def refresh_session():
@@ -197,14 +198,14 @@ def create_app():
 
         #find the sha for user
         combined_cf_access = f"{space_ids}{org_ids}"
-        combined_cf_sha = roles.sha256_hash(combined_cf_access)
+        combined_cf_sha = rolemanager.sha256_hash(combined_cf_access)
 
         #Send a role check to opensearch
-        exists = roles.check_role_exists(combined_cf_sha)
+        exists = rolemanager.check_role_exists(combined_cf_sha)
 
         if not exists:
-            definition = roles.build_dls(space_ids,org_ids)
-            roles.create_role(combined_cf_sha,definition)
+            definition = rolemanager.build_dls(space_ids,org_ids)
+            rolemanager.create_role(combined_cf_sha,definition)
 
         return proxy_request(
             url, headers, request.get_data(), request.cookies, request.method

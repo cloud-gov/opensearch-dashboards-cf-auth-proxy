@@ -4,15 +4,14 @@ import json
 from cf_auth_proxy.extensions import config
 
 class RoleManager:
-    def __init__(self,session,opensearch_url):
-        self.session = session
+    def __init__(self):
         self.opensearch_url = config.OPENSEARCH_URL
 
     def sha256_hash(self,value: str) -> str:
         return hashlib.sha256(value.encode("utf-8")).hexdigest()
 
     def check_role_exists(self,role_name) -> bool:
-        url = f'{self.opensearch_url}/_plugins/_security/api/roles/{role_name}'
+        url = f'{self.opensearch_url}_plugins/_security/api/roles/{role_name}'
         response = requests.get(
             url,
             cert=(config.OPENSEARCH_CERTIFICATE, config.OPENSEARCH_CERTIFICATE_KEY),
@@ -26,10 +25,14 @@ class RoleManager:
             response.raise_for_status()
 
     def create_role(self,role_name: str, role_definition:dict):
-        url = f"{self.opensearch_url}/_plugins/_security/api/roles/{role_name}"
+        url = f"{self.opensearch_url}_plugins/_security/api/roles/{role_name}"
+        headers = {
+            "Content-Type": "application/json"
+        }
         response = requests.put(
             url,
             json=role_definition,
+            headers=headers,
             cert=(config.OPENSEARCH_CERTIFICATE, config.OPENSEARCH_CERTIFICATE_KEY),
             verify=config.OPENSEARCH_CERTIFICATE_CA
         )
@@ -37,7 +40,7 @@ class RoleManager:
             response.raise_for_status()
         return response.json()
 
-    def build_dls(space_ids,org_ids):
+    def build_dls(self,space_ids,org_ids):
         terms_query = []
 
         if space_ids:
@@ -59,4 +62,3 @@ class RoleManager:
                 ]
         }
         return role_definition
-
