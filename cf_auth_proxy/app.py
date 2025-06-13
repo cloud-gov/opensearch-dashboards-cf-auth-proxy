@@ -13,7 +13,7 @@ from cf_auth_proxy.extensions import config
 from cf_auth_proxy.proxy import proxy_request
 from cf_auth_proxy import cf
 from cf_auth_proxy import uaa
-from cf_auth_proxy import roles
+from cf_auth_proxy.roles import RoleManager
 from cf_auth_proxy.headers import list_to_ext_header
 from cf_auth_proxy.token import decode_id_token_for_claims
 
