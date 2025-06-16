@@ -174,20 +174,18 @@ def create_app():
             for k, v in request.headers.items()
             if k.lower() not in forbidden_headers
         }
-        space_ids = list_to_ext_header(session.get("spaces", []))
-        org_ids = list_to_ext_header(session.get("orgs", []))
+        space_ids_role = session.get("spaces", [])
+        org_ids_role = session.get("user_orgs", [])
 
         # we need to check the user_id again because we could be unauthenticated, hitting an
         # allowed path
+        roles = ""
         if session.get("user_id"):
             headers["x-proxy-user"] = session["email"]
-            if session.get("is_cf_admin") == True:
+            if session.get("is_cf_admin"):
                 roles = "admin"
-            elif session.get("is_cf_auditor") == True:
+            elif session.get("is_cf_auditor"):
                 roles = "auditor"
-            else:
-                roles = ",".join(session.get("user_orgs", []))
-            headers["x-proxy-roles"] = roles
 
         xff_header_name = "X-Forwarded-For"
         if xff_header_name.lower() not in [k.lower() for k in headers.keys()]:
@@ -196,17 +194,19 @@ def create_app():
             else:
                 headers[xff_header_name] = request.remote_addr
 
-        #find the sha for user
-        combined_cf_access = f"{space_ids}{org_ids}"
-        combined_cf_sha = rolemanager.sha256_hash(combined_cf_access)
+        # find the sha for user
+        if not roles == "admin" or roles == "auditor":
+            combined_cf_access = f"{space_ids_role}|{org_ids_role}"
+            combined_cf_sha = rolemanager.sha256_hash(combined_cf_access)
 
-        #Send a role check to opensearch
-        exists = rolemanager.check_role_exists(combined_cf_sha)
+            # Send a role check to opensearch
+            exists = rolemanager.check_role_exists(combined_cf_sha)
 
-        if not exists:
-            definition = rolemanager.build_dls(space_ids,org_ids)
-            rolemanager.create_role(combined_cf_sha,definition)
-
+            if not exists:
+                definition = rolemanager.build_dls(space_ids_role, org_ids_role)
+                rolemanager.create_role(combined_cf_sha, definition)
+            roles = ",".join(session.get("user_orgs", []) + [combined_cf_sha])
+        headers["x-proxy-roles"] = roles
         return proxy_request(
             url, headers, request.get_data(), request.cookies, request.method
         )
