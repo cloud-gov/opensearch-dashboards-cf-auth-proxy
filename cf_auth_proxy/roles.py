@@ -14,7 +14,7 @@ class RoleManager:
     def sha256_hash(self, value: str) -> str:
         return hashlib.sha256(value.encode("utf-8")).hexdigest()
 
-    def check_role_exists(self, role_name) -> bool:
+    def check_role_exists(self, role_name: str) -> bool:
         url = f"{self.opensearch_url}_plugins/_security/api/roles/{role_name}"
         response = requests.get(
             url,
@@ -75,10 +75,8 @@ class RoleManager:
             "mapping_response": mapping_response.json(),
         }
 
-    def build_dls(self, space_ids, org_ids):
+    def build_dls(self, space_ids: list[str], org_ids: list[str]) -> dict | None:
         terms_query = []
-        logger.info(space_ids)
-        logger.info(org_ids)
         if space_ids:
             terms_query.append({"terms": {"@cf.space_id": space_ids}})
         if org_ids:

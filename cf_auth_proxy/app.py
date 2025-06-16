@@ -195,7 +195,7 @@ def create_app():
                 headers[xff_header_name] = request.remote_addr
 
         # find the sha for user
-        if not roles == "admin" or roles == "auditor":
+        if roles not in ["admin", "auditor"]:
             combined_cf_access = f"{space_ids_role}|{org_ids_role}"
             combined_cf_sha = rolemanager.sha256_hash(combined_cf_access)
 
