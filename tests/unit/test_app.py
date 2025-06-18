@@ -61,6 +61,32 @@ def test_app_filters_headers(authenticated_client):
                 assert m.request_history[0]._request.headers[header] != "4,5,6"
 
 
+def test_role_created_when_not_in_opensearch(client):
+    with requests_mock.Mocker() as m:
+        m.get("http://mock.dashboard/home")
+        m.get(
+            "http://mock.opensearch/_plugins/_security/api/roles/7212feb9d862d2fe11bce59b4ffb3925e4631ed57cf2e7316b6c29849277b10e",
+            status_code=404,
+        )
+        m.put(
+            "http://mock.opensearch/_plugins/_security/api/roles/7212feb9d862d2fe11bce59b4ffb3925e4631ed57cf2e7316b6c29849277b10e",
+            status_code=200,
+        )
+        m.put(
+            "http://mock.opensearch/_plugins/_security/api/rolesmapping/7212feb9d862d2fe11bce59b4ffb3925e4631ed57cf2e7316b6c29849277b10e",
+            status_code=200,
+        )
+        with client.session_transaction() as s:
+            s["user_id"] = "me2"
+            s["email"] = "me"
+            s["user_orgs"] = ["org-1", "org-2"]
+        client.get("/home")
+        assert (
+            "7212feb9d862d2fe11bce59b4ffb3925e4631ed57cf2e7316b6c29849277b10e"
+            in m.last_request._request.headers["x-proxy-roles"]
+        )
+
+
 def test_admin_role_set_correctly(client):
     with requests_mock.Mocker() as m:
         m.get("http://mock.dashboard/home")

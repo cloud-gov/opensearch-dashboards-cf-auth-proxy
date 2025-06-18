@@ -71,10 +71,7 @@ class RoleManager:
                 mapping_response.text,
             )
             mapping_response.raise_for_status()
-        return {
-            "role_response": role_response.json(),
-            "mapping_response": mapping_response.json(),
-        }
+        return True
 
     def build_dls(self, space_ids: list[str], org_ids: list[str]) -> Optional[dict]:
         terms_query = []
