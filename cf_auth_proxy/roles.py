@@ -21,6 +21,7 @@ class RoleManager:
             url,
             cert=(config.OPENSEARCH_CERTIFICATE, config.OPENSEARCH_CERTIFICATE_KEY),
             verify=config.OPENSEARCH_CERTIFICATE_CA,
+            timeout=config.REQUEST_TIMEOUT,
         )
         if response.status_code == 200:
             return True
@@ -39,6 +40,7 @@ class RoleManager:
                 headers=headers,
                 cert=(config.OPENSEARCH_CERTIFICATE, config.OPENSEARCH_CERTIFICATE_KEY),
                 verify=config.OPENSEARCH_CERTIFICATE_CA,
+                timeout=config.REQUEST_TIMEOUT,
             )
             if role_response.status_code not in [200, 201]:
                 logger.error(
@@ -62,6 +64,7 @@ class RoleManager:
             headers=headers,
             cert=(config.OPENSEARCH_CERTIFICATE, config.OPENSEARCH_CERTIFICATE_KEY),
             verify=config.OPENSEARCH_CERTIFICATE_CA,
+            timeout=config.REQUEST_TIMEOUT,
         )
         if mapping_response.status_code not in [200, 201]:
             logger.error(
