@@ -17,6 +17,7 @@ applications:
   env:
     FLASK_ENV: production
     DASHBOARD_URL: ((dashboard_url))
+    OPENSEARCH_URL: ((opensearch_url))
     CF_ADMIN_GROUP_NAME: "cloud_controller.admin"
     CF_AUDITOR_GROUP_NAME: "cloud_controller.global_auditor"
     CF_API_URL: ((cf_url))
