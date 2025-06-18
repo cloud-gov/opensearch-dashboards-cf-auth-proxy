@@ -24,6 +24,9 @@ def test_redirected_to_auth(client):
 def test_app_proxies_arbitrary_paths(authenticated_client):
     with requests_mock.Mocker() as m:
         m.get("http://mock.dashboard/foo/bar/baz/quux/")
+        m.get(
+            "http://mock.opensearch/_plugins/_security/api/roles/42ba610a86d150941363115a6aad91c30c4d108039d4f16ca498999e39039a06"
+        )
         authenticated_client.get("/foo/bar/baz/quux/")
     assert m.called
 
@@ -35,6 +38,9 @@ def test_app_filters_headers(authenticated_client):
     """
     with requests_mock.Mocker() as m:
         m.get("http://mock.dashboard/foo/bar/baz/quux/")
+        m.get(
+            "http://mock.opensearch/_plugins/_security/api/roles/42ba610a86d150941363115a6aad91c30c4d108039d4f16ca498999e39039a06"
+        )
         authenticated_client.get(
             "/foo/bar/baz/quux/",
             headers={
@@ -55,32 +61,6 @@ def test_app_filters_headers(authenticated_client):
                 assert m.request_history[0]._request.headers[header] != "4,5,6"
 
 
-def test_orgs_set_correctly(client):
-    with requests_mock.Mocker() as m:
-        m.get(
-            "http://mock.dashboard/home",
-            request_headers={"x-proxy-ext-orgids": r'"org-id-1", "org-id-2"'},
-        )
-        with client.session_transaction() as s:
-            s["user_id"] = "me2"  # set user id so we don't get authed
-            s["email"] = "me"
-            s["orgs"] = ["org-id-1", "org-id-2"]
-        client.get("/home")
-
-
-def test_spaces_set_correctly(client):
-    with requests_mock.Mocker() as m:
-        m.get(
-            "http://mock.dashboard/home",
-            request_headers={"x-proxy-ext-spaceids": r'"space-id-1", "space-id-2"'},
-        )
-        with client.session_transaction() as s:
-            s["user_id"] = "me2"
-            s["email"] = "me"
-            s["spaces"] = ["space-id-1", "space-id-2"]
-        client.get("/home")
-
-
 def test_admin_role_set_correctly(client):
     with requests_mock.Mocker() as m:
         m.get("http://mock.dashboard/home")
@@ -96,17 +76,26 @@ def test_admin_role_set_correctly(client):
 def test_user_org_roles_set_correctly(client):
     with requests_mock.Mocker() as m:
         m.get("http://mock.dashboard/home")
+        m.get(
+            "http://mock.opensearch/_plugins/_security/api/roles/7212feb9d862d2fe11bce59b4ffb3925e4631ed57cf2e7316b6c29849277b10e"
+        )
         with client.session_transaction() as s:
             s["user_id"] = "me2"
             s["email"] = "me"
             s["user_orgs"] = ["org-1", "org-2"]
         client.get("/home")
-        assert m.last_request._request.headers["x-proxy-roles"] == "org-1,org-2"
+        assert (
+            m.last_request._request.headers["x-proxy-roles"]
+            == "org-1,org-2,7212feb9d862d2fe11bce59b4ffb3925e4631ed57cf2e7316b6c29849277b10e"
+        )
 
 
 def test_adds_xff_when_it_is_not_set(client):
     with requests_mock.Mocker() as m:
         m.get("http://mock.dashboard/home")
+        m.get(
+            "http://mock.opensearch/_plugins/_security/api/roles/42ba610a86d150941363115a6aad91c30c4d108039d4f16ca498999e39039a06"
+        )
         with client.session_transaction() as s:
             s["user_id"] = "me2"
             s["email"] = "me"
@@ -117,6 +106,9 @@ def test_adds_xff_when_it_is_not_set(client):
 def test_does_not_modify_existing_xff_uppercase(client):
     with requests_mock.Mocker() as m:
         m.get("http://mock.dashboard/home")
+        m.get(
+            "http://mock.opensearch/_plugins/_security/api/roles/42ba610a86d150941363115a6aad91c30c4d108039d4f16ca498999e39039a06"
+        )
         with client.session_transaction() as s:
             s["user_id"] = "me2"
             s["email"] = "me"
@@ -127,6 +119,9 @@ def test_does_not_modify_existing_xff_uppercase(client):
 def test_does_not_modify_existing_xff_lowercase(client):
     with requests_mock.Mocker() as m:
         m.get("http://mock.dashboard/home")
+        m.get(
+            "http://mock.opensearch/_plugins/_security/api/roles/42ba610a86d150941363115a6aad91c30c4d108039d4f16ca498999e39039a06"
+        )
         with client.session_transaction() as s:
             s["user_id"] = "me2"
             s["email"] = "me"
@@ -137,6 +132,9 @@ def test_does_not_modify_existing_xff_lowercase(client):
 def test_does_not_accept_truthy_is_cf_admin(client):
     with requests_mock.Mocker() as m:
         m.get("http://mock.dashboard/home")
+        m.get(
+            "http://mock.opensearch/_plugins/_security/api/roles/42ba610a86d150941363115a6aad91c30c4d108039d4f16ca498999e39039a06"
+        )
         with client.session_transaction() as s:
             s["user_id"] = "me2"
             s["is_cf_admin"] = "truthy"

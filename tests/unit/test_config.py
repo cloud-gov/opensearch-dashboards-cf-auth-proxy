@@ -14,6 +14,7 @@ def base_local_config(monkeypatch, token_keys):
     monkeypatch.setenv("UAA_AUTH_URL", "https://wrong-value.example.com/authorize")
     monkeypatch.setenv("UAA_BASE_URL", "https://wrong-value.example.com/")
     monkeypatch.setenv("DASHBOARD_URL", "https://wrong-value.example.com/")
+    monkeypatch.setenv("OPENSEARCH_URL", "https://wrong-value.example.com/")
     monkeypatch.setenv("SECRET_KEY", "CHANGEME")
     monkeypatch.setenv("SESSION_LIFETIME", "1")
     monkeypatch.setenv("UAA_CLIENT_ID", "CHANGEME")
@@ -21,7 +22,6 @@ def base_local_config(monkeypatch, token_keys):
     monkeypatch.setenv("UAA_JWKS", '{"keys":[]}')
     monkeypatch.setenv("CF_ADMIN_GROUP_NAME", "wrong-value")
     monkeypatch.setenv("CF_AUDITOR_GROUP_NAME", "wrong-value")
-    monkeypatch.setenv("DASHBOARD_URL", "https://wrong-value.example.com/")
     monkeypatch.setenv("FLASK_ENV", "local")
     monkeypatch.setenv("REDIS_HOST", "fake-redis-host")
 
@@ -55,6 +55,7 @@ def test_config_loads(monkeypatch):
     assert config.DEBUG
     assert config.TESTING
     assert config.DASHBOARD_URL == "http://mock.dashboard/"
+    assert config.OPENSEARCH_URL == "http://mock.opensearch/"
     assert config.UAA_AUTH_URL == "http://mock.uaa/authorize"
     assert config.UAA_TOKEN_URL == "http://mock.uaa/token"
     assert config.CF_API_URL == "http://mock.cf/"

@@ -14,7 +14,6 @@ from cf_auth_proxy.proxy import proxy_request
 from cf_auth_proxy import cf
 from cf_auth_proxy import uaa
 from cf_auth_proxy.roles import RoleManager
-from cf_auth_proxy.headers import list_to_ext_header
 from cf_auth_proxy.token import decode_id_token_for_claims
 
 logger = logging.getLogger(__name__)
@@ -182,7 +181,7 @@ def create_app():
         roles = ""
         if session.get("user_id"):
             headers["x-proxy-user"] = session["email"]
-            if session.get("is_cf_admin"):
+            if session.get("is_cf_admin") is True:
                 roles = "admin"
             elif session.get("is_cf_auditor"):
                 roles = "auditor"

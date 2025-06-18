@@ -81,6 +81,7 @@ class UnitConfig(Config):
         # we're dumping and reloading to make sure we end up with a similar object to prod
         self.UAA_JWKS = jwk.JWKSet.from_json(jwks_str)
 
+
 class AppConfig(Config):
     def __init__(self):
         super().__init__()
@@ -120,7 +121,9 @@ class AppConfig(Config):
         self.DASHBOARD_CERTIFICATE_CA = self.env_parser.str(
             "DASHBOARD_CERTIFICATE_CA", None
         )
-        self.OPENSEARCH_CERTIFICATE = self.env_parser.str("OPENSEARCH_CERTIFICATE", None)
+        self.OPENSEARCH_CERTIFICATE = self.env_parser.str(
+            "OPENSEARCH_CERTIFICATE", None
+        )
         self.OPENSEARCH_CERTIFICATE_KEY = self.env_parser.str(
             "OPENSEARCH_CERTIFICATE_KEY", None
         )

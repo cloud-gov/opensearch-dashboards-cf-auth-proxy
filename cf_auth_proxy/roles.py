@@ -3,6 +3,7 @@ import requests
 import logging
 import json
 from cf_auth_proxy.extensions import config
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -75,12 +76,12 @@ class RoleManager:
             "mapping_response": mapping_response.json(),
         }
 
-    def build_dls(self, space_ids: list[str], org_ids: list[str]) -> dict | None:
+    def build_dls(self, space_ids: list[str], org_ids: list[str]) -> Optional[dict]:
         terms_query = []
         if space_ids:
             terms_query.append({"terms": {"@cf.space_id": space_ids}})
         if org_ids:
-            terms_query.append({"terms": {"@cf.org_ids": org_ids}})
+            terms_query.append({"terms": {"@cf.org_id": org_ids}})
         if not terms_query:
             return None
 
