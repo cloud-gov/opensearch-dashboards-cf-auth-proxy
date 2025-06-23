@@ -198,18 +198,18 @@ def create_app():
             combined_cf_access = f"{space_ids_role}|{org_ids_role}"
             combined_cf_sha = rolemanager.sha256_hash(combined_cf_access)
 
-            print(f"got hash: {combined_cf_sha}")
+            logger.info(f"got hash: {combined_cf_sha}")
 
             # Send a role check to opensearch
             exists = rolemanager.check_role_exists(combined_cf_sha)
 
-            print(f"role {combined_cf_sha} exists: {exists}")
+            logger.info(f"role {combined_cf_sha} exists: {exists}")
 
             if not exists:
                 definition = rolemanager.build_dls(space_ids_role, org_ids_role)
-                print(f"role {combined_cf_sha} definition: {definition}")
+                logger.info(f"role {combined_cf_sha} definition: {definition}")
                 rolemanager.create_role(combined_cf_sha, definition)
-                print(f"role {combined_cf_sha} created")
+                logger.info(f"role {combined_cf_sha} created")
             roles = ",".join(session.get("user_orgs", []) + [combined_cf_sha])
         headers["x-proxy-roles"] = roles
         return proxy_request(
