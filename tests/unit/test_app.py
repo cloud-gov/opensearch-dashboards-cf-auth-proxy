@@ -65,15 +65,15 @@ def test_role_created_when_not_in_opensearch(client):
     with requests_mock.Mocker() as m:
         m.get("http://mock.dashboard/home")
         m.get(
-            "http://mock.opensearch/_plugins/_security/api/roles/7212feb9d862d2fe11bce59b4ffb3925e4631ed57cf2e7316b6c29849277b10e",
+            "http://mock.opensearch/_plugins/_security/api/roles/42ba610a86d150941363115a6aad91c30c4d108039d4f16ca498999e39039a06",
             status_code=404,
         )
         m.put(
-            "http://mock.opensearch/_plugins/_security/api/roles/7212feb9d862d2fe11bce59b4ffb3925e4631ed57cf2e7316b6c29849277b10e",
+            "http://mock.opensearch/_plugins/_security/api/roles/42ba610a86d150941363115a6aad91c30c4d108039d4f16ca498999e39039a06",
             status_code=200,
         )
         m.put(
-            "http://mock.opensearch/_plugins/_security/api/rolesmapping/7212feb9d862d2fe11bce59b4ffb3925e4631ed57cf2e7316b6c29849277b10e",
+            "http://mock.opensearch/_plugins/_security/api/rolesmapping/42ba610a86d150941363115a6aad91c30c4d108039d4f16ca498999e39039a06",
             status_code=200,
         )
         with client.session_transaction() as s:
