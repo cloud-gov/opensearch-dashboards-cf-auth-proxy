@@ -11,6 +11,9 @@ logger = logging.getLogger(__name__)
 class RoleManager:
     def __init__(self):
         self.opensearch_url = config.OPENSEARCH_URL
+        self.OPENSEARCH_CERTIFICATE = config.OPENSEARCH_CERTIFICATE
+        self.OPENSEARCH_CERTIFICATE_KEY = config.OPENSEARCH_CERTIFICATE_KEY
+        self.OPENSEARCH_CERTIFICATE_CA = config.OPENSEARCH_CERTIFICATE_CA
 
     def sha256_hash(self, value: str) -> str:
         return hashlib.sha256(value.encode("utf-8")).hexdigest()
@@ -19,8 +22,8 @@ class RoleManager:
         url = f"{self.opensearch_url}_plugins/_security/api/roles/{role_name}"
         response = requests.get(
             url,
-            cert=(config.OPENSEARCH_CERTIFICATE, config.OPENSEARCH_CERTIFICATE_KEY),
-            verify=config.OPENSEARCH_CERTIFICATE_CA,
+            cert=(self.OPENSEARCH_CERTIFICATE, self.OPENSEARCH_CERTIFICATE_KEY),
+            verify=self.OPENSEARCH_CERTIFICATE_CA,
             timeout=config.REQUEST_TIMEOUT,
         )
         if response.status_code == 200:
@@ -38,8 +41,8 @@ class RoleManager:
                 role_url,
                 json=role_definition,
                 headers=headers,
-                cert=(config.OPENSEARCH_CERTIFICATE, config.OPENSEARCH_CERTIFICATE_KEY),
-                verify=config.OPENSEARCH_CERTIFICATE_CA,
+                cert=(self.OPENSEARCH_CERTIFICATE, self.OPENSEARCH_CERTIFICATE_KEY),
+                verify=self.OPENSEARCH_CERTIFICATE_CA,
                 timeout=config.REQUEST_TIMEOUT,
             )
             if role_response.status_code not in [200, 201]:
@@ -62,8 +65,8 @@ class RoleManager:
             url=mapping_url,
             json=mapping_body,
             headers=headers,
-            cert=(config.OPENSEARCH_CERTIFICATE, config.OPENSEARCH_CERTIFICATE_KEY),
-            verify=config.OPENSEARCH_CERTIFICATE_CA,
+            cert=(self.OPENSEARCH_CERTIFICATE, self.OPENSEARCH_CERTIFICATE_KEY),
+            verify=self.OPENSEARCH_CERTIFICATE_CA,
             timeout=config.REQUEST_TIMEOUT,
         )
         if mapping_response.status_code not in [200, 201]:
@@ -84,7 +87,7 @@ class RoleManager:
             terms_query.append({"terms": {"@cf.org_id": org_ids}})
         if not terms_query:
             return None
-
+        logger.info(terms_query)
         dls = {"bool": {"should": terms_query}}
         role_definition = {
             "cluster_permissions": [],

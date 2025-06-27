@@ -15,7 +15,7 @@ applications:
     image: ((repo))/opensearch-dashboards-testing:latest
     username: ((docker_username))
   env:
-      "OPENSEARCH_HOSTS": https://0.test-opensearch-node.apps.internal:9200
+      "OPENSEARCH_HOSTS": http://0.test-opensearch-node.apps.internal:9200
       "opensearch.requestHeadersAllowlist": "securitytenant,Authorization,x-forwarded-for,x-proxy-user,x-proxy-roles"
       "opensearch_security.auth_type": "proxy"
       "opensearch_security.proxycache.user_header": "x-proxy-user"

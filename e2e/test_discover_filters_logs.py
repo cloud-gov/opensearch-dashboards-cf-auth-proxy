@@ -9,7 +9,7 @@ def test_see_correct_logs_in_discover_user_1(user_1, page):
 
     go_to_discover_page(page)
 
-    expect(page.get_by_text("1 hit")).to_be_visible()
+    expect(page.get_by_text("Result (1/1)")).to_be_visible()
     expect(page.get_by_text("org_id_1")).not_to_be_visible()
     expect(page.get_by_text("org_id_2")).not_to_be_visible()
     expect(page.get_by_text("space_id_1")).to_be_visible()
@@ -28,7 +28,7 @@ def test_see_correct_logs_in_discover_user_2(user_2, page):
 
     go_to_discover_page(page)
 
-    expect(page.get_by_text("3 hits")).to_be_visible()
+    expect(page.get_by_text("Results (3/3)")).to_be_visible()
     expect(page.get_by_text("org_id_1")).not_to_be_visible()
     expect(page.get_by_text("org_id_2")).to_be_visible()
     expect(page.get_by_text("space_id_1")).not_to_be_visible()
@@ -47,7 +47,7 @@ def test_see_correct_logs_in_discover_user_3(user_3, page):
 
     go_to_discover_page(page)
 
-    expect(page.get_by_text("2 hits")).to_be_visible()
+    expect(page.get_by_text("Results (2/2)")).to_be_visible()
     expect(page.get_by_text("org_id_1")).not_to_be_visible()
     expect(page.get_by_text("org_id_2")).not_to_be_visible()
     expect(page.get_by_text("space_id_1")).to_be_visible()
@@ -66,7 +66,7 @@ def test_see_correct_logs_in_discover_user_4(user_4, page):
 
     go_to_discover_page(page)
 
-    expect(page.get_by_text("1 hit")).to_be_visible()
+    expect(page.get_by_text("Result (1/1)")).to_be_visible()
     expect(page.get_by_text("org_id_1")).not_to_be_visible()
     expect(page.get_by_text("org_id_2")).not_to_be_visible()
     expect(page.get_by_text("space_id_1")).not_to_be_visible()
