@@ -294,7 +294,7 @@ curl --fail-with-body --silent --show-error --cookie-jar ${cookie_jar} -b ${cook
     -H "x-proxy-user: admin" \
     -H 'x-forwarded-for: 127.0.0.1' \
     -H "osd-xsrf: true" \
-    https://localhost:5601/api/v1/configuration/account | jq
+    http://localhost:5601/api/v1/configuration/account | jq
 
 echo "Switching to default tenant"
 curl --fail-with-body --silent --show-error --cookie-jar ${cookie_jar} -b ${cookie_jar} \

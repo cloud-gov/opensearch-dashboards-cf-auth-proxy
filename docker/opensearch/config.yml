@@ -6,6 +6,7 @@ _meta:
 config:
   dynamic:
     http:
+      anonymous_auth_enabled: true
       xff:
         enabled: true
         # trust IP addresses from Docker and CF Diego network

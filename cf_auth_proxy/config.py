@@ -57,9 +57,15 @@ class UnitConfig(Config):
         self.DASHBOARD_CERTIFICATE = "fake-cert"
         self.DASHBOARD_CERTIFICATE_KEY = "fake-key"
         self.DASHBOARD_CERTIFICATE_CA = "fake-ca"
-        self.OPENSEARCH_CERTIFICATE = "fake-cert"
-        self.OPENSEARCH_CERTIFICATE_KEY = "fake-key"
-        self.OPENSEARCH_CERTIFICATE_CA = "fake-ca"
+        self.OPENSEARCH_CERTIFICATE = self.env_parser.str(
+            "OPENSEARCH_CERTIFICATE", None
+        )
+        self.OPENSEARCH_CERTIFICATE_KEY = self.env_parser.str(
+            "OPENSEARCH_CERTIFICATE_KEY", None
+        )
+        self.OPENSEARCH_CERTIFICATE_CA = self.env_parser.str(
+            "OPENSEARCH_CERTIFICATE_CA", None
+        )
         keys = [
             jwk.JWK.generate(kty="RSA", size=2048, kid=name, use="sig", alg="RS256")
             for name in ("key-0", "key-1")
