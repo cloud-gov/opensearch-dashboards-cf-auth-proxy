@@ -4,7 +4,6 @@ import os
 import datetime
 import logging
 
-
 from flask import Flask, request, session, url_for, redirect
 from flask_session import Session
 import requests
@@ -67,11 +66,9 @@ def create_app():
     def callback():
         # TODO: what do we do with errors passed back from the authn server?
         code = request.args["code"]
-
         req_csrf = request.args.get("state")
         # pop to invalidate the CSRF
         sess_csrf = session.pop("state")
-
         if sess_csrf != req_csrf:
             logger.debug("expected CSRF: %s, got: %s", sess_csrf, req_csrf)
             # TODO: make a view for this
@@ -174,7 +171,7 @@ def create_app():
             if k.lower() not in forbidden_headers
         }
         space_ids_role = session.get("spaces", [])
-        org_ids_role = session.get("user_orgs", [])
+        org_ids_role = session.get("orgs", [])
 
         # we need to check the user_id again because we could be unauthenticated, hitting an
         # allowed path
@@ -198,12 +195,8 @@ def create_app():
             combined_cf_access = f"{space_ids_role}|{org_ids_role}"
             combined_cf_sha = rolemanager.sha256_hash(combined_cf_access)
 
-            logger.info(f"got hash: {combined_cf_sha}")
-
             # Send a role check to opensearch
             exists = rolemanager.check_role_exists(combined_cf_sha)
-
-            logger.info(f"role {combined_cf_sha} exists: {exists}")
 
             if not exists:
                 definition = rolemanager.build_dls(space_ids_role, org_ids_role)

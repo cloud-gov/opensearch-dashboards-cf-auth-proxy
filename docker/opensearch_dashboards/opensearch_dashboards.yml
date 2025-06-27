@@ -1,6 +1,6 @@
 server.name: opensearchDashboards
 server.host: "0.0.0.0"
-opensearch.hosts: [https://localhost:9200]
+opensearch.hosts: [http://localhost:9200]
 
 opensearch.ssl.verificationMode: none
 opensearch.username: admin
@@ -11,7 +11,7 @@ opensearch_security.multitenancy.tenants.preferred: ["Private", "Global"]
 opensearch_security.readonly_mode.roles: ["opensearch_dashboards_read_only"]
 
 # Use this setting if you are running opensearch dashboards without https
-opensearch_security.cookie.secure: false
+opensearch_security.cookie.secure: true
 
 data.search.usageTelemetry.enabled: false
 opensearch.requestHeadersAllowlist: ["securitytenant","Authorization","x-forwarded-for","x-proxy-user","x-proxy-roles","x-proxy-ext-spaceids","x-proxy-ext-orgids"]
@@ -22,5 +22,3 @@ opensearch_security.proxycache.roles_header: "x-proxy-roles"
 
 # disable the welcome screen to make e2e tests less flaky
 home.disableWelcomeScreen: true
-# disable the new theme modal to make e2e tests less flaky
-home.disableNewThemeModal: true
